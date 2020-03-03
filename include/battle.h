@@ -17,6 +17,8 @@
 #define GET_BATTLER_SIDE(battler)         (GetBattlerPosition(battler) & BIT_SIDE)
 #define GET_BATTLER_SIDE2(battler)        (GET_BATTLER_POSITION(battler) & BIT_SIDE)
 
+#define BATTLE_HISTORY ((struct BattleHistory *)(gBattleResources->battleHistory))
+
 // Battle Actions
 // These determine what each battler will do in a turn
 #define B_ACTION_USE_MOVE               0
@@ -37,8 +39,6 @@
 #define B_ACTION_NOTHING_FAINTED        13 // when choosing an action
 #define B_ACTION_DEBUG                  20
 #define B_ACTION_NONE                   0xFF
-
-#define MAX_TRAINER_ITEMS 4
 
 // array entries for battle communication
 #define MULTIUSE_STATE          0x0

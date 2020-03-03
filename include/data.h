@@ -3,6 +3,7 @@
 
 #include "constants/moves.h"
 #include "constants/species.h"
+#include "constants/trainers.h"
 
 #define SPECIES_SHINY_TAG 500
 
@@ -61,11 +62,12 @@ struct Trainer
     /*0x02*/ u8 encounterMusic_gender; // last bit is gender
     /*0x03*/ u8 trainerPic;
     /*0x04*/ u8 trainerName[12];
-    /*0x10*/ u16 items[4];
+    /*0x10*/ u16 items[MAX_TRAINER_ITEMS];
     /*0x18*/ bool8 doubleBattle;
     /*0x1C*/ u32 aiFlags;
     /*0x20*/ u8 partySize;
     /*0x24*/ union TrainerMonPtr party;
+    /*0x28*/ u8 itemCounts[MAX_TRAINER_ITEMS];
 };
 
 #define TRAINER_ENCOUNTER_MUSIC(trainer)((gTrainers[trainer].encounterMusic_gender & 0x7F))

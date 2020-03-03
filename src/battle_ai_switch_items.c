@@ -810,15 +810,22 @@ static bool8 ShouldUseItem(void)
     for (i = 0; i < MAX_TRAINER_ITEMS; i++)
     {
         u16 item;
+        u8 itemCount;
         const u8 *itemEffects;
         u8 paramOffset;
         u8 battlerSide;
 
         if (i != 0 && validMons > (gBattleResources->battleHistory->itemsNo - i) + 1)
             continue;
-        item = gBattleResources->battleHistory->trainerItems[i];
+        
+        item = BATTLE_HISTORY->trainerItems[i];
         if (item == ITEM_NONE)
             continue;
+        
+        itemCount = BATTLE_HISTORY->trainerItemCounts[i];
+        if (itemCount == 0)
+            continue;
+        
         if (gItemEffectTable[item - ITEM_POTION] == NULL)
             continue;
 
@@ -911,7 +918,11 @@ static bool8 ShouldUseItem(void)
         {
             BtlController_EmitTwoReturnValues(1, B_ACTION_USE_ITEM, 0);
             *(gBattleStruct->chosenItem + (gActiveBattler / 2) * 2) = item;
-            gBattleResources->battleHistory->trainerItems[i] = 0;
+            
+            BATTLE_HISTORY->trainerItemCounts[i]--;
+            if (BATTLE_HISTORY->trainerItemCounts[i] == 0)
+                BATTLE_HISTORY->trainerItems[i] = 0;
+            
             return shouldUse;
         }
     }

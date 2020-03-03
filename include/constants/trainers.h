@@ -375,4 +375,7 @@
 #define F_TRAINER_PARTY_CUSTOM_MOVESET (1 << 0)
 #define F_TRAINER_PARTY_HELD_ITEM      (1 << 1)
 
+// Trainer Items
+#define MAX_TRAINER_ITEMS   4
+
 #endif  // GUARD_TRAINERS_H
