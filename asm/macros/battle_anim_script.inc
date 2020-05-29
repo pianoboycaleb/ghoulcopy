@@ -385,4 +385,3 @@
 	.hword \launchsoundtaskarg7
 	.hword \launchsoundtaskarg8
 	.endm
-

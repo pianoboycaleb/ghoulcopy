@@ -297,3 +297,5 @@ src/trainer_hill.o(ewram_data);
 src/rayquaza_scene.o(ewram_data);
 . = ALIGN(4);
 src/debug.o(ewram_data);
+. = ALIGN(4);
+src/ev_iv_screen.o(ewram_data);

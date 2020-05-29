@@ -7,6 +7,7 @@
 #include "field_poison.h"
 #include "fldeff_misc.h"
 #include "frontier_util.h"
+#include "list_menu.h"
 #include "party_menu.h"
 #include "pokenav.h"
 #include "script.h"
@@ -61,57 +62,10 @@ static bool32 MonFaintedFromPoison(u8 partyIdx)
 
 #define tState    data[0]
 #define tPartyIdx data[1]
-
-static void Task_TryFieldPoisonWhiteOut(u8 taskId)
-{
-    s16 *data = gTasks[taskId].data;
-    switch (tState)
-    {
-    case 0:
-        for (; tPartyIdx < PARTY_SIZE; tPartyIdx++)
-        {
-            if (MonFaintedFromPoison(tPartyIdx))
-            {
-                FaintFromFieldPoison(tPartyIdx);
-                ShowFieldMessage(gText_PkmnFainted_FldPsn);
-                tState++;
-                return;
-            }
-        }
-        tState = 2; // Finished checking party
-        break;
-    case 1:
-        // Wait for "{mon} fainted" message, then return to party loop
-        if (IsFieldMessageBoxHidden())
-            tState--;
-        break;
-    case 2:
-        if (AllMonsFainted())
-        {
-            // Battle facilities have their own white out script to handle the challenge loss
-            if (InBattlePyramid() | InBattlePike() || InTrainerHillChallenge())
-                gSpecialVar_Result = FLDPSN_FRONTIER_WHITEOUT;
-            else
-                gSpecialVar_Result = FLDPSN_WHITEOUT;
-        }
-        else
-        {
-            gSpecialVar_Result = FLDPSN_NO_WHITEOUT;
-        }
-        ScriptContext_Enable();
-        DestroyTask(taskId);
-        break;
-    }
 }
 
 #undef tState
 #undef tPartyIdx
-
-void TryFieldPoisonWhiteOut(void)
-{
-    CreateTask(Task_TryFieldPoisonWhiteOut, 80);
-    ScriptContext_Stop();
-}
 
 s32 DoPoisonFieldEffect(void)
 {
@@ -130,7 +84,7 @@ s32 DoPoisonFieldEffect(void)
             if (hp == 1 || --hp == 1)
             {
                 numFainted++;
-
+            }
             SetMonData(pokemon, MON_DATA_HP, &hp);
             numPoisoned++;
         }
