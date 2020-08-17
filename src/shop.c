@@ -1,5 +1,6 @@
 #include "global.h"
 #include "bg.h"
+#include "coins.h"
 #include "data.h"
 #include "decompress.h"
 #include "decoration.h"
@@ -93,6 +94,9 @@ static void Task_HandleShopMenuBuy(u8 taskId);
 static void Task_HandleShopMenuSell(u8 taskId);
 static void BuyMenuPrintItemDescriptionAndShowItemIcon(s32 item, bool8 onInit, struct ListMenu *list);
 static void BuyMenuPrintPriceInList(u8 windowId, s32 item, u8 y);
+static void Task_BuyHowManyDialogueInit_Coins(u8 taskId);
+static void BuyMenuPrintItemQuantityAndPrice_Coins(u8 taskId);
+static void BuyMenuSubtractCoins(u8 taskId);
 
 static const struct YesNoFuncTable sShopPurchaseYesNoFuncs =
 {
@@ -515,7 +519,7 @@ static void BuyMenuBuildListMenuTemplate(void)
 
 static void BuyMenuSetListEntry(struct ListMenuItem *menuItem, u16 item, u8 *name)
 {
-    if (sMartInfo.martType == MART_TYPE_NORMAL)
+    if (gMartInfo.martType <= MART_TYPE_CASINO)
         CopyItemName(item, name);
     else
         StringCopy(name, gDecorations[item].name);
@@ -539,7 +543,7 @@ static void BuyMenuPrintItemDescriptionAndShowItemIcon(s32 item, bool8 onInit, s
     sShopData->iconSlot ^= 1;
     if (item != LIST_CANCEL)
     {
-        if (sMartInfo.martType == MART_TYPE_NORMAL)
+        if (gMartInfo.martType <= MART_TYPE_CASINO)
             description = ItemId_GetDescription(item);
         else
             description = gDecorations[item].description;
@@ -566,6 +570,15 @@ static void BuyMenuPrintPriceInList(u8 windowId, s32 item, u8 y)
                 ItemId_GetPrice(item) >> GetPriceReduction(POKENEWS_SLATEPORT),
                 STR_CONV_MODE_LEFT_ALIGN,
                 5);
+            StringExpandPlaceholders(gStringVar4, gText_PokedollarVar1);
+        }
+        else if (gMartInfo.martType == MART_TYPE_CASINO)
+        {
+            ConvertIntToDecimalStringN(
+                gStringVar4,
+                ItemId_GetCoinPrice(item),
+                STR_CONV_MODE_LEFT_ALIGN,
+                5);
         }
         else
         {
@@ -574,9 +587,9 @@ static void BuyMenuPrintPriceInList(u8 windowId, s32 item, u8 y)
                 gDecorations[item].price,
                 STR_CONV_MODE_LEFT_ALIGN,
                 5);
+            StringExpandPlaceholders(gStringVar4, gText_PokedollarVar1);
         }
-
-        StringExpandPlaceholders(gStringVar4, gText_PokedollarVar1);
+        
         x = GetStringRightAlignXOffset(7, gStringVar4, 0x78);
         AddTextPrinterParameterized4(windowId, 7, x, y, 0, 0, sShopBuyMenuTextColors[1], -1, gStringVar4);
     }
@@ -620,7 +633,7 @@ static void BuyMenuAddItemIcon(u16 item, u8 iconSlot)
     if (*spriteIdPtr != SPRITE_NONE)
         return;
 
-    if (sMartInfo.martType == MART_TYPE_NORMAL || item == 0xFFFF)
+    if (gMartInfo.martType <= MART_TYPE_CASINO || item == 0xFFFF)
     {
         spriteId = AddItemIconSprite(iconSlot + TAG_ITEM_ICON_BASE, iconSlot + TAG_ITEM_ICON_BASE, item);
         if (spriteId != MAX_SPRITES)
@@ -706,8 +719,18 @@ static void BuyMenuDrawGraphics(void)
 {
     BuyMenuDrawMapGraphics();
     BuyMenuCopyMenuBgToBg1TilemapBuffer();
-    AddMoneyLabelObject(19, 11);
-    PrintMoneyAmountInMoneyBoxWithBorder(0, 1, 13, GetMoney(&gSaveBlock1Ptr->money));
+    
+    if (gMartInfo.martType == MART_TYPE_CASINO)
+    {
+        AddCoinLabelObject(19, 11);
+        PrintCoinsAmountInMoneyBoxWithBorder(0, 1, 13, GetCoins());
+    }
+    else
+    {
+        AddMoneyLabelObject(19, 11);
+        PrintMoneyAmountInMoneyBoxWithBorder(0, 1, 13, GetMoney(&gSaveBlock1Ptr->money));
+    }
+    
     ScheduleBgCopyTilemapToVram(0);
     ScheduleBgCopyTilemapToVram(1);
     ScheduleBgCopyTilemapToVram(2);
@@ -933,45 +956,57 @@ static void Task_BuyMenu(u8 taskId)
             BuyMenuRemoveScrollIndicatorArrows();
             BuyMenuPrintCursor(tListTaskId, 2);
 
-            if (sMartInfo.martType == MART_TYPE_NORMAL)
+            if (gMartInfo.martType == MART_TYPE_CASINO)
             {
-                sShopData->totalCost = (ItemId_GetPrice(itemId) >> GetPriceReduction(POKENEWS_SLATEPORT));
-            }
-            else
-            {
-                sShopData->totalCost = gDecorations[itemId].price;
-            }
-
-            if (!IsEnoughMoney(&gSaveBlock1Ptr->money, sShopData->totalCost))
-            {
-                BuyMenuDisplayMessage(taskId, gText_YouDontHaveMoney, BuyMenuReturnToItemList);
-            }
-            else
-            {
-                if (sMartInfo.martType == MART_TYPE_NORMAL)
+                gShopDataPtr->totalCost = ItemId_GetCoinPrice(itemId);
+                if (!IsEnoughCoins(gShopDataPtr->totalCost))
                 {
-                    CopyItemName(itemId, gStringVar1);
-                    if (ItemId_GetPocket(itemId) == POCKET_TM_HM)
-                    {
-                        StringCopy(gStringVar2, gMoveNames[ItemIdToBattleMoveId(itemId)]);
-                        BuyMenuDisplayMessage(taskId, gText_Var1CertainlyHowMany2, Task_BuyHowManyDialogueInit);
-                    }
-                    else
-                    {
-                        BuyMenuDisplayMessage(taskId, gText_Var1CertainlyHowMany, Task_BuyHowManyDialogueInit);
-                    }
+                    static const u8 sText_YouDontHaveCoins[] = _("You don't have enough coins.{PAUSE_UNTIL_PRESS}");
+                    BuyMenuDisplayMessage(taskId, sText_YouDontHaveCoins, BuyMenuReturnToItemList);
                 }
                 else
                 {
-                    StringCopy(gStringVar1, gDecorations[itemId].name);
-                    ConvertIntToDecimalStringN(gStringVar2, sShopData->totalCost, STR_CONV_MODE_LEFT_ALIGN, 6);
+                    CopyItemName(itemId, gStringVar1);
+                    BuyMenuDisplayMessage(taskId, gText_Var1CertainlyHowMany, Task_BuyHowManyDialogueInit_Coins);
+                }
+            }
+            else
+            {
+                if (gMartInfo.martType == MART_TYPE_NORMAL)
+                    gShopDataPtr->totalCost = (ItemId_GetPrice(itemId) >> GetPriceReduction(POKENEWS_SLATEPORT));
+                else
+                    gShopDataPtr->totalCost = gDecorations[itemId].price;
 
-                    if (sMartInfo.martType == MART_TYPE_DECOR)
-                        StringExpandPlaceholders(gStringVar4, gText_Var1IsItThatllBeVar2);
-                    else // MART_TYPE_DECOR2
-                        StringExpandPlaceholders(gStringVar4, gText_YouWantedVar1ThatllBeVar2);
+                if (!IsEnoughMoney(&gSaveBlock1Ptr->money, gShopDataPtr->totalCost))
+                {
+                    BuyMenuDisplayMessage(taskId, gText_YouDontHaveMoney, BuyMenuReturnToItemList);
+                }
+                else
+                {
+                    if (gMartInfo.martType == MART_TYPE_NORMAL)
+                    {
+                        CopyItemName(itemId, gStringVar1);
+                        if (ItemId_GetPocket(itemId) == POCKET_TM_HM)
+                        {
+                            StringCopy(gStringVar2, gMoveNames[ItemIdToBattleMoveId(itemId)]);
+                            BuyMenuDisplayMessage(taskId, gText_Var1CertainlyHowMany2, Task_BuyHowManyDialogueInit);
+                        }
+                        else
+                        {
+                            BuyMenuDisplayMessage(taskId, gText_Var1CertainlyHowMany, Task_BuyHowManyDialogueInit);
+                        }
+                    }
+                    else
+                    {
+                        StringCopy(gStringVar1, gDecorations[itemId].name);
+                        ConvertIntToDecimalStringN(gStringVar2, gShopDataPtr->totalCost, STR_CONV_MODE_LEFT_ALIGN, 6);
 
-                    BuyMenuDisplayMessage(taskId, gStringVar4, BuyMenuConfirmPurchase);
+                        if (gMartInfo.martType == MART_TYPE_DECOR)
+                            StringExpandPlaceholders(gStringVar4, gText_Var1IsItThatllBeVar2);
+                        else
+                            StringExpandPlaceholders(gStringVar4, gText_YouWantedVar1ThatllBeVar2);
+                        BuyMenuDisplayMessage(taskId, gStringVar4, BuyMenuConfirmPurchase);
+                    }
                 }
             }
             break;
@@ -1015,8 +1050,16 @@ static void Task_BuyHowManyDialogueHandleInput(u8 taskId)
 
     if (AdjustQuantityAccordingToDPadInput(&tItemCount, sShopData->maxQuantity) == TRUE)
     {
-        sShopData->totalCost = (ItemId_GetPrice(tItemId) >> GetPriceReduction(POKENEWS_SLATEPORT)) * tItemCount;
-        BuyMenuPrintItemQuantityAndPrice(taskId);
+        if (gMartInfo.martType == MART_TYPE_CASINO)
+        {
+            gShopDataPtr->totalCost = ItemId_GetCoinPrice(tItemId) * tItemCount;
+            BuyMenuPrintItemQuantityAndPrice_Coins(taskId);
+        }
+        else
+        {
+            gShopDataPtr->totalCost = (ItemId_GetPrice(tItemId) >> GetPriceReduction(POKENEWS_SLATEPORT)) * tItemCount;
+            BuyMenuPrintItemQuantityAndPrice(taskId);
+        }
     }
     else
     {
@@ -1029,9 +1072,18 @@ static void Task_BuyHowManyDialogueHandleInput(u8 taskId)
             ClearWindowTilemap(3);
             PutWindowTilemap(1);
             CopyItemName(tItemId, gStringVar1);
-            ConvertIntToDecimalStringN(gStringVar2, tItemCount, STR_CONV_MODE_LEFT_ALIGN, BAG_ITEM_CAPACITY_DIGITS);
-            ConvertIntToDecimalStringN(gStringVar3, sShopData->totalCost, STR_CONV_MODE_LEFT_ALIGN, 6);
-            BuyMenuDisplayMessage(taskId, gText_Var1AndYouWantedVar2, BuyMenuConfirmPurchase);
+            ConvertIntToDecimalStringN(gStringVar2, tItemCount, STR_CONV_MODE_LEFT_ALIGN, 2);
+            ConvertIntToDecimalStringN(gStringVar3, gShopDataPtr->totalCost, STR_CONV_MODE_LEFT_ALIGN, 6);
+            
+            if (gMartInfo.martType == MART_TYPE_CASINO)
+            {
+                static const u8 sText_Var1AndYouWantedVar2_Coins[] = _("{STR_VAR_1}? And you wanted {STR_VAR_2}?\nThat will be {STR_VAR_3} Coins.");
+                BuyMenuDisplayMessage(taskId, sText_Var1AndYouWantedVar2_Coins, BuyMenuConfirmPurchase);
+            }
+            else
+            {
+                BuyMenuDisplayMessage(taskId, gText_Var1AndYouWantedVar2, BuyMenuConfirmPurchase);
+            }
         }
         else if (JOY_NEW(B_BUTTON))
         {
@@ -1061,6 +1113,18 @@ static void BuyMenuTryMakePurchase(u8 taskId)
         if (AddBagItem(tItemId, tItemCount) == TRUE)
         {
             BuyMenuDisplayMessage(taskId, gText_HereYouGoThankYou, BuyMenuSubtractMoney);
+            RecordItemPurchase(taskId);
+        }
+        else
+        {
+            BuyMenuDisplayMessage(taskId, gText_NoMoreRoomForThis, BuyMenuReturnToItemList);
+        }
+    }
+    else if (gMartInfo.martType == MART_TYPE_CASINO)
+    {
+        if (AddBagItem(tItemId, tItemCount))
+        {
+            BuyMenuDisplayMessage(taskId, gText_HereYouGoThankYou, BuyMenuSubtractCoins);
             RecordItemPurchase(taskId);
         }
         else
@@ -1154,8 +1218,10 @@ static void BuyMenuPrintItemQuantityAndPrice(u8 taskId)
 
 static void ExitBuyMenu(u8 taskId)
 {
-    gFieldCallback = MapPostLoadHook_ReturnToShopMenu;
-    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+    if (gMartInfo.martType != MART_TYPE_CASINO)
+        gFieldCallback = MapPostLoadHook_ReturnToShopMenu;
+    
+    BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
     gTasks[taskId].func = Task_ExitBuyMenu;
 }
 
@@ -1165,7 +1231,11 @@ static void Task_ExitBuyMenu(u8 taskId)
     {
         RemoveMoneyLabelObject();
         BuyMenuFreeMemory();
-        SetMainCallback2(CB2_ReturnToField);
+        if (gMartInfo.martType == MART_TYPE_CASINO)
+            SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        else
+            SetMainCallback2(CB2_ReturnToField);
+        
         DestroyTask(taskId);
     }
 }
@@ -1202,10 +1272,6 @@ static void RecordItemPurchase(u8 taskId)
     }
 }
 
-#undef tItemCount
-#undef tItemId
-#undef tListTaskId
-
 void CreatePokemartMenu(const u16 *itemsForSale)
 {
     CreateShopMenu(MART_TYPE_NORMAL);
@@ -1227,3 +1293,63 @@ void CreateDecorationShop2Menu(const u16 *itemsForSale)
     SetShopItemsForSale(itemsForSale);
     SetShopMenuCallback(EnableBothScriptContexts);
 }
+
+// casino pokemart
+void CreateCoinsShopMenu(const u16 *items)
+{
+    gMartInfo.martType = MART_TYPE_CASINO;
+    SetShopItemsForSale(items);
+    SetShopMenuCallback(EnableBothScriptContexts);
+    CreateTask(Task_HandleShopMenuBuy, 8);  //skip mart multichoice. go right to shop buy window
+}
+
+static void Task_BuyHowManyDialogueInit_Coins(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+
+    u16 quantityInBag = CountTotalItemQuantityInBag(tItemId);
+    u16 maxQuantity;
+
+    DrawStdFrameWithCustomTileAndPalette(3, FALSE, 1, 13);
+    ConvertIntToDecimalStringN(gStringVar1, quantityInBag, STR_CONV_MODE_RIGHT_ALIGN, 4);
+    StringExpandPlaceholders(gStringVar4, gText_InBagVar1);
+    BuyMenuPrint(3, gStringVar4, 0, 1, 0, 0);
+    tItemCount = 1;
+    DrawStdFrameWithCustomTileAndPalette(4, FALSE, 1, 13);
+    BuyMenuPrintItemQuantityAndPrice_Coins(taskId);
+    ScheduleBgCopyTilemapToVram(0);
+    maxQuantity = GetCoins() / gShopDataPtr->totalCost;
+
+    if (maxQuantity > MAX_BAG_ITEM_CAPACITY)
+        gShopDataPtr->maxQuantity = MAX_BAG_ITEM_CAPACITY;
+    else
+        gShopDataPtr->maxQuantity = maxQuantity;
+
+    gTasks[taskId].func = Task_BuyHowManyDialogueHandleInput;
+}
+
+static void BuyMenuPrintItemQuantityAndPrice_Coins(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+
+    FillWindowPixelBuffer(4, PIXEL_FILL(1));
+    PrintCoinsAmount(4, 56, 1, gShopDataPtr->totalCost);
+    ConvertIntToDecimalStringN(gStringVar1, tItemCount, STR_CONV_MODE_LEADING_ZEROS, 2);
+    StringExpandPlaceholders(gStringVar4, gText_xVar1);
+    BuyMenuPrint(4, gStringVar4, 0, 1, 0, 0);
+}
+
+static void BuyMenuSubtractCoins(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+    
+    RemoveCoins(gShopDataPtr->totalCost);
+    PlaySE(SE_REGI);
+    PrintCoinsAmount(0, 56, 1, GetCoins());
+    task->func = Task_ReturnToItemListAfterItemPurchase;
+}
+
+#undef tItemCount
+#undef tItemId
+#undef tListTaskId
+

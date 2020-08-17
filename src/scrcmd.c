@@ -2308,3 +2308,12 @@ bool8 ScrCmd_warpsootopolislegend(struct ScriptContext *ctx)
     ResetInitialPlayerAvatarState();
     return TRUE;
 }
+
+bool8 ScrCmd_casinopokemart(struct ScriptContext *ctx)
+{
+    const u16 *items = (u16 *)ScriptReadWord(ctx);
+
+    CreateCoinsShopMenu(items);
+    ScriptContext1_Stop();
+    return TRUE;
+}

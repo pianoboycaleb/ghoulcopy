@@ -6,6 +6,7 @@ extern EWRAM_DATA struct ItemSlot gMartPurchaseHistory[3];
 enum
 {
     MART_TYPE_NORMAL, // normal mart
+    MART_TYPE_CASINO,
     MART_TYPE_DECOR,
     MART_TYPE_DECOR2,
 };
@@ -48,5 +49,6 @@ void CreatePokemartMenu(const u16 *);
 void CreateDecorationShop1Menu(const u16 *);
 void CreateDecorationShop2Menu(const u16 *);
 void CB2_ExitSellMenu(void);
+void CreateCoinsShopMenu(const u16 *items);
 
 #endif // GUARD_SHOP_H
