@@ -34,8 +34,7 @@ OldaleTown_EventScript_CitySign:: @ 81E8EEA
 	end
 
 OldaleTown_EventScript_Girl:: @ 81E8EF3
-	setfollower 1, 0
-    @msgbox OldaleTown_Text_SavingMyProgress, MSGBOX_NPC
+    msgbox OldaleTown_Text_SavingMyProgress, MSGBOX_NPC
 	end
 
 OldaleTown_EventScript_MartEmployee:: @ 81E8EFC
