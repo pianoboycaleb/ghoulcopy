@@ -4006,6 +4006,9 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
                 | (substruct3->worldRibbon << 26);
         }
         break;
+    case MON_DATA_LOCKED_ABILITY:
+        retVal = substruct0->lockedAbility;
+        break;
     default:
         break;
     }
@@ -4324,6 +4327,9 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         substruct3->spDefenseIV = (ivs >> 25) & MAX_IV_MASK;
         break;
     }
+    case MON_DATA_LOCKED_ABILITY:
+        SET8(substruct0->lockedAbility);
+        break;
     default:
         break;
     }
@@ -4461,13 +4467,22 @@ u8 GetMonsStateToDoubles_2(void)
     return (aliveCount > 1) ? PLAYER_HAS_TWO_USABLE_MONS : PLAYER_HAS_ONE_USABLE_MON;
 }
 
-u8 GetAbilityBySpecies(u16 species, u8 abilityNum)
+u8 GetAbilityBySpecies(u16 species, u8 abilityNum, u8 lockedAbility)
 {
-    if (abilityNum)
-        gLastUsedAbility = gBaseStats[species].abilities[1];
-    else
-        gLastUsedAbility = gBaseStats[species].abilities[0];
-
+    switch (abilityNum)
+    {
+    case 0:
+    case 1:
+        gLastUsedAbility = gBaseStats[species].abilities[abilityNum];
+        break;
+    case 2: //hidden ability
+        //gLastUsedAbility = gBaseStats[species].abilityHidden;
+        break;
+    case 3: //locked ability (tutor)
+        gLastUsedAbility = lockedAbility;
+        break;
+    }
+    
     return gLastUsedAbility;
 }
 
@@ -4475,7 +4490,8 @@ u8 GetMonAbility(struct Pokemon *mon)
 {
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 abilityNum = GetMonData(mon, MON_DATA_ABILITY_NUM, NULL);
-    return GetAbilityBySpecies(species, abilityNum);
+    u8 lockedAbility = GetMonData(mon, MON_DATA_LOCKED_ABILITY, NULL);
+    return GetAbilityBySpecies(species, abilityNum, lockedAbility);
 }
 
 void CreateSecretBaseEnemyParty(struct SecretBase *secretBaseRecord)
@@ -4619,10 +4635,11 @@ void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex)
     gBattleMons[battlerId].spDefense = GetMonData(&gPlayerParty[partyIndex], MON_DATA_SPDEF, NULL);
     gBattleMons[battlerId].isEgg = GetMonData(&gPlayerParty[partyIndex], MON_DATA_IS_EGG, NULL);
     gBattleMons[battlerId].abilityNum = GetMonData(&gPlayerParty[partyIndex], MON_DATA_ABILITY_NUM, NULL);
+    gBattleMons[battlerId].lockedAbility = GetMonData(&gPlayerParty[partyIndex], MON_DATA_LOCKED_ABILITY, NULL);
     gBattleMons[battlerId].otId = GetMonData(&gPlayerParty[partyIndex], MON_DATA_OT_ID, NULL);
     gBattleMons[battlerId].type1 = gBaseStats[gBattleMons[battlerId].species].type1;
     gBattleMons[battlerId].type2 = gBaseStats[gBattleMons[battlerId].species].type2;
-    gBattleMons[battlerId].ability = GetAbilityBySpecies(gBattleMons[battlerId].species, gBattleMons[battlerId].abilityNum);
+    gBattleMons[battlerId].ability = GetAbilityBySpecies(gBattleMons[battlerId].species, gBattleMons[battlerId].abilityNum, gBattleMons[battlerId].lockedAbility);
     GetMonData(&gPlayerParty[partyIndex], MON_DATA_NICKNAME, nickname);
     StringCopy10(gBattleMons[battlerId].nickname, nickname);
     GetMonData(&gPlayerParty[partyIndex], MON_DATA_OT_NAME, gBattleMons[battlerId].otName);

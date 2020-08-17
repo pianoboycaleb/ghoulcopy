@@ -67,6 +67,7 @@
 #include "constants/weather.h"
 #include "constants/metatile_labels.h"
 #include "palette.h"
+#include "constants/abilities.h"
 
 EWRAM_DATA bool8 gBikeCyclingChallenge = FALSE;
 EWRAM_DATA u8 gBikeCollisions = 0;
@@ -3333,23 +3334,7 @@ void sub_813AF48(void)
         RemoveWindow(task->tWindowId);
         DestroyTask(taskId);
     }
-}
-
-// Undefine Scrollable Multichoice task data macros
-#undef tMaxItemsOnScreen  
-#undef tNumItems           
-#undef tLeft               
-#undef tTop                 
-#undef tWidth              
-#undef tHeight             
-#undef tKeepOpenAfterSelect 
-#undef tScrollOffset      
-#undef tSelectedRow        
-#undef tScrollMultiId       
-#undef tScrollArrowId       
-#undef tWindowId            
-#undef tListTaskId         
-#undef tTaskId              
+}          
 
 void DoDeoxysRockInteraction(void)
 {
@@ -4376,3 +4361,251 @@ u8 Script_TryGainNewFanFromCounter(void)
 {
     return TryGainNewFanFromCounter(gSpecialVar_0x8004);
 }
+
+
+// ability tutor
+#define tSelectedAbility     data[9]    
+#define tAbilityTutor        data[10]
+static void ScrollingMonData_ProcessInput(u8 taskId);
+static const u8 sAbilityList[] = 
+{
+    ABILITY_DRIZZLE,
+    ABILITY_LEVITATE,
+    ABILITY_KEEN_EYE,
+    ABILITY_STICKY_HOLD,
+    ABILITY_ROCK_HEAD,
+    ABILITY_WHITE_SMOKE,
+    ABILITY_ROUGH_SKIN,
+    ABILITY_LIMBER,
+    ABILITY_STURDY,
+    ABILITY_NATURAL_CURE,
+};
+
+static const struct WindowTemplate sAbilityDescriptionWindowTemplate = 
+{
+    .bg = 0,
+    .tilemapLeft = 1,
+    .tilemapTop = 15,
+    .width = 28,
+    .height = 4,
+    .paletteNum = 15,
+    .baseBlock = 0x150,
+};
+
+extern const u8 *const gAbilityDescriptionPointers[];
+static void UpdateAbilityDescription(u8 taskId, s32 input)
+{
+    struct Task *task = &gTasks[taskId];
+    
+    FillWindowPixelBuffer(sTutorMoveAndElevatorWindowId, PIXEL_FILL(TEXT_COLOR_WHITE));
+    
+    StringCopy(gStringVar1, gAbilityDescriptionPointers[sAbilityList[input]]);
+    AddTextPrinterParameterized(sTutorMoveAndElevatorWindowId, 0, gStringVar1, 2, 3, TEXT_SPEED_FF, 0);
+    CopyWindowToVram(sTutorMoveAndElevatorWindowId, 2);
+}
+
+static void ExitAbilityTutor(u8 taskId)
+{
+    CloseScrollableMultichoice(taskId);
+    ClearStdWindowAndFrameToTransparent(sTutorMoveAndElevatorWindowId, FALSE);
+    CopyWindowToVram(sTutorMoveAndElevatorWindowId, 2);
+    RemoveWindow(sTutorMoveAndElevatorWindowId);
+    sTutorMoveAndElevatorWindowId = 0;
+    DestroyTask(taskId);
+}
+
+static void Task_WaitInputThenReturnToList(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+    
+    RunTextPrinters();
+    if (!IsTextPrinterActive(sTutorMoveAndElevatorWindowId))
+        task->func = ScrollingMonData_ProcessInput;
+}
+
+static void SetMonLockedAbility(struct Pokemon *mon, u8 ability)
+{
+    SetMonData(mon, MON_DATA_LOCKED_ABILITY, &ability);
+    ability = 3;
+    SetMonData(mon, MON_DATA_ABILITY_NUM, &ability);
+}
+static void Task_TryTeachAbility(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+    struct Pokemon *mon = &gPlayerParty[gSpecialVar_0x8004];
+    u8 toTeach = task->tSelectedAbility;
+    
+    SetMonLockedAbility(mon, toTeach);
+    gSpecialVar_Result = 0;
+    ExitAbilityTutor(taskId);
+}
+
+static void Task_ProcessAbilityTutorInput(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+    
+    switch (Menu_ProcessInputNoWrapClearOnChoose())
+    {
+    case MENU_NOTHING_CHOSEN:
+    default:
+        break;
+    case MENU_B_PRESSED:
+    case 1:
+        PlaySE(SE_SELECT);
+        task->func = ScrollingMonData_ProcessInput;
+        break;
+    case 0:
+        PlaySE(SE_SELECT);
+        task->func = Task_TryTeachAbility;
+        break;
+    }
+}
+
+static void Task_WaitAskTeachAndPresentYesNo(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+    
+    RunTextPrinters();
+    if (!IsTextPrinterActive(sTutorMoveAndElevatorWindowId))
+    {
+        DisplayYesNoMenuDefaultYes();
+        task->func = Task_ProcessAbilityTutorInput;
+    }
+}
+
+static const u8 sText_TeachAbility[] = _("Teach {STR_VAR_1} to {STR_VAR_3}?");
+static const u8 sText_AlreadyHasAbility[] = _("{STR_VAR_3} already has {STR_VAR_1}!\p");
+static void ScrollingMonData_ProcessInput(u8 taskId)
+{
+    struct Task *task = &gTasks[taskId];
+    s32 input = ListMenu_ProcessInput(task->tListTaskId);
+    u16 selection;
+
+    ListMenuGetCurrentItemArrayId(task->tListTaskId, &selection);
+    UpdateAbilityDescription(taskId, selection);
+
+    switch (input)
+    {
+    case LIST_NOTHING_CHOSEN:
+        break;
+    case LIST_CANCEL:
+        gSpecialVar_Result = MULTI_B_PRESSED;
+        ExitAbilityTutor(taskId);
+        break;
+    default:
+        task->tSelectedAbility = sAbilityList[selection];        
+        FillWindowPixelBuffer(sTutorMoveAndElevatorWindowId, PIXEL_FILL(TEXT_COLOR_WHITE));
+        StringCopy(gStringVar1, gAbilityNames[task->tSelectedAbility]);
+        
+        if (GetMonAbility(&gPlayerParty[gSpecialVar_0x8004]) == task->tSelectedAbility)
+        {
+            PlaySE(SE_HAZURE);
+            StringExpandPlaceholders(gStringVar2, sText_AlreadyHasAbility);
+            AddTextPrinterParameterized(sTutorMoveAndElevatorWindowId, 0, gStringVar2, 2, 3, 1, 0);
+            CopyWindowToVram(sTutorMoveAndElevatorWindowId, 2);
+            task->func = Task_WaitInputThenReturnToList;
+        }
+        else
+        {
+            PlaySE(SE_SELECT);
+            StringExpandPlaceholders(gStringVar2, sText_TeachAbility);
+            AddTextPrinterParameterized(sTutorMoveAndElevatorWindowId, 0, gStringVar2, 2, 3, 1, 0);
+            CopyWindowToVram(sTutorMoveAndElevatorWindowId, 2);
+            task->func = Task_WaitAskTeachAndPresentYesNo;
+        }
+        break;
+    }
+}
+
+static void Task_ShowScrollableAbilityNames(u8 taskId)
+{
+    u32 width;
+    u8 i, windowId;
+    struct WindowTemplate template;
+    struct Task *task = &gTasks[taskId];
+    const u8 *text;
+
+    ScriptContext2_Enable();
+    sScrollableMultichoice_ScrollOffset = 0;
+    sScrollableMultichoice_ItemSpriteId = MAX_SPRITES;
+    sScrollableMultichoice_ListMenuItem = AllocZeroed(task->tNumItems * 8);
+    
+    InitScrollableMultichoice();
+    for (width = 0, i = 0; i < task->tNumItems; i++)
+    {
+        text = gAbilityNames[sAbilityList[i]];        
+        sScrollableMultichoice_ListMenuItem[i].name = text;
+        sScrollableMultichoice_ListMenuItem[i].id = i;
+        width = DisplayTextAndGetWidth(text, width);
+    }
+
+    task->tWidth = ConvertPixelWidthToTileWidth(width);
+
+    if (task->tLeft + task->tWidth > MAX_MULTICHOICE_WIDTH + 1)
+    {
+        int adjustedLeft = MAX_MULTICHOICE_WIDTH + 1 - task->tWidth;
+        if (adjustedLeft < 0)
+            task->tLeft = 0;
+        else
+            task->tLeft = adjustedLeft;
+    }
+
+    template = CreateWindowTemplate(0, task->tLeft, task->tTop, task->tWidth, task->tHeight, 0xF, 0x64);
+    windowId = AddWindow(&template);
+    task->tWindowId = windowId;
+    SetStandardWindowBorderStyle(windowId, 0);
+
+    gScrollableMultichoice_ListMenuTemplate.totalItems = task->tNumItems;
+    gScrollableMultichoice_ListMenuTemplate.maxShowed = task->tMaxItemsOnScreen;
+    gScrollableMultichoice_ListMenuTemplate.windowId = task->tWindowId;
+
+    ScrollableMultichoice_UpdateScrollArrows(taskId);
+    task->tListTaskId = ListMenuInit(&gScrollableMultichoice_ListMenuTemplate, task->tScrollOffset, task->tSelectedRow);
+    ScheduleBgCopyTilemapToVram(0);
+    gTasks[taskId].func = ScrollingMonData_ProcessInput;
+    
+    sTutorMoveAndElevatorWindowId = AddWindow(&sAbilityDescriptionWindowTemplate); //reuse this
+    PutWindowTilemap(sTutorMoveAndElevatorWindowId);
+    DrawStdWindowFrame(sTutorMoveAndElevatorWindowId, FALSE);
+}
+
+void AbilityTutor(void)
+{
+    u8 i;
+    u8 taskId = CreateTask(Task_ShowScrollableAbilityNames, 8);
+    struct Task *task = &gTasks[taskId];
+    task->tAbilityTutor = gSpecialVar_0x8000;
+    
+    task->tTaskId = taskId;
+    task->tScrollMultiId = 0;   //unused
+
+    task->tMaxItemsOnScreen = 6;
+    task->tNumItems = NELEMS(sAbilityList);
+    
+    task->tKeepOpenAfterSelect = TRUE;
+    //task->tIgnoreBPress = FALSE;
+    //task->tExitLastItem = FALSE;
+    task->tTop = 1;
+    task->tLeft = 1;
+   
+    task->tHeight = 12; //default
+    task->tWidth = 7;   //default, updated in Task_ShowScrollableMultichoice 
+}
+
+// Undefine Scrollable Multichoice task data macros
+#undef tMaxItemsOnScreen  
+#undef tNumItems           
+#undef tLeft               
+#undef tTop                 
+#undef tWidth              
+#undef tHeight             
+#undef tKeepOpenAfterSelect 
+#undef tScrollOffset      
+#undef tSelectedRow   
+#undef tSelectedAbility     
+#undef tScrollMultiId       
+#undef tScrollArrowId       
+#undef tWindowId            
+#undef tListTaskId         
+#undef tTaskId    
+
