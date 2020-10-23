@@ -427,5 +427,6 @@ bool32 IsObjectEventSpriteInvisible(u8 objectEventId);
 void SetObjectEventSpriteGraphics(u8 objectEventId, u8 graphicsId);
 void SetObjectEventSpriteAnim(u8 objectEventId, u8 animNum);
 bool32 IsObjectEventSpriteAnimating(u8 objectEventId);
+bool8 IsObjectEventPaletteIndex(u8 paletteIndex);
 
 #endif //GUARD_EVENT_OBJECT_MOVEMENT_H

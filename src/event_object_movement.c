@@ -1795,7 +1795,7 @@ void ObjectEventSetGraphicsId(struct ObjectEvent *objectEvent, u8 graphicsId)
     sprite->pos1.x += 8;
     sprite->pos1.y += 16 + sprite->centerToCornerVecY;
     
-    //UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(graphicsInfo->paletteTag1)); //not paletteSlot in case of dynamic ow pals
+    UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(graphicsInfo->paletteTag1)); //not paletteSlot in case of dynamic ow pals
     if (objectEvent->trackedByCamera)
     {
         CameraObjectReset1();
