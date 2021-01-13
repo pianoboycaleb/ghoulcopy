@@ -7,7 +7,7 @@
 #include "battle_tower.h"
 #include "field_specials.h"
 #include "battle.h"
-#include "script_pokemon_util_80F87D8.h"
+#include "script_pokemon_util.h"
 #include "main.h"
 #include "window.h"
 #include "menu.h"
@@ -31,7 +31,6 @@
 #include "constants/battle_frontier.h"
 #include "constants/frontier_util.h"
 #include "constants/trainers.h"
-#include "constants/species.h"
 #include "constants/game_stat.h"
 #include "constants/moves.h"
 #include "constants/items.h"
@@ -71,7 +70,7 @@ static void RestoreHeldItems(void);
 static void SaveRecordBattle(void);
 static void BufferFrontierTrainerName(void);
 static void ResetSketchedMoves(void);
-static void SetFacilityBrainEventObject(void);
+static void SetFacilityBrainObjectEvent(void);
 static void ShowTowerResultsWindow(u8);
 static void ShowDomeResultsWindow(u8);
 static void ShowPalaceResultsWindow(u8);
@@ -94,7 +93,7 @@ static const u8 sFrontierBrainStreakAppearances[NUM_FRONTIER_FACILITIES][4] =
     [FRONTIER_FACILITY_PYRAMID] = {21,  70, 35, 0},
 };
 
-static const struct FrontierBrainMon sFrontierBrainsMons[][2][3] =
+static const struct FrontierBrainMon sFrontierBrainsMons[][2][FRONTIER_PARTY_SIZE] =
 {
     [FRONTIER_FACILITY_TOWER] =
     {
@@ -285,7 +284,7 @@ static const struct FrontierBrainMon sFrontierBrainsMons[][2][3] =
                 .fixedIV = 20,
                 .nature = NATURE_CALM,
                 .evs = {152, 0, 100, 0, 152, 106},
-                .moves = {MOVE_BODY_SLAM, MOVE_CONFUSE_RAY, MOVE_PSYCHIC, MOVE_FAINT_ATTACK},
+                .moves = {MOVE_BODY_SLAM, MOVE_CONFUSE_RAY, MOVE_PSYCHIC, MOVE_FEINT_ATTACK},
             },
             {
                 .species = SPECIES_SHEDINJA,
@@ -628,7 +627,7 @@ static void (* const sFrontierUtilFuncs[])(void) =
     [FRONTIER_UTIL_FUNC_SAVE_BATTLE]           = SaveRecordBattle,
     [FRONTIER_UTIL_FUNC_BUFFER_TRAINER_NAME]   = BufferFrontierTrainerName,
     [FRONTIER_UTIL_FUNC_RESET_SKETCH_MOVES]    = ResetSketchedMoves,
-    [FRONTIER_UTIL_FUNC_SET_BRAIN_OBJECT]      = SetFacilityBrainEventObject,
+    [FRONTIER_UTIL_FUNC_SET_BRAIN_OBJECT]      = SetFacilityBrainObjectEvent,
 };
 
 static const struct WindowTemplate sFrontierResultsWindowTemplate =
@@ -667,13 +666,13 @@ static const struct WindowTemplate sRankingHallRecordsWindowTemplate =
 // Second field - whether the character is female.
 static const u8 sFrontierBrainObjEventGfx[NUM_FRONTIER_FACILITIES][2] =
 {
-    [FRONTIER_FACILITY_TOWER]   = {EVENT_OBJ_GFX_ANABEL,  TRUE},
-    [FRONTIER_FACILITY_DOME]    = {EVENT_OBJ_GFX_TUCKER,  FALSE},
-    [FRONTIER_FACILITY_PALACE]  = {EVENT_OBJ_GFX_SPENSER, FALSE},
-    [FRONTIER_FACILITY_ARENA]   = {EVENT_OBJ_GFX_GRETA,   TRUE},
-    [FRONTIER_FACILITY_FACTORY] = {EVENT_OBJ_GFX_NOLAND,  FALSE},
-    [FRONTIER_FACILITY_PIKE]    = {EVENT_OBJ_GFX_LUCY,    TRUE},
-    [FRONTIER_FACILITY_PYRAMID] = {EVENT_OBJ_GFX_BRANDON, FALSE},
+    [FRONTIER_FACILITY_TOWER]   = {OBJ_EVENT_GFX_ANABEL,  TRUE},
+    [FRONTIER_FACILITY_DOME]    = {OBJ_EVENT_GFX_TUCKER,  FALSE},
+    [FRONTIER_FACILITY_PALACE]  = {OBJ_EVENT_GFX_SPENSER, FALSE},
+    [FRONTIER_FACILITY_ARENA]   = {OBJ_EVENT_GFX_GRETA,   TRUE},
+    [FRONTIER_FACILITY_FACTORY] = {OBJ_EVENT_GFX_NOLAND,  FALSE},
+    [FRONTIER_FACILITY_PIKE]    = {OBJ_EVENT_GFX_LUCY,    TRUE},
+    [FRONTIER_FACILITY_PYRAMID] = {OBJ_EVENT_GFX_BRANDON, FALSE},
 };
 
 const u16 gFrontierBannedSpecies[] =
@@ -1778,9 +1777,9 @@ void ResetWinStreaks(void)
     s32 battleMode, lvlMode;
 
     gSaveBlock2Ptr->frontier.winStreakActiveFlags = 0;
-    for (battleMode = 0; battleMode < 4; battleMode++)
+    for (battleMode = 0; battleMode < FRONTIER_MODE_COUNT; battleMode++)
     {
-        for (lvlMode = 0; lvlMode < 2; lvlMode++)
+        for (lvlMode = 0; lvlMode < FRONTIER_LVL_TENT; lvlMode++)
         {
             gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] = 0;
             if (battleMode < FRONTIER_MODE_MULTIS)
@@ -2214,9 +2213,9 @@ static void ResetSketchedMoves(void)
     }
 }
 
-static void SetFacilityBrainEventObject(void)
+static void SetFacilityBrainObjectEvent(void)
 {
-    SetFrontierBrainEventObjGfx(VarGet(VAR_FRONTIER_FACILITY));
+    SetFrontierBrainObjEventGfx(VarGet(VAR_FRONTIER_FACILITY));
 }
 
 // Battle Frontier Ranking Hall records.
@@ -2384,13 +2383,21 @@ void ClearRankingHallRecords(void)
 {
     s32 i, j, k;
 
+    // BUG: Passing 0 as a pointer instead of a pointer holding a value of 0.
+    #ifdef BUGFIX
+    u8 zero = 0;
+    #define ZERO (&zero)
+    #else
+    #define ZERO 0
+    #endif
+
     for (i = 0; i < HALL_FACILITIES_COUNT; i++)
     {
         for (j = 0; j < 2; j++)
         {
             for (k = 0; k < 3; k++)
             {
-                CopyTrainerId(gSaveBlock2Ptr->hallRecords1P[i][j][k].id, 0); // BUG: Passing 0 as a pointer instead of a pointer holding a value of 0.
+                CopyTrainerId(gSaveBlock2Ptr->hallRecords1P[i][j][k].id, ZERO); 
                 gSaveBlock2Ptr->hallRecords1P[i][j][k].name[0] = EOS;
                 gSaveBlock2Ptr->hallRecords1P[i][j][k].winStreak = 0;
             }
@@ -2401,8 +2408,8 @@ void ClearRankingHallRecords(void)
     {
         for (k = 0; k < 3; k++)
         {
-            CopyTrainerId(gSaveBlock2Ptr->hallRecords2P[j][k].id1, 0); // BUG: Passing 0 as a pointer instead of a pointer holding a value of 0.
-            CopyTrainerId(gSaveBlock2Ptr->hallRecords2P[j][k].id2, 0); // BUG: Passing 0 as a pointer instead of a pointer holding a value of 0.
+            CopyTrainerId(gSaveBlock2Ptr->hallRecords2P[j][k].id1, ZERO);
+            CopyTrainerId(gSaveBlock2Ptr->hallRecords2P[j][k].id2, ZERO);
             gSaveBlock2Ptr->hallRecords2P[j][k].name1[0] = EOS;
             gSaveBlock2Ptr->hallRecords2P[j][k].name2[0] = EOS;
             gSaveBlock2Ptr->hallRecords2P[j][k].winStreak = 0;
@@ -2478,7 +2485,7 @@ bool8 IsFrontierBrainFemale(void)
     return sFrontierBrainObjEventGfx[facility][1];
 }
 
-void SetFrontierBrainEventObjGfx_2(void)
+void SetFrontierBrainObjEventGfx_2(void)
 {
     s32 facility = VarGet(VAR_FRONTIER_FACILITY);
     VarSet(VAR_OBJ_GFX_ID_0, sFrontierBrainObjEventGfx[facility][0]);
@@ -2486,7 +2493,6 @@ void SetFrontierBrainEventObjGfx_2(void)
 
 #define FRONTIER_BRAIN_OTID 61226
 
-#ifdef NONMATCHING
 void CreateFrontierBrainPokemon(void)
 {
     s32 i, j;
@@ -2512,8 +2518,11 @@ void CreateFrontierBrainPokemon(void)
 
         do
         {
-            j = Random32();
-        } while (IsShinyOtIdPersonality(FRONTIER_BRAIN_OTID, j) || sFrontierBrainsMons[facility][symbol][i].nature != GetNatureFromPersonality(j));
+            do
+            {
+                j = Random32(); //should just be one while loop, but that doesn't match
+            } while (IsShinyOtIdPersonality(FRONTIER_BRAIN_OTID, j));
+        } while (sFrontierBrainsMons[facility][symbol][i].nature != GetNatureFromPersonality(j));
         CreateMon(&gEnemyParty[monPartyId],
                   sFrontierBrainsMons[facility][symbol][i].species,
                   monLevel,
@@ -2535,243 +2544,6 @@ void CreateFrontierBrainPokemon(void)
         monPartyId++;
     }
 }
-#else
-NAKED
-void CreateFrontierBrainPokemon(void)
-{
-    asm_unified("\n\
-    push {r4-r7,lr}\n\
-    mov r7, r10\n\
-    mov r6, r9\n\
-    mov r5, r8\n\
-    push {r5-r7}\n\
-    sub sp, 0x44\n\
-    ldr r0, =0x000040cf\n\
-    bl VarGet\n\
-    lsls r0, 16\n\
-    lsrs r0, 16\n\
-    str r0, [sp, 0x20]\n\
-    bl GetFronterBrainSymbol\n\
-    str r0, [sp, 0x24]\n\
-    ldr r0, [sp, 0x20]\n\
-    cmp r0, 0x1\n\
-    bne _081A4E44\n\
-    ldr r0, =0x000003fe\n\
-    bl TrainerIdToDomeTournamentId\n\
-    lsls r0, 16\n\
-    lsrs r0, 16\n\
-    bl GetDomeTrainerSelectedMons\n\
-    adds r4, r0, 0\n\
-    b _081A4E46\n\
-    .pool\n\
-_081A4E44:\n\
-    movs r4, 0x7\n\
-_081A4E46:\n\
-    bl ZeroEnemyPartyMons\n\
-    movs r1, 0\n\
-    str r1, [sp, 0x18]\n\
-    bl SetFacilityPtrsGetLevel\n\
-    lsls r0, 24\n\
-    lsrs r0, 24\n\
-    str r0, [sp, 0x1C]\n\
-    movs r2, 0\n\
-    str r2, [sp, 0x14]\n\
-_081A4E5C:\n\
-    movs r0, 0x1\n\
-    ands r0, r4\n\
-    asrs r4, 1\n\
-    str r4, [sp, 0x30]\n\
-    ldr r3, [sp, 0x14]\n\
-    adds r3, 0x1\n\
-    str r3, [sp, 0x28]\n\
-    cmp r0, 0\n\
-    bne _081A4E70\n\
-    b _081A4FC4\n\
-_081A4E70:\n\
-    ldr r4, [sp, 0x14]\n\
-    lsls r4, 2\n\
-    mov r9, r4\n\
-    ldr r0, [sp, 0x24]\n\
-    lsls r0, 4\n\
-    str r0, [sp, 0x38]\n\
-    ldr r1, [sp, 0x20]\n\
-    lsls r1, 4\n\
-    str r1, [sp, 0x34]\n\
-    ldr r2, [sp, 0x1C]\n\
-    lsls r2, 24\n\
-    str r2, [sp, 0x3C]\n\
-    ldr r3, [sp, 0x18]\n\
-    adds r3, 0x1\n\
-    str r3, [sp, 0x2C]\n\
-    ldr r0, [sp, 0x14]\n\
-    add r0, r9\n\
-    lsls r0, 2\n\
-    mov r8, r0\n\
-_081A4E96:\n\
-    bl Random\n\
-    adds r4, r0, 0\n\
-    bl Random\n\
-    lsls r4, 16\n\
-    lsrs r7, r4, 16\n\
-    lsls r0, 16\n\
-    orrs r7, r0\n\
-    ldr r0, =0x0000ef2a\n\
-    adds r1, r7, 0\n\
-    bl IsShinyOtIdPersonality\n\
-    lsls r0, 24\n\
-    cmp r0, 0\n\
-    bne _081A4E96\n\
-    ldr r4, [sp, 0x38]\n\
-    ldr r1, [sp, 0x24]\n\
-    subs r0, r4, r1\n\
-    lsls r5, r0, 2\n\
-    mov r2, r8\n\
-    adds r4, r2, r5\n\
-    ldr r3, [sp, 0x34]\n\
-    ldr r1, [sp, 0x20]\n\
-    subs r0, r3, r1\n\
-    lsls r6, r0, 3\n\
-    adds r4, r6\n\
-    ldr r2, =sFrontierBrainsMons\n\
-    adds r4, r2\n\
-    adds r0, r7, 0\n\
-    bl GetNatureFromPersonality\n\
-    ldrb r1, [r4, 0x5]\n\
-    lsls r0, 24\n\
-    lsrs r0, 24\n\
-    cmp r1, r0\n\
-    bne _081A4E96\n\
-    ldr r4, [sp, 0x18]\n\
-    movs r0, 0x64\n\
-    adds r3, r4, 0\n\
-    muls r3, r0\n\
-    mov r8, r3\n\
-    ldr r1, =gEnemyParty\n\
-    add r1, r8\n\
-    mov r10, r1\n\
-    ldr r4, [sp, 0x14]\n\
-    add r4, r9\n\
-    lsls r4, 2\n\
-    adds r0, r4, r5\n\
-    adds r0, r6\n\
-    ldr r2, =sFrontierBrainsMons\n\
-    adds r0, r2\n\
-    ldrh r1, [r0]\n\
-    ldr r3, [sp, 0x3C]\n\
-    lsrs r2, r3, 24\n\
-    ldrb r3, [r0, 0x4]\n\
-    movs r0, 0x1\n\
-    str r0, [sp]\n\
-    str r7, [sp, 0x4]\n\
-    str r0, [sp, 0x8]\n\
-    ldr r0, =0x0000ef2a\n\
-    str r0, [sp, 0xC]\n\
-    mov r0, r10\n\
-    bl CreateMon\n\
-    ldr r0, =sFrontierBrainsMons\n\
-    adds r5, r0\n\
-    adds r5, r6, r5\n\
-    adds r4, r5, r4\n\
-    adds r4, 0x2\n\
-    mov r0, r10\n\
-    movs r1, 0xC\n\
-    adds r2, r4, 0\n\
-    bl SetMonData\n\
-    movs r7, 0\n\
-    mov r6, r8\n\
-    ldr r3, =gEnemyParty\n\
-_081A4F32:\n\
-    adds r1, r7, 0\n\
-    adds r1, 0x1A\n\
-    ldr r0, [sp, 0x14]\n\
-    add r0, r9\n\
-    lsls r4, r0, 2\n\
-    adds r2, r5, r4\n\
-    adds r0, r7, 0x6\n\
-    adds r2, r0\n\
-    adds r0, r6, r3\n\
-    str r3, [sp, 0x40]\n\
-    bl SetMonData\n\
-    adds r7, 0x1\n\
-    ldr r3, [sp, 0x40]\n\
-    cmp r7, 0x5\n\
-    ble _081A4F32\n\
-    movs r1, 0xFF\n\
-    add r0, sp, 0x10\n\
-    strb r1, [r0]\n\
-    movs r7, 0\n\
-    ldr r1, [sp, 0x18]\n\
-    movs r2, 0x64\n\
-    adds r6, r1, 0\n\
-    muls r6, r2\n\
-    ldr r3, =sFrontierBrainsMons + 0xC\n\
-    mov r8, r3\n\
-    ldr r3, =gEnemyParty\n\
-    adds r5, r4, 0\n\
-_081A4F6A:\n\
-    ldr r4, [sp, 0x38]\n\
-    ldr r0, [sp, 0x24]\n\
-    subs r1, r4, r0\n\
-    lsls r1, 2\n\
-    adds r1, r5, r1\n\
-    ldr r2, [sp, 0x34]\n\
-    ldr r4, [sp, 0x20]\n\
-    subs r0, r2, r4\n\
-    lsls r0, 3\n\
-    adds r1, r0\n\
-    add r1, r8\n\
-    ldrh r4, [r1]\n\
-    lsls r2, r7, 24\n\
-    lsrs r2, 24\n\
-    adds r0, r6, r3\n\
-    adds r1, r4, 0\n\
-    str r3, [sp, 0x40]\n\
-    bl SetMonMoveSlot\n\
-    ldr r3, [sp, 0x40]\n\
-    cmp r4, 0xDA\n\
-    bne _081A4F9C\n\
-    movs r1, 0\n\
-    add r0, sp, 0x10\n\
-    strb r1, [r0]\n\
-_081A4F9C:\n\
-    adds r5, 0x2\n\
-    adds r7, 0x1\n\
-    cmp r7, 0x3\n\
-    ble _081A4F6A\n\
-    ldr r0, [sp, 0x18]\n\
-    movs r1, 0x64\n\
-    adds r4, r0, 0\n\
-    muls r4, r1\n\
-    ldr r0, =gEnemyParty\n\
-    adds r4, r0\n\
-    adds r0, r4, 0\n\
-    movs r1, 0x20\n\
-    add r2, sp, 0x10\n\
-    bl SetMonData\n\
-    adds r0, r4, 0\n\
-    bl CalculateMonStats\n\
-    ldr r2, [sp, 0x2C]\n\
-    str r2, [sp, 0x18]\n\
-_081A4FC4:\n\
-    ldr r4, [sp, 0x30]\n\
-    ldr r3, [sp, 0x28]\n\
-    str r3, [sp, 0x14]\n\
-    cmp r3, 0x2\n\
-    bgt _081A4FD0\n\
-    b _081A4E5C\n\
-_081A4FD0:\n\
-    add sp, 0x44\n\
-    pop {r3-r5}\n\
-    mov r8, r3\n\
-    mov r9, r4\n\
-    mov r10, r5\n\
-    pop {r4-r7}\n\
-    pop {r0}\n\
-    bx r0\n\
-    .pool\n\
-");
-}
-#endif
 
 u16 GetFrontierBrainMonSpecies(u8 monId)
 {
@@ -2781,7 +2553,7 @@ u16 GetFrontierBrainMonSpecies(u8 monId)
     return sFrontierBrainsMons[facility][symbol][monId].species;
 }
 
-void SetFrontierBrainEventObjGfx(u8 facility)
+void SetFrontierBrainObjEventGfx(u8 facility)
 {
     gTrainerBattleOpponent_A = TRAINER_FRONTIER_BRAIN;
     VarSet(VAR_OBJ_GFX_ID_0, sFrontierBrainObjEventGfx[facility][0]);
