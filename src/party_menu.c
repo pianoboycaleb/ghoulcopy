@@ -6495,4 +6495,3 @@ static void CursorCb_AbilitySetter(u8 taskId)
     gTasks[taskId].data[0] = 0xFF;
     gTasks[taskId].func = Task_HandleAbilitySetter;
 }
-
