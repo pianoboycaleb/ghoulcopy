@@ -1393,6 +1393,7 @@ static u8 TrySetupObjectEventSprite(struct ObjectEventTemplate *objectEventTempl
     if (paletteSlot == 0)
     {
         LoadPlayerObjectReflectionPalette(graphicsInfo->paletteTag, 0);
+        UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(graphicsInfo->paletteTag));
     }
     else if (paletteSlot == 10)
     {
@@ -1810,7 +1811,7 @@ void ObjectEventSetGraphicsId(struct ObjectEvent *objectEvent, u8 graphicsId)
     sprite->pos1.x += 8;
     sprite->pos1.y += 16 + sprite->centerToCornerVecY;
     
-    UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(graphicsInfo->paletteTag1)); //not paletteSlot in case of dynamic ow pals
+    UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(graphicsInfo->paletteTag)); //not paletteSlot in case of dynamic ow pals
     if (objectEvent->trackedByCamera)
     {
         CameraObjectReset1();
