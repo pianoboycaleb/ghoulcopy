@@ -82,6 +82,11 @@ void RunBattleScriptCommands(void);
 bool8 TryRunFromBattle(u8 battlerId);
 void SpecialStatusesClear(void);
 
+// expanded move names
+void DestroyTypeIcon(void);
+void LoadTypeIcon(u8 type);
+void SetTypeIconPal(u8 typeId, u8 spriteId);
+
 extern struct UnknownPokemonStruct4 gMultiPartnerParty[MULTI_PARTY_SIZE];
 
 extern const struct SpriteTemplate gUnknown_0831AC88;

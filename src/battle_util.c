@@ -80,6 +80,7 @@ void HandleAction_UseMove(void)
     u8 side;
     u8 var = 4;
 
+    DestroyTypeIcon();
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
 
     if (*(&gBattleStruct->field_91) & gBitTable[gBattlerAttacker])
