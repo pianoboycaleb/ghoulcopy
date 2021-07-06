@@ -3676,10 +3676,16 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
         retVal = boxMon->friendship;
         break;
     case MON_DATA_MOVE1:
+        retVal = boxMon->move1;
+        break;
     case MON_DATA_MOVE2:
+        retVal = boxMon->move2;
+        break;
     case MON_DATA_MOVE3:
+        retVal = boxMon->move3;
+        break;
     case MON_DATA_MOVE4:
-        retVal = boxMon->moves[field - MON_DATA_MOVE1];
+        retVal = boxMon->move4;
         break;
     case MON_DATA_PP1:
     case MON_DATA_PP2:
@@ -3839,10 +3845,10 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
             while (moves[i] != MOVES_COUNT)
             {
                 u16 move = moves[i];
-                if (boxMon->moves[0] == move
-                 || boxMon->moves[1] == move
-                 || boxMon->moves[2] == move
-                 || boxMon->moves[3] == move)
+                if (boxMon->move1 == move
+                 || boxMon->move2 == move
+                 || boxMon->move3 == move
+                 || boxMon->move4 == move)
                     retVal |= gBitTable[i];
                 i++;
             }
@@ -4011,7 +4017,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         break;
     case MON_DATA_SPECIES:
     {
-        SET16(boxMon->species);
+        SET32(boxMon->species);
         if (boxMon->species)
             boxMon->hasSpecies = 1;
         else
@@ -4019,7 +4025,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         break;
     }
     case MON_DATA_HELD_ITEM:
-        SET16(boxMon->heldItem);
+        SET32(boxMon->heldItem);
         break;
     case MON_DATA_EXP:
         SET32(boxMon->experience);
@@ -4031,10 +4037,16 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         SET8(boxMon->friendship);
         break;
     case MON_DATA_MOVE1:
+        SET16(boxMon->move1);
+        break;
     case MON_DATA_MOVE2:
+        SET16(boxMon->move2);
+        break;
     case MON_DATA_MOVE3:
+        SET16(boxMon->move3);
+        break;
     case MON_DATA_MOVE4:
-        SET16(boxMon->moves[field - MON_DATA_MOVE1]);
+        SET16(boxMon->move4);
         break;
     case MON_DATA_PP1:
     case MON_DATA_PP2:
@@ -4086,7 +4098,7 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         break;
     case MON_DATA_MET_LEVEL:
     {
-        u8 metLevel = *data;
+        u32 metLevel = *data;
         boxMon->metLevel = metLevel;
         break;
     }
@@ -4100,25 +4112,25 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         break;
     }
     case MON_DATA_OT_GENDER:
-        SET8(boxMon->otGender);
+        SET32(boxMon->otGender);
         break;
     case MON_DATA_HP_IV:
-        SET8(boxMon->hpIV);
+        SET32(boxMon->hpIV);
         break;
     case MON_DATA_ATK_IV:
-        SET8(boxMon->attackIV);
+        SET32(boxMon->attackIV);
         break;
     case MON_DATA_DEF_IV:
-        SET8(boxMon->defenseIV);
+        SET32(boxMon->defenseIV);
         break;
     case MON_DATA_SPEED_IV:
-        SET8(boxMon->speedIV);
+        SET32(boxMon->speedIV);
         break;
     case MON_DATA_SPATK_IV:
-        SET8(boxMon->spAttackIV);
+        SET32(boxMon->spAttackIV);
         break;
     case MON_DATA_SPDEF_IV:
-        SET8(boxMon->spDefenseIV);
+        SET32(boxMon->spDefenseIV);
         break;
     case MON_DATA_IS_EGG:
         SET8(boxMon->isEgg);

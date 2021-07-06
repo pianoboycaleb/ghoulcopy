@@ -18,32 +18,40 @@ struct BoxPokemon
              u8 markings:4; // 15 combinations as per sAnims_MarkingCombo
     /*0x14*/ u8 otName[PLAYER_NAME_LENGTH];
     /*0x1B*/ u8 metLocation;    // better to not limit the number of map sections. this is actually used for friendship growth, too
-    /*0x1C*/ u16 species:11;    // up to 2047 species. could probably go down to 10 bits...
-    /*0x1C*/ u16 heldItem:10;   // up to 1023 items. could probably be 9 bits if hold items are limited to IDs below 511
-             u16 metLevel:7;
-             u16 metGame:4;
-    /*0x1E*/ u8 ppBonuses;
-    /*0x1F*/ u8 friendship;
-    /*0x20*/ u32 experience;
-    /*0x24*/ u32 hpIV:5;        //1-5 
-             u32 attackIV:5;    //6-10
-             u32 defenseIV:5;   //11-15
-             u32 speedIV:5;     //16-20
-             u32 spAttackIV:5;  //21-25
-             u32 spDefenseIV:5; //26-30
-             u32 abilityNum:2;  //31-32. assumes hidden abilities
-    /*0x28*/ u8 pokeball:7;
-             u8 otGender:1;
-    /*0x29*/ u8 hpEV;
-    /*0x2A*/ u8 attackEV;
-    /*0x2B*/ u8 defenseEV;
-    /*0x2C*/ u8 speedEV;
-    /*0x2D*/ u8 spAttackEV;
-    /*0x2E*/ u8 spDefenseEV;
-    /*0x2F*/ u8 unused2F;
-    /*0x30*/ u16 moves[MAX_MON_MOVES];
-    /*0x3C*/ u8 pp[MAX_MON_MOVES];
-}; /* size = 0x44 (60) bytes */
+    /*0x1C*/ u32 species:11;    // up to 2047 species. could probably go down to 10 bits...
+             u32 heldItem:10;   // up to 1023 items. could probably be 9 bits if hold items are limited to IDs below 511
+             u32 metLevel:7;
+             u32 metGame:4;
+    /*0x20*/ u32 experience:21;
+             u32 spAttackIV:5;
+             u32 spDefenseIV:5;
+             u32 otGender:1;
+    /*0x24*/ u32 move1:10;  // 1023 moves
+             u32 move2:10;  // bits 11-20
+             u32 move3:10;  // bits 21-30
+             u32 unused24:2;
+    /*0x28*/ u16 move4:10;  // bits 31-40
+             u16 hpIV:5;        // 41-45 
+             u16 unused22:1;    
+    /*0x2A*/ u16 attackIV:5;    // 46-50
+             u16 defenseIV:5;   // 51-55
+             u16 speedIV:5;     // 56-60
+             u16 unused2A:1;
+    /*0x2C*/ u8 ppBonuses;
+    /*0x2D*/ u8 friendship;
+    /*0x2E*/ u8 pokeball:6;
+             u8 abilityNum:2;
+    /*0x2F*/ u8 hpEV;
+    /*0x30*/ u8 attackEV;
+    /*0x31*/ u8 defenseEV;
+    /*0x32*/ u8 speedEV;
+    /*0x33*/ u8 spAttackEV;
+    /*0x34*/ u8 spDefenseEV; 
+    /*0x35*/ u8 pp1:6;
+             u8 pp2:6;
+             u8 pp3:6;
+             u8 pp4:6;
+}; /* size = 0x3C (60) bytes */
 
 // old BoxMon struct with subtstructs removed for reference/comparison.
 struct BoxPokemonOld

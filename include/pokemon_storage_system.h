@@ -1,7 +1,7 @@
 #ifndef GUARD_POKEMON_STORAGE_SYSTEM_H
 #define GUARD_POKEMON_STORAGE_SYSTEM_H
 
-#define TOTAL_BOXES_COUNT       18
+#define TOTAL_BOXES_COUNT       19
 #define IN_BOX_ROWS             5 // Number of rows, 6 Pokémon per row
 #define IN_BOX_COLUMNS          6 // Number of columns, 5 Pokémon per column
 #define IN_BOX_COUNT            (IN_BOX_ROWS * IN_BOX_COLUMNS)
@@ -15,17 +15,15 @@ ROWS        0   1   2   3   4   5
             24  25  26  27  28  29
 */
 
-// original boxes size: 80 * 14 * 30 = 33600 (0x8340) bytes
-// new: 33600 / (60 * 30) = 18 boxes = 32400 bytes
-// room for 20 more mons, but not a full box :(
 struct PokemonStorage
 {
     /*0x0000*/ u8 currentBox;
-    /*0x0001*/ struct BoxPokemon boxes[TOTAL_BOXES_COUNT][IN_BOX_COUNT];    // 18 boxes * 60 bytes per mon * 30 mons per box = 32400 bytes
-    /*0x7E91*/ u8 boxNames[TOTAL_BOXES_COUNT][9];   // 162 bytes
-    /*0x7F32*/ u8 boxWallpapers[TOTAL_BOXES_COUNT];
-    // 1168 bytes free
-}; /* total size 0x83D0 (33744) */
+    /*0x0001*/ struct BoxPokemon boxes[TOTAL_BOXES_COUNT][IN_BOX_COUNT];    // 19 boxes * 60 bytes per mon * 30 mons per box = 34200 bytes
+    /*0x859C*/ u8 boxNames[TOTAL_BOXES_COUNT][9];
+    /*0x8647*/ u8 boxWallpapers[TOTAL_BOXES_COUNT];
+    /*0x865A*/ // 35712 - 34394 = 1318 bytes free
+};
+// 9 chunks * 0xF80 = max size of 35712 bytes
 
 extern struct PokemonStorage *gPokemonStoragePtr;
 
