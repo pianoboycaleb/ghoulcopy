@@ -2736,7 +2736,11 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 }
                 break;
             case B_TXT_PARTNER_CLASS:
-                toCpy = gTrainerClassNames[GetFrontierOpponentClass(gPartnerTrainerId)];
+                if (gTrainers[gPartnerTrainerId].trainerPic == TRAINER_PIC_MAY
+                  || gTrainers[gPartnerTrainerId].trainerPic == TRAINER_PIC_BRENDAN)
+                    toCpy = gSaveBlock2Ptr->rivalName;
+                else
+                    toCpy = gTrainerClassNames[GetFrontierOpponentClass(gPartnerTrainerId)];
                 break;
             case B_TXT_PARTNER_NAME:
                 GetFrontierTrainerName(text, gPartnerTrainerId);
