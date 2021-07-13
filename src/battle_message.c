@@ -2817,15 +2817,19 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 }
                 break;
             case B_TXT_PARTNER_CLASS:
-                if (gTrainers[gPartnerTrainerId].trainerPic == TRAINER_PIC_MAY
-                  || gTrainers[gPartnerTrainerId].trainerPic == TRAINER_PIC_BRENDAN)
-                    toCpy = gSaveBlock2Ptr->rivalName;
-                else
-                    toCpy = gTrainerClassNames[GetFrontierOpponentClass(gPartnerTrainerId)];
+                toCpy = gTrainerClassNames[GetFrontierOpponentClass(gPartnerTrainerId)];
                 break;
             case B_TXT_PARTNER_NAME:
-                GetFrontierTrainerName(text, gPartnerTrainerId);
-                toCpy = text;
+                if (gPartnerSpriteId == TRAINER_BACK_PIC_BRENDAN
+                  || gPartnerSpriteId == TRAINER_BACK_PIC_MAY)
+                {
+                    toCpy = gSaveBlock2Ptr->rivalName;
+                }
+                else
+                {
+                    GetFrontierTrainerName(text, gPartnerTrainerId);
+                    toCpy = text;
+                }
                 break;
             case B_TXT_RIVAL_NAME:
                 toCpy = gSaveBlock2Ptr->rivalName;
