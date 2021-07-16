@@ -73,7 +73,7 @@ static const struct WindowTemplate sUnknown_086253E8[] =
 
 static const u8 sPlayerNameTextColors[] =
 {
-    TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GREY, TEXT_COLOR_LIGHT_GREY
+    TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY
 };
 
 static const u8 sEmptyItemName[] = _("");
@@ -253,7 +253,7 @@ static u8 sub_81D1D34(u8 a0)
     return sUnknown_0203CF48[a0];
 }
 
-static void sub_81D1D44(u8 windowId, s32 itemId, u8 y)
+static void sub_81D1D44(u8 windowId, u32 itemId, u8 y)
 {
     u8 buffer[30];
     u16 length;
@@ -840,7 +840,7 @@ void MoveRelearnerPrintText(u8 *str)
     FillWindowPixelBuffer(3, PIXEL_FILL(1));
     gTextFlags.canABSpeedUpPrint = TRUE;
     speed = GetPlayerTextSpeedDelay();
-    AddTextPrinterParameterized2(3, 1, str, speed, NULL, TEXT_COLOR_DARK_GREY, TEXT_COLOR_WHITE, 3);
+    AddTextPrinterParameterized2(3, 1, str, speed, NULL, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_WHITE, 3);
 }
 
 bool16 MoveRelearnerRunTextPrinters(void)
