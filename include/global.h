@@ -506,6 +506,10 @@ struct Follower
     /*0x15*/ u8 locked;
 }; /* size = 0x18 */
 
+// quest menu
+#include "constants/quests.h"
+#define SIDE_QUEST_FLAGS_COUNT     ((SIDE_QUEST_COUNT / 8) + ((SIDE_QUEST_COUNT % 8) ? 1 : 0))
+
 struct SaveBlock2
 {
     /*0x00*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
@@ -542,8 +546,11 @@ struct SaveBlock2
     #endif
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
+    /*0x0F2C*/ u8 unlockedQuests[SIDE_QUEST_FLAGS_COUNT];
+    /*0x????*/ u8 completedQuests[SIDE_QUEST_FLAGS_COUNT];
+    /*0x????*/ u8 activeQuest;
     /*0xF2C*/ struct Follower follower;
-}; // sizeof=0xF2C
+}; 
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;
 
@@ -922,6 +929,7 @@ struct MysteryGiftSave
     u32 trainerIds[2][5]; // Saved ids for 10 trainers, 5 each for battles and trades 
 }; // 0x36C 0x3598
 
+
 // For external event data storage. The majority of these may have never been used.
 // In Emerald, the only known used fields are the PokeCoupon and BoxRS ones, but hacking the distribution discs allows Emerald to receive events and set the others
 struct ExternalEventData
@@ -1079,7 +1087,7 @@ struct SaveBlock1
     /*0x3D64*/ struct SaveTrainerHill trainerHill;  //12 bytes
     #endif
     /*0x3D70*/ struct WaldaPhrase waldaPhrase;
-    // sizeof: 0x3D88
+    /* size = 0x3D88 */
 };
 
 extern struct SaveBlock1* gSaveBlock1Ptr;
