@@ -550,7 +550,8 @@ struct SaveBlock2
     /*0x????*/ u8 completedQuests[SIDE_QUEST_FLAGS_COUNT];
     /*0x????*/ u8 activeQuest;
     /*0xF2C*/ struct Follower follower;
-}; 
+    /*0xF2C*/ bool8 autoRun;
+}; // sizeof=0xF2C
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;
 
