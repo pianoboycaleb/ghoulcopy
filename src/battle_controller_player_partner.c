@@ -1526,7 +1526,7 @@ static void PlayerPartnerHandleChooseMove(void)
     {
         gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
         if (gAbsentBattlerFlags & gBitTable[gBattlerTarget])
-            gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+            gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
     }
 
     if (ShouldUseZMove(gActiveBattler, gBattlerTarget, moveInfo->moves[chosenMoveId]))
@@ -1553,7 +1553,7 @@ static void PlayerPartnerHandleChoosePokemon(void)
     if (chosenMonId == 6) // just switch to the next mon
     {
         u8 playerMonIdentity = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
-        u8 selfIdentity = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
+        u8 selfIdentity = GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE);
 
         for (chosenMonId = 3; chosenMonId < 6; chosenMonId++)
         {

@@ -2725,7 +2725,7 @@ static void LoadTradeMonPic(u8 whichParty, u8 state)
     if (whichParty == TRADE_PARTNER)
     {
         mon = &gEnemyParty[gSelectedTradeMonPositions[TRADE_PARTNER] % PARTY_SIZE];
-        pos = B_POSITION_OPPONENT_RIGHT;
+        pos = B_POSITION_OPPONENT_MIDDLE;
     }
 
     switch (state)
@@ -3727,7 +3727,7 @@ static bool8 AnimateTradeSequenceCable(void)
     case TS_STATE_POKEBALL_ARRIVE_WAIT:
         if (gSprites[sTradeData->bouncingPokeballSpriteId].callback == SpriteCallbackDummy)
         {
-            HandleLoadSpecialPokePic(TRUE, gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_RIGHT], sTradeData->monSpecies[TRADE_PARTNER], sTradeData->monPersonalities[TRADE_PARTNER]);
+            HandleLoadSpecialPokePic(TRUE, gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_MIDDLE], sTradeData->monSpecies[TRADE_PARTNER], sTradeData->monPersonalities[TRADE_PARTNER]);
             sTradeData->state++;
         }
         break;
@@ -4225,7 +4225,7 @@ static bool8 AnimateTradeSequenceWireless(void)
         if (gSprites[sTradeData->bouncingPokeballSpriteId].callback == SpriteCallbackDummy)
         {
             HandleLoadSpecialPokePic(TRUE,
-                                      gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_RIGHT],
+                                      gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_MIDDLE],
                                       sTradeData->monSpecies[TRADE_PARTNER],
                                       sTradeData->monPersonalities[TRADE_PARTNER]);
             sTradeData->state++;

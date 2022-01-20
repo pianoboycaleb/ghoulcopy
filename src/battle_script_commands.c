@@ -6052,7 +6052,7 @@ bool32 CanBattlerSwitch(u32 battlerId)
         party = gEnemyParty;
 
         lastMonId = 0;
-        if (battlerId == B_POSITION_OPPONENT_RIGHT)
+        if (battlerId == B_POSITION_OPPONENT_MIDDLE)
             lastMonId = PARTY_SIZE / 2;
 
         for (i = lastMonId; i < lastMonId + (PARTY_SIZE / 2); i++)
@@ -6073,7 +6073,7 @@ bool32 CanBattlerSwitch(u32 battlerId)
             battlerIn1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
 
             if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
-                battlerIn2 = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+                battlerIn2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
             else
                 battlerIn2 = battlerIn1;
 
@@ -6085,7 +6085,7 @@ bool32 CanBattlerSwitch(u32 battlerId)
             battlerIn1 = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
 
             if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
-                battlerIn2 = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
+                battlerIn2 = GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE);
             else
                 battlerIn2 = battlerIn1;
 
@@ -6736,7 +6736,7 @@ static void Cmd_handlelearnnewmove(void)
         }
         if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
         {
-            gActiveBattler = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
+            gActiveBattler = GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE);
             if (gBattlerPartyIndexes[gActiveBattler] == gBattleStruct->expGetterMonId
                 && !(gBattleMons[gActiveBattler].status2 & STATUS2_TRANSFORMED))
             {
@@ -12409,9 +12409,9 @@ static void Cmd_jumpifnopursuitswitchdmg(void)
     else
     {
         if (GetBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER)
-            gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+            gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
         else
-            gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
+            gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE);
     }
 
     if (gChosenActionByBattler[gBattlerTarget] == B_ACTION_USE_MOVE

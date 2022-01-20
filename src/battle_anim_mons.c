@@ -1543,9 +1543,9 @@ u32 GetBattleMonSpritePalettesMask(u8 playerLeft, u8 playerRight, u8 opponentLef
         }
         if (playerRight)
         {
-            if (IsBattlerSpriteVisible(GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT)))
+            if (IsBattlerSpriteVisible(GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE)))
             {
-                shift = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT) + 16;
+                shift = GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE) + 16;
                 selectedPalettes |= 1 << shift;
             }
         }
@@ -1559,9 +1559,9 @@ u32 GetBattleMonSpritePalettesMask(u8 playerLeft, u8 playerRight, u8 opponentLef
         }
         if (opponentRight)
         {
-            if (IsBattlerSpriteVisible(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)))
+            if (IsBattlerSpriteVisible(GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE)))
             {
-                shift = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT) + 16;
+                shift = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE) + 16;
                 selectedPalettes |= 1 << shift;
             }
         }
@@ -2122,7 +2122,7 @@ u8 GetBattlerSpriteSubpriority(u8 battlerId)
         position = GetBattlerPosition(battlerId);
         if (position == B_POSITION_PLAYER_LEFT)
             subpriority = 30;
-        else if (position == B_POSITION_PLAYER_RIGHT)
+        else if (position == B_POSITION_PLAYER_MIDDLE)
             subpriority = 20;
         else if (position == B_POSITION_OPPONENT_LEFT)
             subpriority = 40;
@@ -2139,7 +2139,7 @@ u8 GetBattlerSpriteBGPriority(u8 battlerId)
 
     if (IsContest())
         return 2;
-    else if (position == B_POSITION_PLAYER_LEFT || position == B_POSITION_OPPONENT_RIGHT)
+    else if (position == B_POSITION_PLAYER_LEFT || position == B_POSITION_OPPONENT_MIDDLE)
         return GetAnimBgAttribute(2, BG_ANIM_PRIORITY);
     else
         return GetAnimBgAttribute(1, BG_ANIM_PRIORITY);
@@ -2150,7 +2150,7 @@ u8 GetBattlerSpriteBGPriorityRank(u8 battlerId)
     if (!IsContest())
     {
         u8 position = GetBattlerPosition(battlerId);
-        if (position == B_POSITION_PLAYER_LEFT || position == B_POSITION_OPPONENT_RIGHT)
+        if (position == B_POSITION_PLAYER_LEFT || position == B_POSITION_OPPONENT_MIDDLE)
             return 2;
         else
             return 1;

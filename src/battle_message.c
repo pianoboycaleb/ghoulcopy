@@ -3008,6 +3008,7 @@ static void GetBattlerNick(u32 battlerId, u8 *dst)
         }                                                               \
     }                                                                   \
     GetBattlerNick(battlerId, text);                                    \
+    StringCopy_Number(text, battlerId); \
     toCpy = text;
 
 static const u8 *BattleStringGetOpponentNameByTrainerId(u16 trainerId, u8 *text, u8 multiplayerId, u8 battlerId)
@@ -3214,23 +3215,19 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 toCpy = text;
                 break;
             case B_TXT_PLAYER_MON2_NAME: // second player poke name
-                GetBattlerNick(GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT), text);
+                GetBattlerNick(GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE), text);
                 toCpy = text;
                 break;
             case B_TXT_OPPONENT_MON2_NAME: // second enemy poke name
-                GetBattlerNick(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT), text);
+                GetBattlerNick(GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE), text);
                 toCpy = text;
                 break;
             case B_TXT_PLAYER_MON3_NAME: // third player poke name
-                GetMonData(&gPlayerParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE)]],
-                           MON_DATA_NICKNAME, text);
-                StringGet_Nickname(text);
+                GetBattlerNick(GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT), text);
                 toCpy = text;
                 break;
             case B_TXT_OPPONENT_MON3_NAME: // third enemy poke name
-                GetMonData(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE)]],
-                           MON_DATA_NICKNAME, text);
-                StringGet_Nickname(text);
+                GetBattlerNick(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT), text);
                 toCpy = text;
                 break;
             case B_TXT_LINK_PLAYER_MON1_NAME: // link first player poke name

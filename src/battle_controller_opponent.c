@@ -1626,7 +1626,7 @@ static void OpponentHandleChooseMove(void)
                     {
                         gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
                         if (gAbsentBattlerFlags & gBitTable[gBattlerTarget])
-                            gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
+                            gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE);
                     }
                     if (ShouldUseZMove(gActiveBattler, gBattlerTarget, chosenMove))
                         QueueZMove(gActiveBattler, chosenMove);
@@ -1726,7 +1726,7 @@ static void OpponentHandleChoosePokemon(void)
             else
             {
                 battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-                battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+                battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
                 pokemonInBattle = 2;
 
             }
