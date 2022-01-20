@@ -3046,7 +3046,7 @@ const struct SpriteTemplate gBattlerSpriteTemplates[MAX_BATTLERS_COUNT] =
         .paletteTag = 0,
         .oam = &gOamData_BattleSpritePlayerSide,
         .anims = NULL,
-        .images = gBattlerPicTable_PlayerRight,
+        .images = gBattlerPicTable_PlayerMiddle,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_BattleSpriteStartSlideLeft,
     },
@@ -3055,7 +3055,7 @@ const struct SpriteTemplate gBattlerSpriteTemplates[MAX_BATTLERS_COUNT] =
         .paletteTag = 0,
         .oam = &gOamData_BattleSpriteOpponentSide,
         .anims = NULL,
-        .images = gBattlerPicTable_OpponentRight,
+        .images = gBattlerPicTable_OpponentMiddle,
         .affineAnims = gAffineAnims_BattleSpriteOpponentSide,
         .callback = SpriteCB_WildMon
     },
