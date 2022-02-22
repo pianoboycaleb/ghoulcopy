@@ -15,6 +15,8 @@
 #include "constants/pokemon.h"
 #include "constants/easy_chat.h"
 
+#include "constants/em_maps.h"
+
 // Prevent cross-jump optimization.
 #define BLOCK_CROSS_JUMP asm("");
 

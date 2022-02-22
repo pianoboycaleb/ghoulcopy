@@ -1014,7 +1014,7 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
 {
     if (!FlagGet(FLAG_SYS_WEATHER_CTRL))
         return FALSE;
-    if (warp->mapGroup == 0)
+    /*if (warp->mapGroup == 0)
     {
         switch (warp->mapNum)
         {
@@ -1039,7 +1039,7 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
                 return TRUE;
             }
         }
-    }
+    }*/
     return FALSE;
 }
 

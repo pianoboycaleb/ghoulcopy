@@ -453,6 +453,7 @@ string generate_layout_headers_text(Json layouts_data) {
     text << "@\n@ DO NOT MODIFY THIS FILE! It is auto-generated from data/layouts/layouts.json\n@\n\n";
 
     for (auto &layout : layouts_data["layouts"].array_items()) {
+        if (layout == Json::object()) continue;
         string border_label = layout["name"].string_value() + "_Border";
         string blockdata_label = layout["name"].string_value() + "_Blockdata";
         text << border_label << "::\n"
@@ -466,7 +467,10 @@ string generate_layout_headers_text(Json layouts_data) {
              << "\t.4byte " << border_label << "\n"
              << "\t.4byte " << blockdata_label << "\n"
              << "\t.4byte " << layout["primary_tileset"].string_value() << "\n"
-             << "\t.4byte " << layout["secondary_tileset"].string_value() << "\n\n";
+             << "\t.4byte " << layout["secondary_tileset"].string_value() << "\n"
+             << "\t.byte " << layout["border_width"].int_value() << "\n"
+             << "\t.byte " << layout["border_height"].int_value() << "\n"
+             << "\t.2byte 0\n\n";
     }
 
     return text.str();

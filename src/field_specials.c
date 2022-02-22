@@ -1703,7 +1703,7 @@ static const u16 sElevatorWindowTiles_Descending[][3] =
 void SetDeptStoreFloor(void)
 {
     u8 deptStoreFloor;
-    switch (gSaveBlock1Ptr->dynamicWarp.mapNum)
+    /*switch (gSaveBlock1Ptr->dynamicWarp.mapNum)
     {
     case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_1F):
         deptStoreFloor = DEPT_STORE_FLOORNUM_1F;
@@ -1726,7 +1726,7 @@ void SetDeptStoreFloor(void)
     default:
         deptStoreFloor = DEPT_STORE_FLOORNUM_1F;
         break;
-    }
+    }*/
     VarSet(VAR_DEPT_STORE_FLOOR, deptStoreFloor);
 }
 
@@ -1735,7 +1735,7 @@ u16 GetDeptStoreDefaultFloorChoice(void)
     sLilycoveDeptStore_NeverRead = 0;
     sLilycoveDeptStore_DefaultFloorChoice = 0;
 
-    if (gSaveBlock1Ptr->dynamicWarp.mapGroup == MAP_GROUP(LILYCOVE_CITY_DEPARTMENT_STORE_1F))
+    /*if (gSaveBlock1Ptr->dynamicWarp.mapGroup == MAP_GROUP(LILYCOVE_CITY_DEPARTMENT_STORE_1F))
     {
         switch (gSaveBlock1Ptr->dynamicWarp.mapNum)
         {
@@ -1760,7 +1760,7 @@ u16 GetDeptStoreDefaultFloorChoice(void)
             sLilycoveDeptStore_DefaultFloorChoice = 4;
             break;
         }
-    }
+    }*/
 
     return sLilycoveDeptStore_DefaultFloorChoice;
 }
@@ -3456,7 +3456,7 @@ bool8 AbnormalWeatherHasExpired(void)
     if (++steps > 999)
     {
         VarSet(VAR_ABNORMAL_WEATHER_STEP_COUNTER, 0);
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(UNDERWATER_MARINE_CAVE))
+        /*if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(UNDERWATER_MARINE_CAVE))
         {
             switch (gSaveBlock1Ptr->location.mapNum)
             {
@@ -3470,9 +3470,9 @@ bool8 AbnormalWeatherHasExpired(void)
             default:
                 break;
             }
-        }
+        }*/
 
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(UNDERWATER_ROUTE127))
+        /*if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(UNDERWATER_ROUTE127))
         {
             switch (gSaveBlock1Ptr->location.mapNum)
             {
@@ -3485,7 +3485,7 @@ bool8 AbnormalWeatherHasExpired(void)
             default:
                 break;
             }
-        }
+        }*/
 
         if (gSaveBlock1Ptr->location.mapNum == sAbnormalWeatherMapNumbers[abnormalWeather - 1] &&
             gSaveBlock1Ptr->location.mapGroup == 0)

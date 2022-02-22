@@ -6594,7 +6594,7 @@ void SetWildMonHeldItem(void)
             chanceNoItem = 20;
             chanceCommon = 80;
         }
-        if (gMapHeader.mapLayoutId == LAYOUT_ALTERING_CAVE)
+        if (gMapHeader.mapLayoutId == LAYOUT_SIX_ISLAND_ALTERING_CAVE)
         {
             s32 alteringCaveId = GetWildMonTableIdInAlteringCave(species);
             if (alteringCaveId != 0)
