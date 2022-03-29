@@ -612,54 +612,6 @@ u8 GetNonAbsentBattlerToRight(u8 battlerId)
     return nextBattlerId;
 }
 
-u8 GetMostSuitableMonToSwitchInto(void)
-{
-    u8 opposingBattler;
-    u8 bestDmg; // Note : should be changed to u32 for obvious reasons.
-    u8 bestMonId;
-    u8 battlerIn1, battlerIn2, battlerIn3;
-    s32 firstId;
-    s32 lastId; // + 1
-    struct Pokemon *party;
-    s32 i, j;
-    u8 invalidMons;
-    u16 move;
-
-    if (*(gBattleStruct->monToSwitchIntoId + gActiveBattler) != PARTY_SIZE)
-        return *(gBattleStruct->monToSwitchIntoId + gActiveBattler);
-    if (gBattleTypeFlags & BATTLE_TYPE_ARENA)
-        return gBattlerPartyIndexes[gActiveBattler] + 1;
-
-    if (IsDoubleOrTripleBattle())
-    {
-        battlerIn1 = gActiveBattler;
-        battlerIn2 = GetNonAbsentBattlerToRight(battlerIn1);
-        battlerIn3 = GetNonAbsentBattlerToRight(battlerIn2);
-
-        opposingBattler = GetRandomTarget(GetBattlerSide(gActiveBattler));
-    }
-    else
-    {
-        opposingBattler = GetBattlerAtPosition(GetBattlerPosition(gActiveBattler) ^ BIT_SIDE);
-        battlerIn1 = gActiveBattler;
-        battlerIn2 = gActiveBattler;
-    }
-
-    if (gBattleTypeFlags & (BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_TOWER_LINK_MULTI))
-    {
-        if ((gActiveBattler & BIT_FLANK) == B_FLANK_LEFT)
-            firstId = 0, lastId = PARTY_SIZE / 2;
-        else
-            firstId = PARTY_SIZE / 2, lastId = PARTY_SIZE;
-    }
-    else
-    {
-        firstId = 0, lastId = PARTY_SIZE;
-    }
-
-    return PARTY_SIZE;
-}
-
 static u32 GestBestMonOffensive(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
     int i, bits = 0;
@@ -781,7 +733,7 @@ u8 GetMostSuitableMonToSwitchInto(void)
     u32 opposingBattler = 0;
     u32 bestDmg = 0;
     u32 bestMonId = 0;
-    u8 battlerIn1 = 0, battlerIn2 = 0;
+    u8 battlerIn1 = 0, battlerIn2 = 0, battlerIn3 = 0;
     s32 firstId = 0;
     s32 lastId = 0; // + 1
     struct Pokemon *party;
@@ -793,23 +745,20 @@ u8 GetMostSuitableMonToSwitchInto(void)
     if (gBattleTypeFlags & BATTLE_TYPE_ARENA)
         return gBattlerPartyIndexes[gActiveBattler] + 1;
 
-    if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
+    if (IsDoubleOrTripleBattle())
     {
         battlerIn1 = gActiveBattler;
-        if (gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(GetBattlerPosition(gActiveBattler) ^ BIT_FLANK)])
-            battlerIn2 = gActiveBattler;
-        else
-            battlerIn2 = GetBattlerAtPosition(GetBattlerPosition(gActiveBattler) ^ BIT_FLANK);
+        battlerIn2 = GetNonAbsentBattlerToRight(battlerIn1);
+        battlerIn3 = GetNonAbsentBattlerToRight(battlerIn2);
 
-        opposingBattler = BATTLE_OPPOSITE(battlerIn1);
-        if (gAbsentBattlerFlags & gBitTable[opposingBattler])
-            opposingBattler ^= BIT_FLANK;
+        opposingBattler = GetRandomTarget(GetBattlerSide(gActiveBattler));
     }
     else
     {
         opposingBattler = GetBattlerAtPosition(GetBattlerPosition(gActiveBattler) ^ BIT_SIDE);
         battlerIn1 = gActiveBattler;
         battlerIn2 = gActiveBattler;
+        battlerIn3 = gActiveBattler;
     }
 
     GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
@@ -826,8 +775,10 @@ u8 GetMostSuitableMonToSwitchInto(void)
             || GetMonData(&party[i], MON_DATA_HP) == 0
             || gBattlerPartyIndexes[battlerIn1] == i
             || gBattlerPartyIndexes[battlerIn2] == i
+            || gBattlerPartyIndexes[battlerIn3] == i
             || i == *(gBattleStruct->monToSwitchIntoId + battlerIn1)
             || i == *(gBattleStruct->monToSwitchIntoId + battlerIn2)
+            || i == *(gBattleStruct->monToSwitchIntoId + battlerIn3)
             || (GetMonAbility(&party[i]) == ABILITY_TRUANT && IsTruantMonVulnerable(gActiveBattler, opposingBattler))) // While not really invalid per say, not really wise to switch into this mon.
             invalidMons |= gBitTable[i];
         else

@@ -1,3 +1,5 @@
+#include "battle_order.h"
+
 const struct BattleMove gBattleMoves[MOVES_COUNT] =
 {
     [MOVE_NONE] =
@@ -3119,7 +3121,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
         .split = SPLIT_STATUS,
     },
 
-    [MOVE_FEINT_ATTACK] =
+    [MOVE_FAINT_ATTACK] =
     {
         #if B_UPDATED_MOVE_DATA >= GEN_4
             .flags = FLAG_MAKES_CONTACT | FLAG_PROTECT_AFFECTED | FLAG_MIRROR_MOVE_AFFECTED | FLAG_KINGS_ROCK_AFFECTED,

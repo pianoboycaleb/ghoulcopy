@@ -2010,13 +2010,13 @@ static void Task_StartSendOutAnim(u8 taskId)
     }
     else // IsTripleBattle()
     {
-        gBattleBufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
+        gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
         StartSendOutAnim(gActiveBattler, FALSE);
         gActiveBattler = (gActiveBattler + 2) % MAX_BATTLERS_COUNT;
-        gBattleBufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
+        gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
         StartSendOutAnim(gActiveBattler, FALSE);
         gActiveBattler = (gActiveBattler + 2) % MAX_BATTLERS_COUNT;
-        gBattleBufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
+        gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
         StartSendOutAnim(gActiveBattler, FALSE);
         gActiveBattler = (gActiveBattler + 2) % MAX_BATTLERS_COUNT;
     }
