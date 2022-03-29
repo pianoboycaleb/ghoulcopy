@@ -250,6 +250,8 @@ static void CreateBattlerSprite(u8 battler)
         {
             if (gBattlerPartyIndexes[battler] == PARTY_SIZE || GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
                 return;
+            if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
+                return;
 
             SetMultiuseSpriteTemplateToPokemon(GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES), GetBattlerPosition(battler));
             gBattlerSpriteIds[battler] = CreateSprite(&gMultiuseSpriteTemplate, GetBattlerSpriteCoord(battler, BATTLER_COORD_X_2), posY, GetBattlerSpriteSubpriority(battler));
