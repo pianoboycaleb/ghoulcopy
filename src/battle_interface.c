@@ -1223,7 +1223,7 @@ void GetBattlerHealthboxCoords(u8 battler, s16 *x, s16 *y)
             break;
         }
     }
-
+}
 
 void InitBattlerHealthboxCoords(u8 battler)
 {

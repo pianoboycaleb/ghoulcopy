@@ -449,14 +449,14 @@ static void HandleInputChooseTarget(void)
     {
         PlaySE(SE_SELECT);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCb_HideAsMoveTarget;
-        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, identities, -1);
+        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, (u8*)identities, -1);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCb_ShowAsMoveTarget;
     }
     else if (JOY_NEW(DPAD_RIGHT | DPAD_DOWN))
     {
         PlaySE(SE_SELECT);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCb_HideAsMoveTarget;
-        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, identities, 1);
+        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, (u8*)identities, 1);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCb_ShowAsMoveTarget;
     }
 }
