@@ -597,6 +597,7 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
         } while (!(bits & gBitTable[i]));
         return i;
     }
+    return PARTY_SIZE;
 }
 
 u8 GetBattlerToRight(u8 battlerId)
