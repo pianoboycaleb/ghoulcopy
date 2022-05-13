@@ -3688,10 +3688,16 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
         retVal = boxMon->move4;
         break;
     case MON_DATA_PP1:
+        retVal = boxMon->pp1;
+        break;
     case MON_DATA_PP2:
+        retVal = boxMon->pp2;
+        break;
     case MON_DATA_PP3:
+        retVal = boxMon->pp3;
+        break;
     case MON_DATA_PP4:
-        retVal = boxMon->pp[field - MON_DATA_PP1];
+        retVal = boxMon->pp4;
         break;
     case MON_DATA_HP_EV:
         retVal = boxMon->hpEV;
@@ -4049,10 +4055,16 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
         SET16(boxMon->move4);
         break;
     case MON_DATA_PP1:
+        SET8(boxMon->pp1);
+        break;
     case MON_DATA_PP2:
+        SET8(boxMon->pp2);
+        break;
     case MON_DATA_PP3:
+        SET8(boxMon->pp3);
+        break;
     case MON_DATA_PP4:
-        SET8(boxMon->pp[field - MON_DATA_PP1]);
+        SET8(boxMon->pp4);
         break;
     case MON_DATA_HP_EV:
         SET8(boxMon->hpEV);
