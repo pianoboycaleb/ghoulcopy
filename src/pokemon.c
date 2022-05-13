@@ -3874,12 +3874,12 @@ u32 GetBoxMonData(struct BoxPokemon *boxMon, s32 field, u8 *data)
             retVal = SPECIES_EGG;
         break;
     case MON_DATA_IVS:
-        retVal = substruct3->hpIV
-              | (substruct3->attackIV << 5)
-              | (substruct3->defenseIV << 10)
-              | (substruct3->speedIV << 15)
-              | (substruct3->spAttackIV << 20)
-              | (substruct3->spDefenseIV << 25);
+        retVal = boxMon->hpIV
+              | (boxMon->attackIV << 5)
+              | (boxMon->defenseIV << 10)
+              | (boxMon->speedIV << 15)
+              | (boxMon->spAttackIV << 20)
+              | (boxMon->spDefenseIV << 25);
         break;
     case MON_DATA_KNOWN_MOVES:
         if (boxMon->species && !boxMon->isEgg)
