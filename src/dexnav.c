@@ -1997,7 +1997,7 @@ static void DexNavLoadEncounterData(void)
 
 static void TryDrawIconInSlot(u16 species, s16 x, s16 y)
 {
-    if (species == SPECIES_NONE)
+    if (species == SPECIES_NONE || species > NUM_SPECIES)
         CreateNoDataIcon(x, y);   //'X' in slot
     else if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
         CreateMonIcon(SPECIES_NONE, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF, 0); //question mark
@@ -2035,7 +2035,7 @@ static void DrawSpeciesIcons(void)
         y = ROW_HIDDEN_ICON_Y;
         if (FlagGet(FLAG_SYS_DETECTOR_MODE))
             TryDrawIconInSlot(species, x, y);
-       else if (species == SPECIES_NONE)
+       else if (species == SPECIES_NONE || species > NUM_SPECIES)
             CreateNoDataIcon(x, y);
         else
             CreateMonIcon(SPECIES_NONE, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF, 0); //question mark if detector mode inactive
@@ -2697,12 +2697,12 @@ bool8 DexNavTryMakeShinyMon(void)
         shinyRate += searchLevel - 200;
         searchLevel = 200;
     }
-    else if (searchLevel > 100)
+    if (searchLevel > 100)
     {
         shinyRate += (searchLevel * 2) - 200;
         searchLevel = 100;
     }
-    else if (searchLevel > 0)
+    if (searchLevel > 0)
     {
         shinyRate += searchLevel * 6;
     }
