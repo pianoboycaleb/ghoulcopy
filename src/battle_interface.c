@@ -213,7 +213,7 @@ static const struct OamData sOamData_64x32 =
     .affineParam = 0,
 };
 
-static const struct SpriteTemplate sHealthboxPlayerSpriteTemplates[2] =
+static const struct SpriteTemplate sHealthboxPlayerSpriteTemplates[3] =
 {
     {
         .tileTag = TAG_HEALTHBOX_PLAYER1_TILE,
@@ -232,10 +232,19 @@ static const struct SpriteTemplate sHealthboxPlayerSpriteTemplates[2] =
         .images = NULL,
         .affineAnims = gDummySpriteAffineAnimTable,
         .callback = SpriteCallbackDummy
+    },
+    {
+        .tileTag = TAG_HEALTHBOX_PLAYER3_TILE,
+        .paletteTag = TAG_HEALTHBOX_PAL,
+        .oam = &sOamData_64x32,
+        .anims = gDummySpriteAnimTable,
+        .images = NULL,
+        .affineAnims = gDummySpriteAffineAnimTable,
+        .callback = SpriteCallbackDummy
     }
 };
 
-static const struct SpriteTemplate sHealthboxOpponentSpriteTemplates[2] =
+static const struct SpriteTemplate sHealthboxOpponentSpriteTemplates[3] =
 {
     {
         .tileTag = TAG_HEALTHBOX_OPPONENT1_TILE,
@@ -248,6 +257,15 @@ static const struct SpriteTemplate sHealthboxOpponentSpriteTemplates[2] =
     },
     {
         .tileTag = TAG_HEALTHBOX_OPPONENT2_TILE,
+        .paletteTag = TAG_HEALTHBOX_PAL,
+        .oam = &sOamData_64x32,
+        .anims = gDummySpriteAnimTable,
+        .images = NULL,
+        .affineAnims = gDummySpriteAffineAnimTable,
+        .callback = SpriteCallbackDummy
+    },
+    {
+        .tileTag = TAG_HEALTHBOX_OPPONENT3_TILE,
         .paletteTag = TAG_HEALTHBOX_PAL,
         .oam = &sOamData_64x32,
         .anims = gDummySpriteAnimTable,
@@ -316,6 +334,24 @@ static const struct SpriteTemplate sHealthbarSpriteTemplates[MAX_BATTLERS_COUNT]
     },
     {
         .tileTag = TAG_HEALTHBAR_OPPONENT2_TILE,
+        .paletteTag = TAG_HEALTHBAR_PAL,
+        .oam = &sOamData_Healthbar,
+        .anims = gDummySpriteAnimTable,
+        .images = NULL,
+        .affineAnims = gDummySpriteAffineAnimTable,
+        .callback = SpriteCB_HealthBar
+    },
+    {
+        .tileTag = TAG_HEALTHBAR_PLAYER3_TILE,
+        .paletteTag = TAG_HEALTHBAR_PAL,
+        .oam = &sOamData_Healthbar,
+        .anims = gDummySpriteAnimTable,
+        .images = NULL,
+        .affineAnims = gDummySpriteAffineAnimTable,
+        .callback = SpriteCB_HealthBar
+    },
+    {
+        .tileTag = TAG_HEALTHBAR_OPPONENT3_TILE,
         .paletteTag = TAG_HEALTHBAR_PAL,
         .oam = &sOamData_Healthbar,
         .anims = gDummySpriteAnimTable,
@@ -769,6 +805,8 @@ u32 WhichBattleCoords(u32 battlerId) // 0 - singles, 1 - doubles
 {
     if (GetBattlerPosition(battlerId) == B_POSITION_PLAYER_LEFT && gPlayerPartyCount == 1)
         return 0;
+    else if (IsTripleBattle())
+        return 2;
     else
         return IsDoubleBattle();
 }
@@ -806,7 +844,7 @@ u8 CreateBattlerHealthboxSprites(u8 battlerId)
         gSprites[healthboxRightSpriteId].hOther_HealthBoxSpriteId = healthboxLeftSpriteId;
         gSprites[healthboxRightSpriteId].callback = SpriteCB_HealthBoxOther;
     }
-    else
+    else if (IsDoubleOrTripleBattle())
     {
         if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
         {
@@ -1051,7 +1089,7 @@ void GetBattlerHealthboxCoords(u8 battler, s16 *x, s16 *y)
         else
             *x = 158, *y = 88;
     }
-    else
+    else if (IsDoubleBattle())
     {
         switch (GetBattlerPosition(battler))
         {
@@ -1066,6 +1104,30 @@ void GetBattlerHealthboxCoords(u8 battler, s16 *x, s16 *y)
             break;
         case B_POSITION_OPPONENT_RIGHT:
             *x = 32, *y = 44;
+            break;
+        }
+    }
+    else // IsTripleBattle()
+    {
+        switch (GetBattlerPosition(battler))
+        {
+        case B_POSITION_PLAYER_LEFT:
+            *x = 159, *y = 51;
+            break;
+        case B_POSITION_PLAYER_MIDDLE:
+            *x = 165, *y = 76;
+            break;
+        case B_POSITION_PLAYER_RIGHT:
+            *x = 171, *y = 101;
+            break;
+        case B_POSITION_OPPONENT_LEFT:
+            *x = 44, *y = 19;
+            break;
+        case B_POSITION_OPPONENT_MIDDLE:
+            *x = 38, *y = 44;
+            break;
+        case B_POSITION_OPPONENT_RIGHT:
+            *x = 32, *y = 69;
             break;
         }
     }
@@ -2349,7 +2411,7 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
 
     if (GetBattlerSide(battlerId) == B_SIDE_PLAYER)
     {
-        u8 isDoubles = WhichBattleCoords(battlerId);
+        u8 isDoublesOrTriples = WhichBattleCoords(battlerId);
 
         if (elementId == HEALTHBOX_LEVEL || elementId == HEALTHBOX_ALL)
             UpdateLvlInHealthbox(healthboxSpriteId, GetMonData(mon, MON_DATA_LEVEL));
@@ -2367,8 +2429,7 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
             SetBattleBarStruct(battlerId, healthboxSpriteId, maxHp, currHp, 0);
             MoveBattleBar(battlerId, healthboxSpriteId, HEALTH_BAR, 0);
         }
-
-        if (!isDoubles && (elementId == HEALTHBOX_EXP_BAR || elementId == HEALTHBOX_ALL))
+        if (!isDoublesOrTriples && (elementId == HEALTHBOX_EXP_BAR || elementId == HEALTHBOX_ALL))
         {
             u16 species;
             u32 exp, currLevelExp;
@@ -2382,7 +2443,7 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
             currLevelExp = gExperienceTables[gBaseStats[species].growthRate][level];
             currExpBarValue = exp - currLevelExp;
             maxExpBarValue = gExperienceTables[gBaseStats[species].growthRate][level + 1] - currLevelExp;
-            SetBattleBarStruct(battlerId, healthboxSpriteId, maxExpBarValue, currExpBarValue, isDoubles);
+            SetBattleBarStruct(battlerId, healthboxSpriteId, maxExpBarValue, currExpBarValue, isDoublesOrTriples);
             MoveBattleBar(battlerId, healthboxSpriteId, EXP_BAR, 0);
         }
         if (elementId == HEALTHBOX_NICK || elementId == HEALTHBOX_ALL)

@@ -65,6 +65,20 @@ static const struct CompressedSpriteSheet sSpriteSheets_DoublesOpponentHealthbox
     {gHealthboxDoublesOpponentGfx, 0x800, TAG_HEALTHBOX_OPPONENT2_TILE}
 };
 
+static const struct CompressedSpriteSheet sSpriteSheets_TriplesPlayerHealthbox[3] =
+{
+    {gHealthboxTriplesPlayerGfx, 0x800, TAG_HEALTHBOX_PLAYER1_TILE},
+    {gHealthboxTriplesPlayerGfx, 0x800, TAG_HEALTHBOX_PLAYER2_TILE},
+    {gHealthboxTriplesPlayerGfx, 0x800, TAG_HEALTHBOX_PLAYER3_TILE}
+};
+
+static const struct CompressedSpriteSheet sSpriteSheets_TriplesOpponentHealthbox[3] =
+{
+    {gHealthboxTriplesOpponentGfx, 0x800, TAG_HEALTHBOX_OPPONENT1_TILE},
+    {gHealthboxTriplesOpponentGfx, 0x800, TAG_HEALTHBOX_OPPONENT2_TILE},
+    {gHealthboxTriplesOpponentGfx, 0x800, TAG_HEALTHBOX_OPPONENT3_TILE}
+};
+
 static const struct CompressedSpriteSheet sSpriteSheet_SafariHealthbox =
 {
     gHealthboxSafariGfx, 0x1000, TAG_HEALTHBOX_SAFARI_TILE
@@ -75,7 +89,9 @@ static const struct CompressedSpriteSheet sSpriteSheets_HealthBar[MAX_BATTLERS_C
     {gBlankGfxCompressed, 0x0100, TAG_HEALTHBAR_PLAYER1_TILE},
     {gBlankGfxCompressed, 0x0120, TAG_HEALTHBAR_OPPONENT1_TILE},
     {gBlankGfxCompressed, 0x0100, TAG_HEALTHBAR_PLAYER2_TILE},
-    {gBlankGfxCompressed, 0x0120, TAG_HEALTHBAR_OPPONENT2_TILE}
+    {gBlankGfxCompressed, 0x0120, TAG_HEALTHBAR_OPPONENT2_TILE},
+    {gBlankGfxCompressed, 0x0100, TAG_HEALTHBAR_PLAYER3_TILE},
+    {gBlankGfxCompressed, 0x0120, TAG_HEALTHBAR_OPPONENT3_TILE}
 };
 
 #if P_ENABLE_DEBUG == TRUE
@@ -694,7 +710,7 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[0]);
             LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
         }
-        else if (!IsDoubleBattle())
+        else if (!IsDoubleOrTripleBattle())
         {
             if (state == 2)
             {
@@ -712,7 +728,7 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
             else
                 retVal = TRUE;
         }
-        else
+        else if (IsDoubleBattle())
         {
             if (state == 2)
             {
@@ -735,6 +751,35 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
                 LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[2]]);
             else if (state == 9)
                 LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[3]]);
+            else
+                retVal = TRUE;
+        }
+        else // IsTripleBattle()
+        {
+            if (state == 2)
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesPlayerHealthbox[0]);
+            else if (state == 3)
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesPlayerHealthbox[1]);
+            else if (state == 4)
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesPlayerHealthbox[2]);
+            else if (state == 5)
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesOpponentHealthbox[0]);
+            else if (state == 6)
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesOpponentHealthbox[1]);
+            else if (state == 7)
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesOpponentHealthbox[2]);
+            else if (state == 8)
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[0]]);
+            else if (state == 9)
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[1]]);
+            else if (state == 10)
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[2]]);
+            else if (state == 11)
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[3]]);
+            else if (state == 12)
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[4]]);
+            else if (state == 13)
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[5]]);
             else
                 retVal = TRUE;
         }
@@ -1027,12 +1072,20 @@ void HandleLowHpMusicChange(struct Pokemon *mon, u8 battlerId)
     else
     {
         gBattleSpritesDataPtr->battlerData[battlerId].lowHpSong = 0;
-        if (!IsDoubleBattle())
+        if (!IsDoubleOrTripleBattle())
         {
             m4aSongNumStop(SE_LOW_HEALTH);
             return;
         }
         if (IsDoubleBattle() && !gBattleSpritesDataPtr->battlerData[BATTLE_PARTNER(battlerId)].lowHpSong)
+        {
+            m4aSongNumStop(SE_LOW_HEALTH);
+            return;
+        }
+        if (IsTripleBattle()
+            && !gBattleSpritesDataPtr->battlerData[BATTLER_TO_RIGHT(battlerId)].lowHpSong
+            && !gBattleSpritesDataPtr->battlerData[BATTLER_TO_LEFT(battlerId)].lowHpSong
+            )
         {
             m4aSongNumStop(SE_LOW_HEALTH);
             return;
@@ -1047,6 +1100,11 @@ void BattleStopLowHpSound(void)
     gBattleSpritesDataPtr->battlerData[playerBattler].lowHpSong = 0;
     if (IsDoubleBattle())
         gBattleSpritesDataPtr->battlerData[BATTLE_PARTNER(playerBattler)].lowHpSong = 0;
+    if (IsTripleBattle())
+    {
+        gBattleSpritesDataPtr->battlerData[BATTLER_TO_RIGHT(playerBattler)].lowHpSong = 0;
+        gBattleSpritesDataPtr->battlerData[BATTLER_TO_LEFT(playerBattler)].lowHpSong = 0;
+    }
 
     m4aSongNumStop(SE_LOW_HEALTH);
 }
@@ -1065,13 +1123,17 @@ void HandleBattleLowHpMusicChange(void)
     {
         u8 playerBattler1 = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
         u8 playerBattler2 = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
+        u8 playerBattler3 = GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE);
         u8 battler1PartyId = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[playerBattler1]);
         u8 battler2PartyId = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[playerBattler2]);
+        u8 battler3PartyId = GetPartyIdFromBattlePartyId(gBattlerPartyIndexes[playerBattler3]);
 
         if (GetMonData(&gPlayerParty[battler1PartyId], MON_DATA_HP) != 0)
             HandleLowHpMusicChange(&gPlayerParty[battler1PartyId], playerBattler1);
-        if (IsDoubleBattle() && GetMonData(&gPlayerParty[battler2PartyId], MON_DATA_HP) != 0)
+        if (IsDoubleOrTripleBattle() && GetMonData(&gPlayerParty[battler2PartyId], MON_DATA_HP) != 0)
             HandleLowHpMusicChange(&gPlayerParty[battler2PartyId], playerBattler2);
+        if (IsTripleBattle() && GetMonData(&gPlayerParty[battler3PartyId], MON_DATA_HP) != 0)
+            HandleLowHpMusicChange(&gPlayerParty[battler3PartyId], playerBattler3);
     }
 }
 
@@ -1112,7 +1174,7 @@ void LoadAndCreateEnemyShadowSprites(void)
                                                                                     0xC8);
     gSprites[gBattleSpritesDataPtr->healthBoxesData[battlerId].shadowSpriteId].data[0] = battlerId;
 
-    if (IsDoubleBattle())
+    if (IsDoubleOrTripleBattle())
     {
         battlerId = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
         gBattleSpritesDataPtr->healthBoxesData[battlerId].shadowSpriteId = CreateSprite(&gSpriteTemplate_EnemyShadow,
@@ -1121,6 +1183,17 @@ void LoadAndCreateEnemyShadowSprites(void)
                                                                                         0xC8);
         gSprites[gBattleSpritesDataPtr->healthBoxesData[battlerId].shadowSpriteId].data[0] = battlerId;
     }
+
+    if (IsTripleBattle())
+    {
+        battlerId = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
+        gBattleSpritesDataPtr->healthBoxesData[battlerId].shadowSpriteId = CreateSprite(&gSpriteTemplate_EnemyShadow,
+                                                                                        GetBattlerSpriteCoord(battlerId, BATTLER_COORD_X),
+                                                                                        GetBattlerSpriteCoord(battlerId, BATTLER_COORD_Y) + 29,
+                                                                                        0xC8);
+        gSprites[gBattleSpritesDataPtr->healthBoxesData[battlerId].shadowSpriteId].data[0] = battlerId;
+    }
+
 }
 
 void SpriteCB_EnemyShadow(struct Sprite *shadowSprite)

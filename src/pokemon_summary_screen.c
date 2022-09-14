@@ -689,6 +689,7 @@ static const struct WindowTemplate sPageMovesTemplate[] = // This is used for bo
         .baseBlock = 599,
     },
 };
+
 static const u8 sTextColors[][3] =
 {
     {0, 1, 2},

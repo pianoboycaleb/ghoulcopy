@@ -18,6 +18,8 @@
 #include "constants/battle_anim.h"
 
 #define IS_DOUBLE_BATTLE() ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
+#define IS_TRIPLE_BATTLE() ((gBattleTypeFlags & BATTLE_TYPE_TRIPLE))
+#define BATTLE_TYPE_INDEX() ((IS_TRIPLE_BATTLE()) ? 2 : ((IS_DOUBLE_BATTLE()) ? 1 : 0))
 
 extern const struct OamData gOamData_AffineNormal_ObjNormal_64x64;
 
@@ -53,6 +55,14 @@ static const struct UCoords8 sBattlerCoords[][MAX_BATTLERS_COUNT] =
         { 200, 40 },
         { 90, 88 },
         { 152, 32 },
+    },
+    { // Triple battle
+        { 30, 80 },
+        { 220, 40 },
+        { 70, 84 },
+        { 180, 36 },
+        { 120, 88 },
+        { 130, 32 },
     },
 };
 
@@ -947,6 +957,16 @@ bool8 IsBattlerSpritePresent(u8 battlerId)
 bool8 IsDoubleBattle(void)
 {
     return IS_DOUBLE_BATTLE();
+}
+
+bool8 IsTripleBattle(void)
+{
+    return IS_TRIPLE_BATTLE();
+}
+
+bool8 IsDoubleOrTripleBattle(void)
+{
+    return IS_DOUBLE_BATTLE() || IS_TRIPLE_BATTLE();
 }
 
 #define BG_ANIM_PAL_1        8
