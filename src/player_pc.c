@@ -473,7 +473,7 @@ static void PlayerPC_Mailbox(u8 taskId)
         }
         else
         {
-            // Alloc failed, exit Mailbox
+            // AllocTest failed, exit Mailbox
             DisplayItemMessageOnField(taskId, gText_NoMailHere, ReshowPlayerPC);
         }
     }

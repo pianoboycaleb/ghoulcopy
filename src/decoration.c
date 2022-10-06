@@ -2100,7 +2100,7 @@ static u8 AddDecorationIconObjectFromObjectEvent(u16 tilesTag, u16 paletteTag, u
         palette.data = sPlaceDecorationGraphicsDataBuffer.palette;
         palette.tag = paletteTag;
         LoadSpritePalette(&palette);
-        template = Alloc(sizeof(struct SpriteTemplate));
+        template = AllocTest(sizeof(struct SpriteTemplate));
         *template = sDecorWhilePlacingSpriteTemplate;
         template->tileTag = tilesTag;
         template->paletteTag = paletteTag;

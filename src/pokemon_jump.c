@@ -716,7 +716,7 @@ void StartPokemonJump(u16 partyId, MainCallback exitCallback)
 
     if (gReceivedRemoteLinkPlayers)
     {
-        sPokemonJump = Alloc(sizeof(*sPokemonJump));
+        sPokemonJump = AllocTest(sizeof(*sPokemonJump));
         if (sPokemonJump)
         {
             ResetTasks();
@@ -2896,8 +2896,8 @@ static void CreateJumpMonSprite(struct PokemonJumpGfx *jumpGfx, struct PokemonJu
     u8 spriteId;
 
     spriteTemplate = sSpriteTemplate_JumpMon;
-    buffer = Alloc(0x2000);
-    unusedBuffer = Alloc(MON_PIC_SIZE);
+    buffer = AllocTest(0x2000);
+    unusedBuffer = AllocTest(MON_PIC_SIZE);
     if (multiplayerId == GetPokeJumpMultiplayerId())
         subpriority = 3;
     else

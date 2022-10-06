@@ -1142,9 +1142,9 @@ static void CB2_InitSelectScreen(void)
         gMain.state++;
         break;
     case 1:
-        sSelectMenuTilesetBuffer = Alloc(0x440);
+        sSelectMenuTilesetBuffer = AllocTest(0x440);
         sSelectMonPicBgTilesetBuffer = AllocZeroed(0x440);
-        sSelectMenuTilemapBuffer = Alloc(BG_SCREEN_SIZE);
+        sSelectMenuTilemapBuffer = AllocTest(BG_SCREEN_SIZE);
         sSelectMonPicBgTilemapBuffer = AllocZeroed(BG_SCREEN_SIZE);
         ChangeBgX(0, 0, BG_COORD_SET);
         ChangeBgY(0, 0, BG_COORD_SET);
@@ -3275,9 +3275,9 @@ static void CB2_InitSwapScreen(void)
         gMain.state++;
         break;
     case 1:
-        sSwapMenuTilesetBuffer = Alloc(0x440);
+        sSwapMenuTilesetBuffer = AllocTest(0x440);
         sSwapMonPicBgTilesetBuffer = AllocZeroed(0x440);
-        sSwapMenuTilemapBuffer = Alloc(BG_SCREEN_SIZE);
+        sSwapMenuTilemapBuffer = AllocTest(BG_SCREEN_SIZE);
         sSwapMonPicBgTilemapBuffer = AllocZeroed(BG_SCREEN_SIZE);
         ChangeBgX(0, 0, BG_COORD_SET);
         ChangeBgY(0, 0, BG_COORD_SET);

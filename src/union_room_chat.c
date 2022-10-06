@@ -895,7 +895,7 @@ static const struct SpriteTemplate sSpriteTemplate_RButtonLabels =
 
 void EnterUnionRoomChat(void)
 {
-    sChat = Alloc(sizeof(*sChat));
+    sChat = AllocTest(sizeof(*sChat));
     InitUnionRoomChat(sChat);
     gKeyRepeatStartDelay = 20;
     SetVBlankCallback(NULL);
@@ -2138,7 +2138,7 @@ static void Task_ReceiveChatMessage(u8 taskId)
 
 static bool8 TryAllocDisplay(void)
 {
-    sDisplay = Alloc(sizeof(*sDisplay));
+    sDisplay = AllocTest(sizeof(*sDisplay));
     if (sDisplay && TryAllocSprites())
     {
         ResetBgsAndClearDma3BusyFlags(0);
@@ -3155,7 +3155,7 @@ static bool32 TryAllocSprites(void)
         LoadCompressedSpriteSheet(&sSpriteSheets[i]);
 
     LoadSpritePalette(&sSpritePalette);
-    sSprites = Alloc(sizeof(*sSprites));
+    sSprites = AllocTest(sizeof(*sSprites));
     if (!sSprites)
         return FALSE;
 

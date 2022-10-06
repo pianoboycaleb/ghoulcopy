@@ -486,7 +486,7 @@ static void InitPartyMenu(u8 menuType, u8 layout, u8 partyAction, bool8 keepCurs
     u16 i;
 
     ResetPartyMenu();
-    sPartyMenuInternal = Alloc(sizeof(struct PartyMenuInternal));
+    sPartyMenuInternal = AllocTest(sizeof(struct PartyMenuInternal));
     if (sPartyMenuInternal == NULL)
     {
         SetMainCallback2(callback);
@@ -704,7 +704,7 @@ static void ResetPartyMenu(void)
 
 static bool8 AllocPartyMenuBg(void)
 {
-    sPartyBgTilemapBuffer = Alloc(0x800);
+    sPartyBgTilemapBuffer = AllocTest(0x800);
     if (sPartyBgTilemapBuffer == NULL)
         return FALSE;
 
@@ -795,7 +795,7 @@ static void InitPartyMenuBoxes(u8 layout)
 {
     u8 i;
 
-    sPartyMenuBoxes = Alloc(sizeof(struct PartyMenuBox[PARTY_SIZE]));
+    sPartyMenuBoxes = AllocTest(sizeof(struct PartyMenuBox[PARTY_SIZE]));
 
     for (i = 0; i < PARTY_SIZE; i++)
     {
@@ -1208,7 +1208,7 @@ bool8 IsMultiBattle(void)
 
 static void SwapPartyPokemon(struct Pokemon *mon1, struct Pokemon *mon2)
 {
-    struct Pokemon *temp = Alloc(sizeof(struct Pokemon));
+    struct Pokemon *temp = AllocTest(sizeof(struct Pokemon));
 
     *temp = *mon1;
     *mon1 = *mon2;
@@ -2838,8 +2838,8 @@ static void SwitchSelectedMons(u8 taskId)
             tSlot2SlideDir = -1;
         else
             tSlot2SlideDir = 1;
-        sSlot1TilemapBuffer = Alloc(tSlot1Width * (tSlot1Height << 1));
-        sSlot2TilemapBuffer = Alloc(tSlot2Width * (tSlot2Height << 1));
+        sSlot1TilemapBuffer = AllocTest(tSlot1Width * (tSlot1Height << 1));
+        sSlot2TilemapBuffer = AllocTest(tSlot2Width * (tSlot2Height << 1));
         CopyToBufferFromBgTilemap(0, sSlot1TilemapBuffer, tSlot1Left, tSlot1Top, tSlot1Width, tSlot1Height);
         CopyToBufferFromBgTilemap(0, sSlot2TilemapBuffer, tSlot2Left, tSlot2Top, tSlot2Width, tSlot2Height);
         ClearWindowTilemap(windowIds[0]);
@@ -3010,7 +3010,7 @@ static void SwitchPartyMon(void)
     menuBoxes[1] = &sPartyMenuBoxes[gPartyMenu.slotId2];
     mon1 = &gPlayerParty[gPartyMenu.slotId];
     mon2 = &gPlayerParty[gPartyMenu.slotId2];
-    monBuffer = Alloc(sizeof(struct Pokemon));
+    monBuffer = AllocTest(sizeof(struct Pokemon));
     *monBuffer = *mon1;
     *mon1 = *mon2;
     *mon2 = *monBuffer;

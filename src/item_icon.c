@@ -55,7 +55,7 @@ const struct SpriteTemplate gItemIconSpriteTemplate =
 // code
 bool8 AllocItemIconTemporaryBuffers(void)
 {
-    gItemIconDecompressionBuffer = Alloc(0x120);
+    gItemIconDecompressionBuffer = AllocTest(0x120);
     if (gItemIconDecompressionBuffer == NULL)
         return FALSE;
 
@@ -107,7 +107,7 @@ u8 AddItemIconSprite(u16 tilesTag, u16 paletteTag, u16 itemId)
         spritePalette.tag = paletteTag;
         LoadCompressedSpritePalette(&spritePalette);
 
-        spriteTemplate = Alloc(sizeof(*spriteTemplate));
+        spriteTemplate = AllocTest(sizeof(*spriteTemplate));
         CpuCopy16(&gItemIconSpriteTemplate, spriteTemplate, sizeof(*spriteTemplate));
         spriteTemplate->tileTag = tilesTag;
         spriteTemplate->paletteTag = paletteTag;
@@ -144,7 +144,7 @@ u8 AddCustomItemIconSprite(const struct SpriteTemplate *customSpriteTemplate, u1
         spritePalette.tag = paletteTag;
         LoadCompressedSpritePalette(&spritePalette);
 
-        spriteTemplate = Alloc(sizeof(*spriteTemplate));
+        spriteTemplate = AllocTest(sizeof(*spriteTemplate));
         CpuCopy16(customSpriteTemplate, spriteTemplate, sizeof(*spriteTemplate));
         spriteTemplate->tileTag = tilesTag;
         spriteTemplate->paletteTag = paletteTag;

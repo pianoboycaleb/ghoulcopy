@@ -622,7 +622,7 @@ u16 AddWindow8Bit(const struct WindowTemplate *template)
         if (attribute != 0xFFFF)
         {
             s32 i;
-            memAddress = Alloc(attribute);
+            memAddress = AllocTest(attribute);
             if (memAddress == NULL)
                 return WINDOW_NONE;
             for (i = 0; i < attribute; i++) // if we're going to zero out the memory anyway, why not call AllocZeroed?
@@ -631,7 +631,7 @@ u16 AddWindow8Bit(const struct WindowTemplate *template)
             SetBgTilemapBuffer(bgLayer, memAddress);
         }
     }
-    memAddress = Alloc((u16)(64 * (template->width * template->height)));
+    memAddress = AllocTest((u16)(64 * (template->width * template->height)));
     if (memAddress == NULL)
     {
         if (GetNumActiveWindowsOnBg8Bit(bgLayer) == 0 && gWindowBgTilemapBuffers[bgLayer] != DummyWindowBgTilemap8Bit)

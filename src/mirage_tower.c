@@ -561,7 +561,7 @@ static void InitMirageTowerShake(u8 taskId)
         gTasks[taskId].tState++;
         break;
     case 6:
-        sBgShakeOffsets = Alloc(sizeof(*sBgShakeOffsets));
+        sBgShakeOffsets = AllocTest(sizeof(*sBgShakeOffsets));
         zero = 0;
         sBgShakeOffsets->bgHOFS = 2;
         sBgShakeOffsets->bgVOFS = zero;
@@ -592,7 +592,7 @@ static void DoMirageTowerDisintegration(u8 taskId)
             {
                 // Initialize disintegration pattern
                 index = gTasks[taskId].data[3];
-                sFallingTower[index].disintegrateRand = Alloc(INNER_BUFFER_LENGTH);
+                sFallingTower[index].disintegrateRand = AllocTest(INNER_BUFFER_LENGTH);
                 for (i = 0; i <= (INNER_BUFFER_LENGTH - 1); i++)
                     sFallingTower[index].disintegrateRand[i] = i;
 

@@ -3165,7 +3165,7 @@ static inline void CopyPixels(u8 *dest, const u8 *src, u32 pixelCount)
 static void RestoreOverwrittenPixels(u8 *tiles)
 {
     u32 i;
-    u8 *buffer = Alloc(sizeof(sAbilityPopUpGfx) * 2);
+    u8 *buffer = AllocTest(sizeof(sAbilityPopUpGfx) * 2);
 
     CpuCopy32(tiles, buffer, sizeof(sAbilityPopUpGfx));
 

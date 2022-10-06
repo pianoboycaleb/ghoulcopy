@@ -138,11 +138,11 @@ static u16 CreatePicSprite(u16 species, u32 otId, u32 personality, bool8 isFront
     if (i == PICS_COUNT)
         return 0xFFFF;
 
-    framePics = Alloc(4 * 0x800);
+    framePics = AllocTest(4 * 0x800);
     if (!framePics)
         return 0xFFFF;
 
-    images = Alloc(4 * sizeof(struct SpriteFrameImage));
+    images = AllocTest(4 * sizeof(struct SpriteFrameImage));
     if (!images)
     {
         Free(framePics);
@@ -193,7 +193,7 @@ u16 CreateMonPicSprite_Affine(u16 species, u32 otId, u32 personality, u8 flags, 
     if (i == PICS_COUNT)
         return 0xFFFF;
 
-    framePics = Alloc(4 * MON_PIC_SIZE);
+    framePics = AllocTest(4 * MON_PIC_SIZE);
     if (!framePics)
         return 0xFFFF;
 
@@ -206,7 +206,7 @@ u16 CreateMonPicSprite_Affine(u16 species, u32 otId, u32 personality, u8 flags, 
     {
         type = flags;
     }
-    images = Alloc(4 * sizeof(struct SpriteFrameImage));
+    images = AllocTest(4 * sizeof(struct SpriteFrameImage));
     if (!images)
     {
         Free(framePics);
@@ -291,7 +291,7 @@ static u16 CreateTrainerCardSprite(u16 species, u32 otId, u32 personality, bool8
 {
     u8 *framePics;
 
-    framePics = Alloc(4 * 0x800);
+    framePics = AllocTest(4 * 0x800);
     if (framePics && !DecompressPic(species, personality, isFrontPic, framePics, isTrainer))
     {
         BlitBitmapRectToWindow(windowId, framePics, 0, 0, 0x40, 0x40, destX, destY, 0x40, 0x40);

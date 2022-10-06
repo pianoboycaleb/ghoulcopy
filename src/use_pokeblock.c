@@ -1326,9 +1326,9 @@ static bool8 LoadUsePokeblockMenuGfx(void)
         SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(11, 4));
         break;
     case 1:
-        sGraph_Gfx = Alloc(6656);
-        sGraph_Tilemap = Alloc(1280);
-        sMonFrame_TilemapPtr = Alloc(1280);
+        sGraph_Gfx = AllocTest(6656);
+        sGraph_Tilemap = AllocTest(1280);
+        sMonFrame_TilemapPtr = AllocTest(1280);
         break;
     case 2:
         LZ77UnCompVram(sMonFrame_Tilemap, sMonFrame_TilemapPtr);

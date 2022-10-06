@@ -492,8 +492,8 @@ static void BuyMenuBuildListMenuTemplate(void)
 {
     u16 i;
 
-    sListMenuItems = Alloc((sMartInfo.itemCount + 1) * sizeof(*sListMenuItems));
-    sItemNames = Alloc((sMartInfo.itemCount + 1) * sizeof(*sItemNames));
+    sListMenuItems = AllocTest((sMartInfo.itemCount + 1) * sizeof(*sListMenuItems));
+    sItemNames = AllocTest((sMartInfo.itemCount + 1) * sizeof(*sItemNames));
     for (i = 0; i < sMartInfo.itemCount; i++)
         BuyMenuSetListEntry(&sListMenuItems[i], sMartInfo.itemList[i], sItemNames[i]);
 

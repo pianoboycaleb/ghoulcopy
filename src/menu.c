@@ -1847,7 +1847,7 @@ void *malloc_and_decompress(const void *src, u32 *size)
     sizeAsBytes[2] = srcAsBytes[3];
     sizeAsBytes[3] = 0;
 
-    ptr = Alloc(*size);
+    ptr = AllocTest(*size);
     if (ptr)
         LZ77UnCompWram(src, ptr);
     return ptr;

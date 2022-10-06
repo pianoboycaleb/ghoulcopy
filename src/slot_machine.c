@@ -1228,7 +1228,7 @@ static void SlotMachineSetup_InitPalsSpritesTasks(void)
 
 static void SlotMachineSetup_InitTilemaps(void)
 {
-    sSelectedPikaPowerTile = Alloc(8);
+    sSelectedPikaPowerTile = AllocTest(8);
     sReelOverlay_Tilemap = AllocZeroed(14);
     sReelButtonPress_Tilemap = AllocZeroed(8);
 
@@ -5011,9 +5011,9 @@ static void LoadSlotMachineGfx(void)
     u8 i;
 
     LoadReelBackground();
-    sDigitalDisplayGfxPtr = Alloc(0x3200);
+    sDigitalDisplayGfxPtr = AllocTest(0x3200);
     LZDecompressWram(gSlotMachineDigitalDisplay_Gfx, sDigitalDisplayGfxPtr);
-    sReelTimeGfxPtr = Alloc(0x3600);
+    sReelTimeGfxPtr = AllocTest(0x3600);
     LZDecompressWram(sReelTimeGfx, sReelTimeGfxPtr);
     sSlotMachineSpritesheetsPtr = AllocZeroed(sizeof(struct SpriteSheet) * ARRAY_COUNT(sSlotMachineSpriteSheets));
     for (i = 0; i < ARRAY_COUNT(sSlotMachineSpriteSheets); i++)
@@ -5051,7 +5051,7 @@ static void LoadReelBackground(void)
 
 static void LoadMenuGfx(void)
 {
-    sMenuGfx = Alloc(0x2200);
+    sMenuGfx = AllocTest(0x2200);
     LZDecompressWram(gSlotMachineMenu_Gfx, sMenuGfx);
     LoadBgTiles(2, sMenuGfx, 0x2200, 0);
     LoadPalette(gSlotMachineMenu_Pal, 0, 160);
