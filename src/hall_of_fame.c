@@ -371,7 +371,7 @@ static bool8 InitHallOfFameScreen(void)
     case 0:
         SetVBlankCallback(NULL);
         ClearVramOamPltt_LoadHofPal();
-        sHofGfxPtr = AllocZeroed(sizeof(*sHofGfxPtr));
+        sHofGfxPtr = AllocZeroedTest(sizeof(*sHofGfxPtr));
         gMain.state = 1;
         break;
     case 1:
@@ -420,7 +420,7 @@ void CB2_DoHallOfFameScreen(void)
     {
         u8 taskId = CreateTask(Task_Hof_InitMonData, 0);
         gTasks[taskId].tDontSaveData = FALSE;
-        sHofMonPtr = AllocZeroed(sizeof(*sHofMonPtr));
+        sHofMonPtr = AllocZeroedTest(sizeof(*sHofMonPtr));
     }
 }
 
@@ -430,7 +430,7 @@ void CB2_DoHallOfFameScreenDontSaveData(void)
     {
         u8 taskId = CreateTask(Task_Hof_InitMonData, 0);
         gTasks[taskId].tDontSaveData = TRUE;
-        sHofMonPtr = AllocZeroed(sizeof(*sHofMonPtr));
+        sHofMonPtr = AllocZeroedTest(sizeof(*sHofMonPtr));
     }
 }
 
@@ -804,7 +804,7 @@ void CB2_DoHallOfFamePC(void)
     default:
         SetVBlankCallback(NULL);
         ClearVramOamPltt_LoadHofPal();
-        sHofGfxPtr = AllocZeroed(sizeof(*sHofGfxPtr));
+        sHofGfxPtr = AllocZeroedTest(sizeof(*sHofGfxPtr));
         gMain.state = 1;
         break;
     case 1:
@@ -850,7 +850,7 @@ void CB2_DoHallOfFamePC(void)
                 gTasks[taskId].tMonSpriteId(i) = SPRITE_NONE;
             }
 
-            sHofMonPtr = AllocZeroed(SECTOR_SIZE * NUM_HOF_SECTORS);
+            sHofMonPtr = AllocZeroedTest(SECTOR_SIZE * NUM_HOF_SECTORS);
             SetMainCallback2(CB2_HallOfFame);
         }
         break;

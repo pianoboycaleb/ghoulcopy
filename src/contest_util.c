@@ -1891,15 +1891,15 @@ static void Task_UpdateContestResultBar(u8 taskId)
 
 static void AllocContestResults(void)
 {
-    sContestResults = AllocZeroed(sizeof(*sContestResults));
-    sContestResults->data = AllocZeroed(sizeof(*sContestResults->data));
-    sContestResults->monResults = AllocZeroed(sizeof(*sContestResults->monResults));
-    sContestResults->unusedBg = AllocZeroed(BG_SCREEN_SIZE);
-    sContestResults->tilemapBuffers[0] = AllocZeroed(BG_SCREEN_SIZE);
-    sContestResults->tilemapBuffers[1] = AllocZeroed(BG_SCREEN_SIZE);
-    sContestResults->tilemapBuffers[2] = AllocZeroed(BG_SCREEN_SIZE);
-    sContestResults->tilemapBuffers[3] = AllocZeroed(BG_SCREEN_SIZE);
-    sContestResults->unused = AllocZeroed(0x1000);
+    sContestResults = AllocZeroedTest(sizeof(*sContestResults));
+    sContestResults->data = AllocZeroedTest(sizeof(*sContestResults->data));
+    sContestResults->monResults = AllocZeroedTest(sizeof(*sContestResults->monResults));
+    sContestResults->unusedBg = AllocZeroedTest(BG_SCREEN_SIZE);
+    sContestResults->tilemapBuffers[0] = AllocZeroedTest(BG_SCREEN_SIZE);
+    sContestResults->tilemapBuffers[1] = AllocZeroedTest(BG_SCREEN_SIZE);
+    sContestResults->tilemapBuffers[2] = AllocZeroedTest(BG_SCREEN_SIZE);
+    sContestResults->tilemapBuffers[3] = AllocZeroedTest(BG_SCREEN_SIZE);
+    sContestResults->unused = AllocZeroedTest(0x1000);
     AllocateMonSpritesGfx();
 }
 

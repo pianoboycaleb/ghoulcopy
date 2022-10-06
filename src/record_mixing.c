@@ -1355,7 +1355,7 @@ static void SaveHighestWinStreakRecords(struct RecordMixingHallRecords *mixHallR
 static void ReceiveRankingHallRecords(struct PlayerHallRecords *records, size_t recordSize, u32 multiplayerId)
 {
     u8 linkPlayerCount = GetLinkPlayerCount();
-    struct RecordMixingHallRecords *mixHallRecords = AllocZeroed(sizeof(*mixHallRecords));
+    struct RecordMixingHallRecords *mixHallRecords = AllocZeroedTest(sizeof(*mixHallRecords));
 
     GetNewHallRecords(mixHallRecords, records, recordSize, multiplayerId, linkPlayerCount);
     SaveHighestWinStreakRecords(mixHallRecords);

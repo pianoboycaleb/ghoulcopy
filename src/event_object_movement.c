@@ -8780,7 +8780,7 @@ u8 MovementAction_LockAnim_Step0(struct ObjectEvent *objectEvent, struct Sprite 
     bool32 ableToStore = FALSE;
     if (sLockedAnimObjectEvents == NULL)
     {
-        sLockedAnimObjectEvents = AllocZeroed(sizeof(struct LockedAnimObjectEvents));
+        sLockedAnimObjectEvents = AllocZeroedTest(sizeof(struct LockedAnimObjectEvents));
         sLockedAnimObjectEvents->localIds[0] = objectEvent->localId;
         sLockedAnimObjectEvents->count = 1;
         ableToStore = TRUE;

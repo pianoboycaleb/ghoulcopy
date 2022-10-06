@@ -1791,7 +1791,7 @@ static bool8 Task_EndCardFlip(struct Task *task)
 
 void ShowPlayerTrainerCard(void (*callback)(void))
 {
-    sData = AllocZeroed(sizeof(*sData));
+    sData = AllocZeroedTest(sizeof(*sData));
     sData->callback2 = callback;
     if (callback == CB2_ReshowFrontierPass)
         sData->blendColor = RGB_WHITE;
@@ -1810,7 +1810,7 @@ void ShowPlayerTrainerCard(void (*callback)(void))
 
 void ShowTrainerCardInLink(u8 cardId, void (*callback)(void))
 {
-    sData = AllocZeroed(sizeof(*sData));
+    sData = AllocZeroedTest(sizeof(*sData));
     sData->callback2 = callback;
     sData->isLink = TRUE;
     sData->trainerCard = gTrainerCards[cardId];

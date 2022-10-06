@@ -697,7 +697,7 @@ void CB2_BattleDebugMenu(void)
         break;
     case 4:
         taskId = CreateTask(Task_DebugMenuFadeIn, 0);
-        data = AllocZeroed(sizeof(struct BattleDebugMenu));
+        data = AllocZeroedTest(sizeof(struct BattleDebugMenu));
         SetStructPtr(taskId, data);
 
         data->battlerId = gBattleStruct->debugBattler;

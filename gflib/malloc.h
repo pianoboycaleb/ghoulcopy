@@ -4,7 +4,7 @@
 #define HEAP_SIZE 0x1C000
 
 #define AllocTest(size) Alloc(size); MgbaPrintf(MGBA_LOG_INFO, "Alloc(0x%x) in file %s:%d", size, __FILE__, __LINE__)
-
+#define AllocZeroedTest(size)  ({ MgbaPrintf(MGBA_LOG_INFO, "AllocZeroed(0x%x) in file %s:%d", size, __FILE__, __LINE__); AllocZeroed(size); })
 #define FREE_AND_SET_NULL(ptr)          \
 {                                       \
     Free(ptr);                          \

@@ -959,7 +959,7 @@ static void InitDecorationItemsWindow(u8 taskId)
     s16 *data = gTasks[taskId].data;
     AddDecorationWindow(WINDOW_DECORATION_CATEGORY_ITEMS);
     ShowDecorationCategorySummaryWindow(sCurDecorationCategory);
-    sDecorationItemsMenu = AllocZeroed(sizeof(*sDecorationItemsMenu));
+    sDecorationItemsMenu = AllocZeroedTest(sizeof(*sDecorationItemsMenu));
     sDecorationItemsMenu->scrollIndicatorsTaskId = TASK_NONE;
     InitDecorationItemsMenuLimits();
     InitDecorationItemsMenuScrollAndCursor();
