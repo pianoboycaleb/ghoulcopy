@@ -7244,7 +7244,7 @@ const struct Trainer gTrainers[] = {
         .trainerPic = TRAINER_PIC_LASS,
         .trainerName = _("TIANA"),
         .items = {},
-        .battleType = TYPE_SINGLE_BATTLE,
+        .battleType = TYPE_TRIPLE_BATTLE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE,
         .party = NO_ITEM_DEFAULT_MOVES(sParty_Tiana),
     },

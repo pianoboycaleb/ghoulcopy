@@ -7995,12 +7995,17 @@ static const struct TrainerMonNoItemDefaultMoves sParty_Tiana[] = {
     {
     .iv = 0,
     .lvl = 4,
-    .species = SPECIES_ZIGZAGOON,
+    .species = SPECIES_GROOKEY,
     },
     {
     .iv = 0,
     .lvl = 4,
-    .species = SPECIES_SHROOMISH,
+    .species = SPECIES_SCORBUNNY,
+    },
+    {
+    .iv = 0,
+    .lvl = 4,
+    .species = SPECIES_SOBBLE,
     }
 };
 
