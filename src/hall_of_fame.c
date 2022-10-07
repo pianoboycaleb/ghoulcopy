@@ -484,7 +484,9 @@ static void Task_Hof_InitMonData(u8 taskId)
 static void Task_Hof_InitTeamSaveData(u8 taskId)
 {
     u16 i;
-    struct HallofFameTeam *lastSavedTeam = (struct HallofFameTeam *)(gDecompressionBuffer);
+    struct HallofFameTeam *lastSavedTeam;
+    gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+    lastSavedTeam = (struct HallofFameTeam *)(gDecompressionBuffer);
 
     if (!gHasHallOfFameRecords)
     {
@@ -513,6 +515,7 @@ static void Task_Hof_InitTeamSaveData(u8 taskId)
         lastSavedTeam--;
     }
     *lastSavedTeam = *sHofMonPtr;
+    Free(gDecompressionBuffer);
 
     DrawDialogueFrame(0, FALSE);
     AddTextPrinterParameterized2(0, FONT_NORMAL, gText_SavingDontTurnOffPower, 0, NULL, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY);
@@ -821,8 +824,11 @@ void CB2_DoHallOfFamePC(void)
     case 3:
         if (!LoadHofBgs())
         {
-            struct HallofFameTeam *fameTeam = (struct HallofFameTeam *)(gDecompressionBuffer);
+            struct HallofFameTeam *fameTeam;
+            gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+            fameTeam = (struct HallofFameTeam *)(gDecompressionBuffer);
             fameTeam->mon[0] = sDummyFameMon;
+            Free(gDecompressionBuffer);
             ComputerScreenOpenEffect(0, 0, 0);
             SetVBlankCallback(VBlankCB_HallOfFame);
             gMain.state++;
@@ -1045,8 +1051,10 @@ static void Task_HofPC_HandlePaletteOnExit(u8 taskId)
     struct HallofFameTeam *fameTeam;
 
     CpuCopy16(gPlttBufferFaded, gPlttBufferUnfaded, 0x400);
+    gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
     fameTeam = (struct HallofFameTeam *)(gDecompressionBuffer);
     fameTeam->mon[0] = sDummyFameMon;
+    Free(gDecompressionBuffer);
     ComputerScreenCloseEffect(0, 0, 0);
     gTasks[taskId].func = Task_HofPC_HandleExit;
 }
@@ -1281,8 +1289,8 @@ static void LoadHofGfx(void)
     ResetAllPicSprites();
     FreeAllSpritePalettes();
     gReservedSpritePaletteCount = 8;
-    LoadCompressedSpriteSheet(sSpriteSheet_Confetti);
-    LoadCompressedSpritePalette(sSpritePalette_Confetti);
+    LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_Confetti);
+    LoadCompressedSpritePaletteUsingHeap(sSpritePalette_Confetti);
 }
 
 static void InitHofBgs(void)
@@ -1492,8 +1500,8 @@ static void Task_DoDomeConfetti(u8 taskId)
             gSpecialVar_0x8004 = 0;
             gSpecialVar_0x8005 = 0xFFFF;
         }
-        LoadCompressedSpriteSheet(sSpriteSheet_Confetti);
-        LoadCompressedSpritePalette(sSpritePalette_Confetti);
+        LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_Confetti);
+        LoadCompressedSpritePaletteUsingHeap(sSpritePalette_Confetti);
         tState++;
         break;
     case 1:

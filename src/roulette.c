@@ -3487,9 +3487,9 @@ static void LoadOrFreeMiscSpritePalettesAndSheets(bool8 free)
     {
         FreeAllSpritePalettes();
         LoadSpritePalettes(sSpritePalettes);
-        LoadCompressedSpriteSheet(&sSpriteSheet_Ball);
-        LoadCompressedSpriteSheet(&sSpriteSheet_ShroomishTaillow);
-        LoadCompressedSpriteSheet(&sSpriteSheet_Shadow);
+        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_Ball);
+        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ShroomishTaillow);
+        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_Shadow);
     }
     else
     {

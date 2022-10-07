@@ -269,22 +269,6 @@ static const union AnimCmd *const sBerryPicSpriteAnimTable[] =
     sAnim_BerryPic
 };
 
-static const struct SpriteFrameImage sBerryPicSpriteImageTable[] =
-{
-    {&gDecompressionBuffer[0], 0x800},
-};
-
-static const struct SpriteTemplate sBerryPicSpriteTemplate =
-{
-    .tileTag = TAG_NONE,
-    .paletteTag = TAG_BERRY_PIC_PAL,
-    .oam = &sBerryPicOamData,
-    .anims = sBerryPicSpriteAnimTable,
-    .images = sBerryPicSpriteImageTable,
-    .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = SpriteCallbackDummy,
-};
-
 static const union AffineAnimCmd sSpriteAffineAnim_BerryPicRotation1[] =
 {
     AFFINEANIMCMD_FRAME(-1, -1, 253, 96),
@@ -311,17 +295,6 @@ static const union AffineAnimCmd *const sBerryPicRotatingAnimCmds[] =
 {
     sSpriteAffineAnim_BerryPicRotation1,
     sSpriteAffineAnim_BerryPicRotation2
-};
-
-static const struct SpriteTemplate sBerryPicRotatingSpriteTemplate =
-{
-    .tileTag = TAG_NONE,
-    .paletteTag = TAG_BERRY_PIC_PAL,
-    .oam = &sBerryPicRotatingOamData,
-    .anims = sBerryPicSpriteAnimTable,
-    .images = sBerryPicSpriteImageTable,
-    .affineAnims = sBerryPicRotatingAnimCmds,
-    .callback = SpriteCallbackDummy,
 };
 
 static const struct CompressedTilesPal sBerryPicTable[] =
@@ -651,13 +624,28 @@ static void LoadBerryGfx(u8 berryId)
 
     pal.data = sBerryPicTable[berryId].pal;
     pal.tag = TAG_BERRY_PIC_PAL;
-    LoadCompressedSpritePalette(&pal);
+    LoadCompressedSpritePaletteUsingHeap(&pal);
     LZDecompressWram(sBerryPicTable[berryId].tiles, &gDecompressionBuffer[0x1000]);
     ArrangeBerryGfx(&gDecompressionBuffer[0x1000], &gDecompressionBuffer[0]);
 }
 
 u8 CreateBerryTagSprite(u8 id, s16 x, s16 y)
 {
+
+    static struct SpriteFrameImage sBerryPicSpriteImageTable;
+    static struct SpriteTemplate sBerryPicSpriteTemplate;
+
+    sBerryPicSpriteImageTable.data = &gDecompressionBuffer[0];
+    sBerryPicSpriteImageTable.size = 0x800;
+
+    sBerryPicSpriteTemplate.tileTag = TAG_NONE;
+    sBerryPicSpriteTemplate.paletteTag = TAG_BERRY_PIC_PAL;
+    sBerryPicSpriteTemplate.oam = &sBerryPicOamData;
+    sBerryPicSpriteTemplate.anims = sBerryPicSpriteAnimTable;
+    sBerryPicSpriteTemplate.images = &sBerryPicSpriteImageTable;
+    sBerryPicSpriteTemplate.affineAnims = gDummySpriteAffineAnimTable;
+    sBerryPicSpriteTemplate.callback = SpriteCallbackDummy;
+
     LoadBerryGfx(id);
     return CreateSprite(&sBerryPicSpriteTemplate, x, y, 0);
 }
@@ -671,6 +659,20 @@ void FreeBerryTagSpritePalette(void)
 u8 CreateSpinningBerrySprite(u8 berryId, u8 x, u8 y, bool8 startAffine)
 {
     u8 spriteId;
+
+    static struct SpriteFrameImage sBerryPicSpriteImageTable;
+    static struct SpriteTemplate sBerryPicRotatingSpriteTemplate;
+
+    sBerryPicSpriteImageTable.data = &gDecompressionBuffer[0];
+    sBerryPicSpriteImageTable.size = 0x800;
+
+    sBerryPicRotatingSpriteTemplate.tileTag = TAG_NONE;
+    sBerryPicRotatingSpriteTemplate.paletteTag = TAG_BERRY_PIC_PAL;
+    sBerryPicRotatingSpriteTemplate.oam = &sBerryPicRotatingOamData;
+    sBerryPicRotatingSpriteTemplate.anims = sBerryPicSpriteAnimTable;
+    sBerryPicRotatingSpriteTemplate.images = &sBerryPicSpriteImageTable;
+    sBerryPicRotatingSpriteTemplate.affineAnims = sBerryPicRotatingAnimCmds;
+    sBerryPicRotatingSpriteTemplate.callback = SpriteCallbackDummy;
 
     FreeSpritePaletteByTag(TAG_BERRY_PIC_PAL);
     LoadBerryGfx(berryId);

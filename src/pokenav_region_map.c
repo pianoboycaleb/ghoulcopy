@@ -486,7 +486,7 @@ static void LoadCityZoomViewGfx(void)
 {
     int i;
     for (i = 0; i < ARRAY_COUNT(sCityZoomTextSpriteSheet); i++)
-        LoadCompressedSpriteSheet(&sCityZoomTextSpriteSheet[i]);
+        LoadCompressedSpriteSheetUsingHeap(&sCityZoomTextSpriteSheet[i]);
 
     Pokenav_AllocAndLoadPalettes(sCityZoomTilesSpritePalette);
     CreateCityZoomTextSprites();

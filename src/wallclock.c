@@ -661,7 +661,7 @@ static void LoadWallClockGraphics(void)
     ResetSpriteData();
     ResetPaletteFade();
     FreeAllSpritePalettes();
-    LoadCompressedSpriteSheet(&sSpriteSheet_ClockHand);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ClockHand);
     LoadSpritePalettes(sSpritePalettes_Clock);
 }
 

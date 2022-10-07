@@ -350,11 +350,11 @@ static bool8 LoadBerryTagGfx(void)
         sBerryTag->gfxState++;
         break;
     case 5:
-        LoadCompressedSpriteSheet(&gBerryCheckCircleSpriteSheet);
+        LoadCompressedSpriteSheetUsingHeap(&gBerryCheckCircleSpriteSheet);
         sBerryTag->gfxState++;
         break;
     default:
-        LoadCompressedSpritePalette(&gBerryCheckCirclePaletteTable);
+        LoadCompressedSpritePaletteUsingHeap(&gBerryCheckCirclePaletteTable);
         return TRUE; // done
     }
 

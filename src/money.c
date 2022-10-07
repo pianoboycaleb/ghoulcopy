@@ -186,8 +186,8 @@ void HideMoneyBox(void)
 
 void AddMoneyLabelObject(u16 x, u16 y)
 {
-    LoadCompressedSpriteSheet(&sSpriteSheet_MoneyLabel);
-    LoadCompressedSpritePalette(&sSpritePalette_MoneyLabel);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_MoneyLabel);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePalette_MoneyLabel);
     sMoneyLabelSpriteId = CreateSprite(&sSpriteTemplate_MoneyLabel, x, y, 0);
 }
 

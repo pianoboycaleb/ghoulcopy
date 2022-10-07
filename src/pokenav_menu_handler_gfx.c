@@ -794,7 +794,7 @@ static void LoadPokenavOptionPalettes(void)
     s32 i;
 
     for (i = 0; i < ARRAY_COUNT(sPokenavOptionsSpriteSheets); i++)
-        LoadCompressedSpriteSheet(&sPokenavOptionsSpriteSheets[i]);
+        LoadCompressedSpriteSheetUsingHeap(&sPokenavOptionsSpriteSheets[i]);
     Pokenav_AllocAndLoadPalettes(sPokenavOptionsSpritePalettes);
 }
 

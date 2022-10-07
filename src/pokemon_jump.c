@@ -2869,7 +2869,7 @@ static void LoadSpriteSheetsAndPalettes(struct PokemonJumpGfx *jumpGfx)
     int i;
 
     for (i = 0; i < ARRAY_COUNT(sCompressedSpriteSheets); i++)
-        LoadCompressedSpriteSheet(&sCompressedSpriteSheets[i]);
+        LoadCompressedSpriteSheetUsingHeap(&sCompressedSpriteSheets[i]);
 
     for (i = 0; i < ARRAY_COUNT(sSpritePalettes); i++)
         LoadSpritePalette(&sSpritePalettes[i]);
@@ -2917,7 +2917,7 @@ static void CreateJumpMonSprite(struct PokemonJumpGfx *jumpGfx, struct PokemonJu
 
         spritePalette.data = GetMonSpritePalFromSpeciesAndPersonality(monInfo->species, monInfo->otId, monInfo->personality);
         spritePalette.tag = multiplayerId;
-        LoadCompressedSpritePalette(&spritePalette);
+        LoadCompressedSpritePaletteUsingHeap(&spritePalette);
 
         Free(buffer);
         Free(unusedBuffer);

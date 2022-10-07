@@ -10,6 +10,7 @@
 #include "gpu_regs.h"
 #include "graphics.h"
 #include "main.h"
+#include "malloc.h"
 #include "m4a.h"
 #include "palette.h"
 #include "pokemon.h"
@@ -1246,6 +1247,7 @@ void LoadMoveBg(u16 bgId)
         void *dmaSrc;
         void *dmaDest;
 
+        gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
         LZDecompressWram(tilemap, gDecompressionBuffer);
         RelocateBattleBgPal(GetBattleBgPaletteNum(), (void *)gDecompressionBuffer, 0x100, FALSE);
         dmaSrc = gDecompressionBuffer;
@@ -1253,6 +1255,7 @@ void LoadMoveBg(u16 bgId)
         DmaCopy32(3, dmaSrc, dmaDest, 0x800);
         LZDecompressVram(gBattleAnimBackgroundTable[bgId].image, (void *)BG_SCREEN_ADDR(4));
         LoadCompressedPalette(gBattleAnimBackgroundTable[bgId].palette, GetBattleBgPaletteNum() * 16, 32);
+        Free(gDecompressionBuffer);
     }
     else
     {

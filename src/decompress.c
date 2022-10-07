@@ -6,7 +6,7 @@
 #include "pokemon_debug.h"
 #include "text.h"
 
-EWRAM_DATA ALIGNED(4) u8 gDecompressionBuffer[0x4000] = {0};
+EWRAM_DATA u8 *gDecompressionBuffer = NULL;
 
 void LZDecompressWram(const u32 *src, void *dest)
 {
@@ -18,6 +18,7 @@ void LZDecompressVram(const u32 *src, void *dest)
     LZ77UnCompVram(src, dest);
 }
 
+// No longer used in favor of LoadCompressedSpriteSheetUsingHeap
 u16 LoadCompressedSpriteSheet(const struct CompressedSpriteSheet *src)
 {
     struct SpriteSheet dest;
@@ -29,6 +30,7 @@ u16 LoadCompressedSpriteSheet(const struct CompressedSpriteSheet *src)
     return LoadSpriteSheet(&dest);
 }
 
+// No longer used in favor of LoadCompressedSpriteSheetUsingHeap
 void LoadCompressedSpriteSheetOverrideBuffer(const struct CompressedSpriteSheet *src, void *buffer)
 {
     struct SpriteSheet dest;
@@ -40,6 +42,7 @@ void LoadCompressedSpriteSheetOverrideBuffer(const struct CompressedSpriteSheet 
     LoadSpriteSheet(&dest);
 }
 
+// No longer used in favor of LoadCompressedSpritePaletteUsingHeap
 void LoadCompressedSpritePalette(const struct CompressedSpritePalette *src)
 {
     struct SpritePalette dest;
@@ -50,6 +53,7 @@ void LoadCompressedSpritePalette(const struct CompressedSpritePalette *src)
     LoadSpritePalette(&dest);
 }
 
+// No longer used in favor of LoadCompressedSpritePaletteUsingHeap
 void LoadCompressedSpritePaletteOverrideBuffer(const struct CompressedSpritePalette *src, void *buffer)
 {
     struct SpritePalette dest;

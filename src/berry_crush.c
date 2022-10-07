@@ -1949,6 +1949,7 @@ static void CopyPlayerNameWindowGfxToBg(struct BerryCrushGame *game)
     u8 i = 0;
     u8 *windowGfx;
 
+    gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
     LZ77UnCompWram(gBerryCrush_TextWindows_Tilemap, gDecompressionBuffer);
 
     for (windowGfx = gDecompressionBuffer; i < game->playerCount; i++)
@@ -1962,6 +1963,7 @@ static void CopyPlayerNameWindowGfxToBg(struct BerryCrushGame *game)
             2
         );
     }
+    Free(gDecompressionBuffer);
     CopyBgTilemapBufferToVram(3);
 }
 
@@ -1975,7 +1977,7 @@ static void CreateGameSprites(struct BerryCrushGame *game)
     gSpriteCoordOffsetX = 0;
     gSpriteCoordOffsetY = CRUSHER_START_Y;
     for (i = 0; i < ARRAY_COUNT(sSpriteSheets) - 1; i++)
-        LoadCompressedSpriteSheet(&sSpriteSheets[i]);
+        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets[i]);
     LoadSpritePalettes(sSpritePals);
 
     // Create sprite for crusher base

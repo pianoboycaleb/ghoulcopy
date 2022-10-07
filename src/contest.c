@@ -3096,7 +3096,7 @@ static u8 CreateJudgeSprite(void)
 {
     u8 spriteId;
 
-    LoadCompressedSpriteSheet(&sSpriteSheet_Judge);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_Judge);
     LoadCompressedPalette(gContest2Pal, 0x110, 32);
     spriteId = CreateSprite(&sSpriteTemplate_Judge, 112, 36, 30);
     gSprites[spriteId].oam.paletteNum = 1;
@@ -3108,8 +3108,8 @@ static u8 CreateJudgeSpeechBubbleSprite(void)
 {
     u8 spriteId;
 
-    LoadCompressedSpriteSheet(&sSpriteSheet_JudgeSymbols);
-    LoadCompressedSpritePalette(&sSpritePalette_JudgeSymbols);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_JudgeSymbols);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePalette_JudgeSymbols);
     spriteId = CreateSprite(&sSpriteTemplate_JudgeSpeechBubble, 96, 10, 29);
     gSprites[spriteId].invisible = TRUE;
     gSprites[spriteId].data[0] = gSprites[spriteId].oam.tileNum;
@@ -3942,7 +3942,7 @@ static void CreateNextTurnSprites(void)
     LoadSpritePalette(&sSpritePalette_NextTurn);
     for (i = 0; i < CONTESTANT_COUNT; i++)
     {
-        LoadCompressedSpriteSheet(&sSpriteSheet_NextTurn[i]);
+        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_NextTurn[i]);
         eContestGfxState[i].nextTurnSpriteId = CreateSprite(&sSpriteTemplates_NextTurn[i],
                                                            204,
                                                            sNextTurnSpriteYPositions[gContestantTurnOrder[i]],
@@ -3956,7 +3956,7 @@ static void CreateApplauseMeterSprite(void)
 {
     u8 spriteId;
 
-    LoadCompressedSpriteSheet(&sSpriteSheet_ApplauseMeter);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ApplauseMeter);
     LoadSpritePalette(&sSpritePalette_ApplauseMeter);
     spriteId = CreateSprite(&sSpriteTemplate_ApplauseMeter, 30, 44, 1);
     gSprites[spriteId].invisible = TRUE;
@@ -4117,7 +4117,7 @@ static u8 CreateContestantBoxBlinkSprites(u8 contestant)
     u8 spriteId1, spriteId2;
     u8 x = gContestantTurnOrder[contestant] * 40 + 32;
 
-    LoadCompressedSpriteSheet(&sSpriteSheets_ContestantsTurnBlinkEffect[contestant]);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_ContestantsTurnBlinkEffect[contestant]);
     LoadSpritePalette(&sSpritePalettes_ContestantsTurnBlinkEffect[contestant]);
     spriteId1 = CreateSprite(&sSpriteTemplates_ContestantsTurnBlinkEffect[contestant], 184, x, 29);
     spriteId2 = CreateSprite(&sSpriteTemplates_ContestantsTurnBlinkEffect[contestant], 248, x, 29);

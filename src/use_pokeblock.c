@@ -1608,7 +1608,7 @@ static void LoadConditionGfx(void)
     spriteSheet.data = gUsePokeblockCondition_Gfx;
     spriteSheet.size = 0x800;
     spriteSheet.tag = TAG_CONDITION;
-    LoadCompressedSpriteSheet(&spriteSheet);
+    LoadCompressedSpriteSheetUsingHeap(&spriteSheet);
     LoadSpritePalette(&spritePalette);
 }
 

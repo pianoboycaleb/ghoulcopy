@@ -3,6 +3,7 @@
 #include "decompress.h"
 #include "event_data.h"
 #include "link.h"
+#include "malloc.h"
 #include "pokemon.h"
 #include "random.h"
 #include "task.h"
@@ -21,11 +22,18 @@ static void Task_LinkContest_InitFlags(u8);
 
 bool32 LinkContest_SendBlock(void *src, u16 size)
 {
+    gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
     memcpy(gDecompressionBuffer, src, size);
     if (SendBlock(BitmaskAllOtherLinkPlayers(), gDecompressionBuffer, size))
+    {
+        Free(gDecompressionBuffer);
         return TRUE;
+    }
     else
+    {
+        Free(gDecompressionBuffer);
         return FALSE;
+    }
 }
 
 bool8 LinkContest_GetBlockReceived(u8 flag)

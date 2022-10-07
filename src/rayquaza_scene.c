@@ -1593,14 +1593,14 @@ static void LoadDuoFightSceneGfx(void)
     LZDecompressWram(gRaySceneDuoFight_Clouds1_Tilemap, sRayScene->tilemapBuffers[1]);
     LZDecompressWram(gRaySceneDuoFight_Clouds3_Tilemap, sRayScene->tilemapBuffers[2]);
     LoadCompressedPalette(gRaySceneDuoFight_Clouds_Pal, 0, 0x40);
-    LoadCompressedSpriteSheet(&sSpriteSheet_DuoFight_Groudon);
-    LoadCompressedSpriteSheet(&sSpriteSheet_DuoFight_GroudonShoulder);
-    LoadCompressedSpriteSheet(&sSpriteSheet_DuoFight_GroudonClaw);
-    LoadCompressedSpriteSheet(&sSpriteSheet_DuoFight_Kyogre);
-    LoadCompressedSpriteSheet(&sSpriteSheet_DuoFight_KyogrePectoralFin);
-    LoadCompressedSpriteSheet(&sSpriteSheet_DuoFight_KyogreDorsalFin);
-    LoadCompressedSpritePalette(&sSpritePal_DuoFight_Groudon);
-    LoadCompressedSpritePalette(&sSpritePal_DuoFight_Kyogre);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_DuoFight_Groudon);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_DuoFight_GroudonShoulder);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_DuoFight_GroudonClaw);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_DuoFight_Kyogre);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_DuoFight_KyogrePectoralFin);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_DuoFight_KyogreDorsalFin);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePal_DuoFight_Groudon);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePal_DuoFight_Kyogre);
 }
 
 static void Task_DuoFightAnim(u8 taskId)
@@ -2033,8 +2033,8 @@ static void LoadTakesFlightSceneGfx(void)
     LZDecompressWram(gRaySceneTakesFlight_Bg_Tilemap, sRayScene->tilemapBuffers[1]);
     LZDecompressWram(gRaySceneTakesFlight_Rayquaza_Tilemap, sRayScene->tilemapBuffers[2]);
     LoadCompressedPalette(gRaySceneTakesFlight_Rayquaza_Pal, 0, 64);
-    LoadCompressedSpriteSheet(&sSpriteSheet_TakesFlight_Smoke);
-    LoadCompressedSpritePalette(&sSpritePal_TakesFlight_Smoke);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_TakesFlight_Smoke);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePal_TakesFlight_Smoke);
 }
 
 static void Task_RayTakesFlightAnim(u8 taskId)
@@ -2241,9 +2241,9 @@ static void LoadDescendsSceneGfx(void)
     LoadCompressedPalette(gRaySceneDescends_Bg_Pal, 0, 0x40);
     gPlttBufferUnfaded[0] = RGB_WHITE;
     gPlttBufferFaded[0] = RGB_WHITE;
-    LoadCompressedSpriteSheet(&sSpriteSheet_Descends_Rayquaza);
-    LoadCompressedSpriteSheet(&sSpriteSheet_Descends_RayquazaTail);
-    LoadCompressedSpritePalette(&sSpritePal_Descends_Rayquaza);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_Descends_Rayquaza);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_Descends_RayquazaTail);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePal_Descends_Rayquaza);
 }
 
 // Draw ray of light emerging from the clouds
@@ -2672,16 +2672,16 @@ static void LoadChasesAwaySceneGfx(void)
     LZDecompressWram(gRaySceneChasesAway_Light_Tilemap, sRayScene->tilemapBuffers[0]);
     LZDecompressWram(gRaySceneChasesAway_Ring_Tilemap, sRayScene->tilemapBuffers[2]);
     LoadCompressedPalette(gRaySceneChasesAway_Bg_Pal, 0, 0x60);
-    LoadCompressedSpriteSheet(&sSpriteSheet_ChasesAway_Groudon);
-    LoadCompressedSpriteSheet(&sSpriteSheet_ChasesAway_GroudonTail);
-    LoadCompressedSpriteSheet(&sSpriteSheet_ChasesAway_Kyogre);
-    LoadCompressedSpriteSheet(&sSpriteSheet_ChasesAway_Rayquaza);
-    LoadCompressedSpriteSheet(&sSpriteSheet_ChasesAway_RayquazaTail);
-    LoadCompressedSpriteSheet(&sSpriteSheet_ChasesAway_KyogreSplash);
-    LoadCompressedSpritePalette(&sSpritePal_ChasesAway_Groudon);
-    LoadCompressedSpritePalette(&sSpritePal_ChasesAway_Kyogre);
-    LoadCompressedSpritePalette(&sSpritePal_ChasesAway_Rayquaza);
-    LoadCompressedSpritePalette(&sSpritePal_ChasesAway_KyogreSplash);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ChasesAway_Groudon);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ChasesAway_GroudonTail);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ChasesAway_Kyogre);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ChasesAway_Rayquaza);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ChasesAway_RayquazaTail);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_ChasesAway_KyogreSplash);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePal_ChasesAway_Groudon);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePal_ChasesAway_Kyogre);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePal_ChasesAway_Rayquaza);
+    LoadCompressedSpritePaletteUsingHeap(&sSpritePal_ChasesAway_KyogreSplash);
 }
 
 #define tState    data[0]

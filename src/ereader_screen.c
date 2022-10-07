@@ -97,7 +97,7 @@ static u8 EReader_Transfer(struct EReaderData *eReader)
 
 static void OpenEReaderLink(void)
 {
-    memset(gDecompressionBuffer, 0, 0x2000);
+    //memset(gDecompressionBuffer, 0, 0x2000);
     gLinkType = LINKTYPE_EREADER;
     OpenLink();
     SetSuppressLinkErrorMessage(TRUE);
@@ -484,6 +484,7 @@ static void Task_EReader(u8 taskId)
         }
         break;
     case ER_STATE_SAVE:
+        gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
         if (TryWriteTrainerHill((struct EReaderTrainerHillSet *)&gDecompressionBuffer))
         {
             AddTextPrinterToWindow1(gJPText_ConnectionComplete);
@@ -494,6 +495,7 @@ static void Task_EReader(u8 taskId)
         {
             data->state = ER_STATE_SAVE_FAILED;
         }
+        Free(gDecompressionBuffer);
         break;
     case ER_STATE_SUCCESS_MSG:
         if (UpdateTimer(&data->timer, 120))

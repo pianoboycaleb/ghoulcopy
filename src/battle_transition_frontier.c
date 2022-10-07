@@ -227,7 +227,7 @@ static void LoadLogoGfx(void)
     LZ77UnCompVram(sLogoCenter_Gfx, tileset);
     LZ77UnCompVram(sLogoCenter_Tilemap, tilemap);
     LoadPalette(sLogo_Pal, 0xF0, sizeof(sLogo_Pal));
-    LoadCompressedSpriteSheet(&sSpriteSheet_LogoCircles);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_LogoCircles);
     LoadSpritePalette(&sSpritePalette_LogoCircles);
 }
 
