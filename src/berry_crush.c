@@ -1013,10 +1013,10 @@ void StartBerryCrush(MainCallback exitCallback)
         return;
     }
 
-    sGame = AllocZeroed(sizeof(*sGame));
+    sGame = AllocZeroedTest(sizeof(*sGame));
     if (!sGame)
     {
-        // Alloc failed
+        // AllocTest failed
         ERROR_EXIT(exitCallback);
         return;
     }

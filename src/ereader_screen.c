@@ -259,7 +259,7 @@ void CreateEReaderTask(void)
     data->unused2 = 0;
     data->unused3 = 0;
     data->status = 0;
-    data->unusedBuffer = AllocZeroed(0x40);
+    data->unusedBuffer = AllocZeroedTest(0x40);
 }
 
 static void ResetTimer(u16 *timer)

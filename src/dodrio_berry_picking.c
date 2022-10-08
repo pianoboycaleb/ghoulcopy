@@ -682,7 +682,7 @@ void StartDodrioBerryPicking(u16 partyId, void (*exitCallback)(void))
     }
     else
     {
-        // Exit - Alloc failed, or players not connected
+        // Exit - AllocTest failed, or players not connected
         SetMainCallback2(exitCallback);
         return;
     }

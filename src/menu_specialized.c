@@ -200,7 +200,7 @@ bool8 MailboxMenu_Alloc(u8 count)
     u8 i;
 
     // + 1 to count for 'Cancel'
-    sMailboxList = Alloc((count + 1) * sizeof(*sMailboxList));
+    sMailboxList = AllocTest((count + 1) * sizeof(*sMailboxList));
     if (sMailboxList == NULL)
         return FALSE;
 

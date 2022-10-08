@@ -231,11 +231,11 @@ void ReceiveDewfordTrendData(struct DewfordTrend *linkedTrends, size_t size, u8 
     u16 i, j, numTrends, players;
     struct DewfordTrend *linkedTrendsBuffer, *savedTrendsBuffer, *src, *dst, *temp;
 
-    // Exit if alloc fails
+    // Exit if Alloc fails
     if (!(linkedTrendsBuffer = Alloc(BUFFER_SIZE)))
         return;
 
-    // Exit if alloc fails
+    // Exit if Alloc fails
     if (!(savedTrendsBuffer = Alloc(BUFFER_SIZE)))
     {
         Free(linkedTrendsBuffer);

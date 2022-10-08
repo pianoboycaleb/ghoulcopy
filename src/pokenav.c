@@ -314,7 +314,7 @@ static void Task_RunLoopedTask_LinkMode(u8 taskId)
 
 void CB2_InitPokeNav(void)
 {
-    gPokenavResources = Alloc(sizeof(*gPokenavResources));
+    gPokenavResources = AllocTest(sizeof(*gPokenavResources));
     if (gPokenavResources == NULL)
     {
         SetMainCallback2(CB2_ReturnToFieldWithOpenMenu);
@@ -342,7 +342,7 @@ static void CB2_InitPokenavForTutorial(void)
     if (gPaletteFade.active)
         return;
 
-    gPokenavResources = Alloc(sizeof(*gPokenavResources));
+    gPokenavResources = AllocTest(sizeof(*gPokenavResources));
     if (gPokenavResources == NULL)
     {
         SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
@@ -546,7 +546,7 @@ void SetPokenavVBlankCallback(void)
 
 void *AllocSubstruct(u32 index, u32 size)
 {
-    gPokenavResources->substructPtrs[index] = Alloc(size);
+    gPokenavResources->substructPtrs[index] = AllocTest(size);
     return gPokenavResources->substructPtrs[index];
 }
 

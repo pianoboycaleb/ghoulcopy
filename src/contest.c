@@ -1123,23 +1123,23 @@ static void InitContestResources(void)
 
 static void AllocContestResources(void)
 {
-    gContestResources = AllocZeroed(sizeof(struct ContestResources));
-    gContestResources->contest = AllocZeroed(sizeof(struct Contest));
-    gContestResources->status = AllocZeroed(sizeof(struct ContestantStatus) * CONTESTANT_COUNT);
-    gContestResources->appealResults = AllocZeroed(sizeof(struct ContestAppealMoveResults));
-    gContestResources->aiData = AllocZeroed(sizeof(struct ContestAIInfo));
-    gContestResources->excitement = AllocZeroed(sizeof(struct ContestExcitement) * CONTESTANT_COUNT);
-    gContestResources->gfxState = AllocZeroed(sizeof(struct ContestGraphicsState) * CONTESTANT_COUNT);
-    gContestResources->moveAnim = AllocZeroed(sizeof(struct ContestMoveAnimData));
-    gContestResources->tv = AllocZeroed(sizeof(struct ContestTV) * CONTESTANT_COUNT);
-    gContestResources->unused = AllocZeroed(sizeof(struct ContestUnused));
-    gContestResources->contestBgTilemaps[0] = AllocZeroed(0x1000);
-    gContestResources->contestBgTilemaps[1] = AllocZeroed(0x1000);
-    gContestResources->contestBgTilemaps[2] = AllocZeroed(0x1000);
-    gContestResources->contestBgTilemaps[3] = AllocZeroed(0x1000);
-    gContestResources->boxBlinkTiles1 = AllocZeroed(0x800);
-    gContestResources->boxBlinkTiles2 = AllocZeroed(0x800);
-    gContestResources->animBgTileBuffer = AllocZeroed(0x2000);
+    gContestResources = AllocZeroedTest(sizeof(struct ContestResources));
+    gContestResources->contest = AllocZeroedTest(sizeof(struct Contest));
+    gContestResources->status = AllocZeroedTest(sizeof(struct ContestantStatus) * CONTESTANT_COUNT);
+    gContestResources->appealResults = AllocZeroedTest(sizeof(struct ContestAppealMoveResults));
+    gContestResources->aiData = AllocZeroedTest(sizeof(struct ContestAIInfo));
+    gContestResources->excitement = AllocZeroedTest(sizeof(struct ContestExcitement) * CONTESTANT_COUNT);
+    gContestResources->gfxState = AllocZeroedTest(sizeof(struct ContestGraphicsState) * CONTESTANT_COUNT);
+    gContestResources->moveAnim = AllocZeroedTest(sizeof(struct ContestMoveAnimData));
+    gContestResources->tv = AllocZeroedTest(sizeof(struct ContestTV) * CONTESTANT_COUNT);
+    gContestResources->unused = AllocZeroedTest(sizeof(struct ContestUnused));
+    gContestResources->contestBgTilemaps[0] = AllocZeroedTest(0x1000);
+    gContestResources->contestBgTilemaps[1] = AllocZeroedTest(0x1000);
+    gContestResources->contestBgTilemaps[2] = AllocZeroedTest(0x1000);
+    gContestResources->contestBgTilemaps[3] = AllocZeroedTest(0x1000);
+    gContestResources->boxBlinkTiles1 = AllocZeroedTest(0x800);
+    gContestResources->boxBlinkTiles2 = AllocZeroedTest(0x800);
+    gContestResources->animBgTileBuffer = AllocZeroedTest(0x2000);
     gBattleAnimBgTileBuffer = gContestResources->animBgTileBuffer;
     gBattleAnimBgTilemapBuffer = gContestResources->contestBgTilemaps[1];
 }
@@ -1176,7 +1176,7 @@ void CB2_StartContest(void)
         AllocContestResources();
         AllocateMonSpritesGfx();
         FREE_AND_SET_NULL(gMonSpritesGfxPtr->firstDecompressed);
-        gMonSpritesGfxPtr->firstDecompressed = AllocZeroed(0x4000);
+        gMonSpritesGfxPtr->firstDecompressed = AllocZeroedTest(0x4000);
         SetVBlankCallback(NULL);
         InitContestInfoBgs();
         InitContestWindows();

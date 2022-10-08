@@ -4317,7 +4317,7 @@ static u8 ForewarnChooseMove(u32 battler)
         u16 moveId;
     };
     u32 i, j, bestId, count;
-    struct Forewarn *data = Alloc(sizeof(struct Forewarn) * MAX_BATTLERS_COUNT * MAX_MON_MOVES);
+    struct Forewarn *data = AllocTest(sizeof(struct Forewarn) * MAX_BATTLERS_COUNT * MAX_MON_MOVES);
 
     // Put all moves
     for (count = 0, i = 0; i < MAX_BATTLERS_COUNT; i++)

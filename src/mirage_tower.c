@@ -292,7 +292,7 @@ void TryStartMirageTowerPulseBlendEffect(void)
      || !FlagGet(FLAG_MIRAGE_TOWER_VISIBLE))
         return;
 
-    sMirageTowerPulseBlend = AllocZeroed(sizeof(*sMirageTowerPulseBlend));
+    sMirageTowerPulseBlend = AllocZeroedTest(sizeof(*sMirageTowerPulseBlend));
     InitPulseBlend(&sMirageTowerPulseBlend->pulseBlend);
     InitPulseBlendPaletteSettings(&sMirageTowerPulseBlend->pulseBlend, &gMirageTowerPulseBlendSettings);
     MarkUsedPulseBlendPalettes(&sMirageTowerPulseBlend->pulseBlend, 0x1, TRUE);
@@ -535,8 +535,8 @@ static void InitMirageTowerShake(u8 taskId)
         gTasks[taskId].tState++;
         break;
     case 1:
-        sMirageTowerGfxBuffer = (u8 *)AllocZeroed(MIRAGE_TOWER_GFX_LENGTH);
-        sMirageTowerTilemapBuffer = (u8 *)AllocZeroed(BG_SCREEN_SIZE);
+        sMirageTowerGfxBuffer = (u8 *)AllocZeroedTest(MIRAGE_TOWER_GFX_LENGTH);
+        sMirageTowerTilemapBuffer = (u8 *)AllocZeroedTest(BG_SCREEN_SIZE);
         ChangeBgX(0, 0, BG_COORD_SET);
         ChangeBgY(0, 0, BG_COORD_SET);
         gTasks[taskId].tState++;
@@ -561,7 +561,7 @@ static void InitMirageTowerShake(u8 taskId)
         gTasks[taskId].tState++;
         break;
     case 6:
-        sBgShakeOffsets = Alloc(sizeof(*sBgShakeOffsets));
+        sBgShakeOffsets = AllocTest(sizeof(*sBgShakeOffsets));
         zero = 0;
         sBgShakeOffsets->bgHOFS = 2;
         sBgShakeOffsets->bgVOFS = zero;
@@ -583,7 +583,7 @@ static void DoMirageTowerDisintegration(u8 taskId)
     switch (gTasks[taskId].tState)
     {
     case 1:
-        sFallingTower = AllocZeroed(OUTER_BUFFER_LENGTH * sizeof(struct FallAnim_Tower));
+        sFallingTower = AllocZeroedTest(OUTER_BUFFER_LENGTH * sizeof(struct FallAnim_Tower));
         break;
     case 3:
         if (gTasks[taskId].data[3] <= (OUTER_BUFFER_LENGTH - 1))
@@ -592,7 +592,7 @@ static void DoMirageTowerDisintegration(u8 taskId)
             {
                 // Initialize disintegration pattern
                 index = gTasks[taskId].data[3];
-                sFallingTower[index].disintegrateRand = Alloc(INNER_BUFFER_LENGTH);
+                sFallingTower[index].disintegrateRand = AllocTest(INNER_BUFFER_LENGTH);
                 for (i = 0; i <= (INNER_BUFFER_LENGTH - 1); i++)
                     sFallingTower[index].disintegrateRand[i] = i;
 
@@ -670,10 +670,10 @@ static void Task_FossilFallAndSink(u8 taskId)
     switch (gTasks[taskId].tState)
     {
     case 1:
-        sFallingFossil = AllocZeroed(sizeof(*sFallingFossil));
-        sFallingFossil->frameImageTiles = AllocZeroed(sizeof(sFossil_Gfx));
-        sFallingFossil->frameImage = AllocZeroed(sizeof(*sFallingFossil->frameImage));
-        sFallingFossil->disintegrateRand = AllocZeroed(FOSSIL_DISINTEGRATE_LENGTH * sizeof(u16));
+        sFallingFossil = AllocZeroedTest(sizeof(*sFallingFossil));
+        sFallingFossil->frameImageTiles = AllocZeroedTest(sizeof(sFossil_Gfx));
+        sFallingFossil->frameImage = AllocZeroedTest(sizeof(*sFallingFossil->frameImage));
+        sFallingFossil->disintegrateRand = AllocZeroedTest(FOSSIL_DISINTEGRATE_LENGTH * sizeof(u16));
         sFallingFossil->disintegrateIdx = 0;
         break;
     case 2:

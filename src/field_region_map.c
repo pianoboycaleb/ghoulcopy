@@ -92,7 +92,7 @@ static const struct WindowTemplate sFieldRegionMapWindowTemplates[] =
 void FieldInitRegionMap(MainCallback callback)
 {
     SetVBlankCallback(NULL);
-    sFieldRegionMapHandler = Alloc(sizeof(*sFieldRegionMapHandler));
+    sFieldRegionMapHandler = AllocTest(sizeof(*sFieldRegionMapHandler));
     sFieldRegionMapHandler->state = 0;
     sFieldRegionMapHandler->callback = callback;
     SetMainCallback2(MCB2_InitRegionMapRegisters);

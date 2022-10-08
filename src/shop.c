@@ -513,7 +513,7 @@ static void CB2_InitBuyMenu(void)
         ResetSpriteData();
         ResetTasks();
         ClearScheduledBgCopiesToVram();
-        sShopData = AllocZeroed(sizeof(struct ShopData));
+        sShopData = AllocZeroedTest(sizeof(struct ShopData));
         sShopData->scrollIndicatorsTaskId = TASK_NONE;
         sShopData->itemSpriteIds[0] = SPRITE_NONE;
         sShopData->itemSpriteIds[1] = SPRITE_NONE;
@@ -556,8 +556,8 @@ static void BuyMenuBuildListMenuTemplate(void)
 {
     u16 i;
 
-    sListMenuItems = Alloc((sMartInfo.itemCount + 1) * sizeof(*sListMenuItems));
-    sItemNames = Alloc((sMartInfo.itemCount + 1) * sizeof(*sItemNames));
+    sListMenuItems = AllocTest((sMartInfo.itemCount + 1) * sizeof(*sListMenuItems));
+    sItemNames = AllocTest((sMartInfo.itemCount + 1) * sizeof(*sItemNames));
     for (i = 0; i < sMartInfo.itemCount; i++)
         BuyMenuSetListEntry(&sListMenuItems[i], sMartInfo.itemList[i], sItemNames[i]);
 

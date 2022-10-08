@@ -445,7 +445,7 @@ static const struct ListMenuTemplate sPokeblockListMenuTemplate =
 
 void OpenPokeblockCase(u8 caseId, void (*callback)(void))
 {
-    sPokeblockMenu = Alloc(sizeof(*sPokeblockMenu));
+    sPokeblockMenu = AllocTest(sizeof(*sPokeblockMenu));
     sPokeblockMenu->caseId = caseId;
     sPokeblockMenu->callbackOnUse = NULL;
     sPokeblockMenu->arrowTaskId = TASK_NONE;
@@ -842,7 +842,7 @@ static void SwapPokeblockMenuItems(u32 id1, u32 id2)
     if (id1 == id2)
         return;
 
-    copyPokeblock1 = Alloc(sizeof(struct Pokeblock));
+    copyPokeblock1 = AllocTest(sizeof(struct Pokeblock));
     *copyPokeblock1 = pokeblocks[id1];
 
     if (id2 > id1)

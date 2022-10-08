@@ -473,7 +473,7 @@ static void PlayerPC_Mailbox(u8 taskId)
         }
         else
         {
-            // Alloc failed, exit Mailbox
+            // AllocTest failed, exit Mailbox
             DisplayItemMessageOnField(taskId, gText_NoMailHere, ReshowPlayerPC);
         }
     }
@@ -936,7 +936,7 @@ static void Mailbox_Cancel(u8 taskId)
 
 static void ItemStorage_Init(void)
 {
-    sItemStorageMenu = AllocZeroed(sizeof(*sItemStorageMenu));
+    sItemStorageMenu = AllocZeroedTest(sizeof(*sItemStorageMenu));
     memset(sItemStorageMenu->windowIds, WINDOW_NONE, ITEMPC_WIN_COUNT);
     sItemStorageMenu->toSwapPos = NOT_SWAPPING;
     sItemStorageMenu->spriteId = SPRITE_NONE;
