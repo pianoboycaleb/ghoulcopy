@@ -885,11 +885,11 @@ bool8 FieldEffectActiveListContains(u8 id)
     return FALSE;
 }
 
-u8 CreateTrainerSprite(u8 trainerSpriteID, s16 x, s16 y, u8 subpriority, u8 *buffer)
+u8 CreateTrainerSprite(u8 trainerSpriteID, s16 x, s16 y, u8 subpriority)
 {
     struct SpriteTemplate spriteTemplate;
-    LoadCompressedSpritePaletteOverrideBuffer(&gTrainerFrontPicPaletteTable[trainerSpriteID], buffer);
-    LoadCompressedSpriteSheetOverrideBuffer(&gTrainerFrontPicTable[trainerSpriteID], buffer);
+    LoadCompressedSpritePaletteUsingHeap(&gTrainerFrontPicPaletteTable[trainerSpriteID]);
+    LoadCompressedSpriteSheetUsingHeap(&gTrainerFrontPicTable[trainerSpriteID]);
     spriteTemplate.tileTag = gTrainerFrontPicTable[trainerSpriteID].tag;
     spriteTemplate.paletteTag = gTrainerFrontPicPaletteTable[trainerSpriteID].tag;
     spriteTemplate.oam = &sOam_64x64;

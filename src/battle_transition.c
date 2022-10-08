@@ -2583,11 +2583,11 @@ static void Mugshots_CreateTrainerPics(struct Task *task)
     task->tOpponentSpriteId = CreateTrainerSprite(sMugshotsTrainerPicIDsTable[mugshotId],
                                                   sMugshotsOpponentCoords[mugshotId][0] - 32,
                                                   sMugshotsOpponentCoords[mugshotId][1] + 42,
-                                                  0, gDecompressionBuffer);
+                                                  0);
     task->tPlayerSpriteId = CreateTrainerSprite(PlayerGenderToFrontTrainerPicId(gSaveBlock2Ptr->playerGender),
                                                 DISPLAY_WIDTH + 32,
                                                 106,
-                                                0, gDecompressionBuffer);
+                                                0);
 
     opponentSprite = &gSprites[task->tOpponentSpriteId];
     playerSprite = &gSprites[task->tPlayerSpriteId];
