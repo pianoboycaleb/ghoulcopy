@@ -45,7 +45,6 @@
 #include "constants/battle_move_effects.h"
 #include "constants/items.h"
 #include "constants/moves.h"
-#include "constants/abilities.h"
 #include "constants/party_menu.h"
 #include "constants/region_map_sections.h"
 #include "constants/rgb.h"
@@ -109,7 +108,6 @@ enum {
 #define PSS_DATA_WINDOW_MOVE_NAMES 0
 #define PSS_DATA_WINDOW_MOVE_PP 1
 #define PSS_DATA_WINDOW_MOVE_DESCRIPTION 2
-
 
 #define MOVE_SELECTOR_SPRITES_COUNT 10
 // for the spriteIds field in PokemonSummaryScreenData
@@ -691,7 +689,6 @@ static const struct WindowTemplate sPageMovesTemplate[] = // This is used for bo
         .baseBlock = 599,
     },
 };
-
 static const u8 sTextColors[][3] =
 {
     {0, 1, 2},
@@ -725,7 +722,7 @@ static void (*const sTextPrinterTasks[])(u8 taskId) =
     [PSS_PAGE_INFO] = Task_PrintInfoPage,
     [PSS_PAGE_SKILLS] = Task_PrintSkillsPage,
     [PSS_PAGE_BATTLE_MOVES] = Task_PrintBattleMoves,
-    [PSS_PAGE_CONTEST_MOVES] = Task_PrintContestMoves,
+    [PSS_PAGE_CONTEST_MOVES] = Task_PrintContestMoves
 };
 
 static const u8 sMemoNatureTextColor[] = _("{COLOR LIGHT_RED}{SHADOW GREEN}");
@@ -1630,15 +1627,10 @@ static void Task_HandleInput(u8 taskId)
                     PlaySE(SE_SELECT);
                     BeginCloseSummaryScreen(taskId);
                 }
-                else if (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES
-                      || sMonSummaryScreen->currPageIndex == PSS_PAGE_CONTEST_MOVES) // Contest or Battle Moves
+                else // Contest or Battle Moves
                 {
                     PlaySE(SE_SELECT);
                     SwitchToMoveSelection(taskId);
-                } else { // Abilities
-                    // TODO: add this
-                    // PlaySE(SE_SELECT);
-                    // SwitchToAbilitySelection(taskId);
                 }
             }
         }
@@ -1991,35 +1983,6 @@ static void SwitchToMoveSelection(u8 taskId)
     ScheduleBgCopyTilemapToVram(2);
     CreateMoveSelectorSprites(SPRITE_ARR_ID_MOVE_SELECTOR1);
     gTasks[taskId].func = Task_HandleInput_MoveSelect;
-}
-
-static void SwitchToAbilitySelection(u8 taskId)
-{
-    // TODO: flesh this out
-    // u16 move;
-
-    // sMonSummaryScreen->firstMoveIndex = 0;
-    // move = sMonSummaryScreen->summary.moves[sMonSummaryScreen->firstMoveIndex];
-    // ClearWindowTilemap(PSS_LABEL_WINDOW_PORTRAIT_SPECIES);
-    // if (!gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_STATUS]].invisible)
-    //     ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATUS);
-    // HandlePowerAccTilemap(9, -3);
-    // HandleAppealJamTilemap(9, -3, move);
-    // if (!sMonSummaryScreen->lockMovesFlag)
-    // {
-    //     ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_INFO);
-    //     PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_SWITCH);
-    // }
-    // TilemapFiveMovesDisplay(sMonSummaryScreen->bgTilemapBuffers[PSS_PAGE_BATTLE_MOVES][0], 3, FALSE);
-    // TilemapFiveMovesDisplay(sMonSummaryScreen->bgTilemapBuffers[PSS_PAGE_CONTEST_MOVES][0], 1, FALSE);
-    // PrintMoveDetails(move);
-    // PrintNewMoveDetailsOrCancelText();
-    // SetNewMoveTypeIcon();
-    // ScheduleBgCopyTilemapToVram(0);
-    // ScheduleBgCopyTilemapToVram(1);
-    // ScheduleBgCopyTilemapToVram(2);
-    // CreateMoveSelectorSprites(SPRITE_ARR_ID_MOVE_SELECTOR1);
-    // gTasks[taskId].func = Task_HandleInput_MoveSelect;
 }
 
 static void Task_HandleInput_MoveSelect(u8 taskId)
@@ -3037,7 +3000,6 @@ static void PutPageWindowTilemaps(u8 page)
         }
         break;
     }
-
 
     for (i = 0; i < ARRAY_COUNT(sMonSummaryScreen->windowIds); i++)
         PutWindowTilemap(sMonSummaryScreen->windowIds[i]);

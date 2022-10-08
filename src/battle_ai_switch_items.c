@@ -801,6 +801,7 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
             }
         }
     }
+
     if ((aliveCount == 2 || (aliveCount > 2 && Random() % 3 == 0)) && bits)
     {
         do
@@ -809,6 +810,7 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
         } while (!(bits & gBitTable[i]));
         return i;
     }
+
     return PARTY_SIZE;
 }
 

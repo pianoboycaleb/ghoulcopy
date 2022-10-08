@@ -1171,6 +1171,7 @@ static void SpriteCB_PlayerMonSendOut_2(struct Sprite *sprite)
         }
     }
 }
+
 #undef HIBYTE
 
 static void SpriteCB_ReleaseMon3FromBall(struct Sprite *sprite)

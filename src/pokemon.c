@@ -4404,6 +4404,7 @@ static void DecryptBoxMon(struct BoxPokemon *boxMon)
         boxMon->secure.raw[i] ^= boxMon->personality;
     }
 }
+
 #define SUBSTRUCT_CASE(n, v1, v2, v3, v4)                               \
 case n:                                                                 \
     {                                                                   \
