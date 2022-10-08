@@ -48,11 +48,11 @@
 #define SPRITES_INIT_STATE1     1 // shares the Id as well
 #define SPRITES_INIT_STATE2     2
 #define MOVE_EFFECT_BYTE        3
-#define ACTIONS_CONFIRMED_COUNT 4
-#define MULTISTRING_CHOOSER     5
-#define MISS_TYPE               6
-#define MSG_DISPLAY             7
-#define BATTLE_COMMUNICATION_ENTRIES_COUNT  8
+#define ACTIONS_CONFIRMED_COUNT 6
+#define MULTISTRING_CHOOSER     7
+#define MISS_TYPE               8
+#define MSG_DISPLAY             9
+#define BATTLE_COMMUNICATION_ENTRIES_COUNT  10
 
 #define cMULTISTRING_CHOOSER (gBattleCommunication + MULTISTRING_CHOOSER)
 #define cMISS_TYPE           (gBattleCommunication + MISS_TYPE)
@@ -73,7 +73,9 @@
 #define BS_OPPONENT1                12
 #define BS_PLAYER2                  13 // for Cmd_updatestatusicon
 #define BS_OPPONENT2                14
-#define BS_ABILITY_BATTLER          15
+#define BS_PLAYER3                  15
+#define BS_OPPONENT3                16
+#define BS_ABILITY_BATTLER          17
 
 // Cmd_accuracycheck
 #define NO_ACC_CALC_CHECK_LOCK_ON 0xFFFF

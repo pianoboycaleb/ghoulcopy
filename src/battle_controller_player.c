@@ -6,8 +6,10 @@
 #include "battle_dome.h"
 #include "battle_interface.h"
 #include "battle_message.h"
+#include "battle_order.h"
 #include "battle_setup.h"
 #include "battle_tv.h"
+#include "battle_util.h"
 #include "battle_z_move.h"
 #include "bg.h"
 #include "data.h"
@@ -308,6 +310,7 @@ static void HandleInputChooseAction(void)
     }
     else if (JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)
     {
+        /*
         if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
          && GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_MIDDLE
          && !(gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(B_POSITION_PLAYER_LEFT)])
@@ -326,6 +329,8 @@ static void HandleInputChooseAction(void)
             PlayerBufferExecCompleted();
         }
         // TODO: add case for triple battle
+        */
+        // Can't undo action anymore since every turn only consists of one action
     }
     else if (JOY_NEW(START_BUTTON))
     {
@@ -354,6 +359,73 @@ static void UnusedEndBounceEffect(void)
     EndBounceEffect(gActiveBattler, BOUNCE_HEALTHBOX);
     EndBounceEffect(gActiveBattler, BOUNCE_MON);
     gBattlerControllerFuncs[gActiveBattler] = HandleInputChooseTarget;
+}
+
+static u8 GetNumberOpponentMons()
+{
+    return (u8)(!IS_BATTLER_INVALID_OR_ABSENT(B_POSITION_OPPONENT_LEFT))
+    + (u8)(!IS_BATTLER_INVALID_OR_ABSENT(B_POSITION_OPPONENT_MIDDLE))
+    + (u8)(!IS_BATTLER_INVALID_OR_ABSENT(B_POSITION_OPPONENT_RIGHT));
+}
+
+static bool8 IsValidTarget(u8 target)
+{
+    if (IS_BATTLER_INVALID_OR_ABSENT(target))
+        return FALSE;
+
+    if (!TargetValidIfOppositePosition(target, gActiveBattler))
+        return FALSE;
+
+    switch (GetBattlerPosition(target))
+    {
+        case B_POSITION_PLAYER_LEFT:
+        case B_POSITION_PLAYER_MIDDLE:
+        case B_POSITION_PLAYER_RIGHT:
+            if (!IsOppositePosition(target, gActiveBattler))
+            {
+                if (gActiveBattler != target)
+                    return TRUE;
+                else if (gBattleMoves[GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_MOVE1 + gMoveSelectionCursor[gActiveBattler])].target & MOVE_TARGET_USER_OR_SELECTED)
+                    return TRUE;
+            }
+            break;
+        case B_POSITION_OPPONENT_LEFT:
+        case B_POSITION_OPPONENT_MIDDLE:
+        case B_POSITION_OPPONENT_RIGHT:
+            return TRUE;
+            break;
+    }
+
+    return FALSE;
+}
+
+static u8 GetNextValidTarget(u8 currentTarget, u8 *identities, s8 dir)
+{
+    s32 i;
+    u8 nextTarget, currSelIdentity;
+    nextTarget = currentTarget;
+    do
+    {
+        currSelIdentity = GetBattlerPosition(nextTarget);
+
+        for (i = 0; i < gBattlersCount; i++)
+        {
+            if (currSelIdentity == identities[i])
+                break;
+        }
+
+        do
+        {
+            i += dir;
+            if (i < 0)
+                i = gBattlersCount - 1;
+            else if (i >= gBattlersCount)
+                i = 0;
+            nextTarget = GetBattlerAtPosition(identities[i]);
+        } while (nextTarget == gBattlersCount);
+    } while (!IsValidTarget(nextTarget));
+
+    return nextTarget;
 }
 
 static void HandleInputChooseTarget(void)
@@ -401,101 +473,14 @@ static void HandleInputChooseTarget(void)
     {
         PlaySE(SE_SELECT);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_HideAsMoveTarget;
-
-        if (moveTarget == (MOVE_TARGET_USER | MOVE_TARGET_ALLY))
-        {
-            gMultiUsePlayerCursor ^= BIT_FLANK;
-        }
-        else
-        {
-            do
-            {
-                u8 currSelIdentity = GetBattlerPosition(gMultiUsePlayerCursor);
-
-                for (i = 0; i < MAX_BATTLERS_COUNT; i++)
-                {
-                    if (currSelIdentity == identities[i])
-                        break;
-                }
-                do
-                {
-                    if (--i < 0)
-                        i = MAX_BATTLERS_COUNT - 1;
-                    gMultiUsePlayerCursor = GetBattlerAtPosition(identities[i]);
-                } while (gMultiUsePlayerCursor == gBattlersCount);
-
-                i = 0;
-                switch (GetBattlerPosition(gMultiUsePlayerCursor))
-                {
-                case B_POSITION_PLAYER_LEFT:
-                case B_POSITION_PLAYER_MIDDLE:
-                    if (gActiveBattler != gMultiUsePlayerCursor)
-                        i++;
-                    else if (moveTarget & MOVE_TARGET_USER_OR_SELECTED)
-                        i++;
-                    break;
-                case B_POSITION_OPPONENT_LEFT:
-                case B_POSITION_OPPONENT_MIDDLE:
-                    i++;
-                    break;
-                }
-
-                if (gAbsentBattlerFlags & gBitTable[gMultiUsePlayerCursor]
-                 || !CanTargetBattler(gActiveBattler, gMultiUsePlayerCursor, move))
-                    i = 0;
-            } while (i == 0);
-        }
+        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, (u8*)identities, -1);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_ShowAsMoveTarget;
     }
     else if (JOY_NEW(DPAD_RIGHT | DPAD_DOWN))
     {
         PlaySE(SE_SELECT);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_HideAsMoveTarget;
-
-        if (moveTarget == (MOVE_TARGET_USER | MOVE_TARGET_ALLY))
-        {
-            gMultiUsePlayerCursor ^= BIT_FLANK;
-        }
-        else
-        {
-            do
-            {
-                u8 currSelIdentity = GetBattlerPosition(gMultiUsePlayerCursor);
-
-                for (i = 0; i < MAX_BATTLERS_COUNT; i++)
-                {
-                    if (currSelIdentity == identities[i])
-                        break;
-                }
-                do
-                {
-                    if (++i > 3)
-                        i = 0;
-                    gMultiUsePlayerCursor = GetBattlerAtPosition(identities[i]);
-                } while (gMultiUsePlayerCursor == gBattlersCount);
-
-                i = 0;
-                switch (GetBattlerPosition(gMultiUsePlayerCursor))
-                {
-                case B_POSITION_PLAYER_LEFT:
-                case B_POSITION_PLAYER_MIDDLE:
-                    if (gActiveBattler != gMultiUsePlayerCursor)
-                        i++;
-                    else if (moveTarget & MOVE_TARGET_USER_OR_SELECTED)
-                        i++;
-                    break;
-                case B_POSITION_OPPONENT_LEFT:
-                case B_POSITION_OPPONENT_MIDDLE:
-                    i++;
-                    break;
-                }
-
-                if (gAbsentBattlerFlags & gBitTable[gMultiUsePlayerCursor]
-                 || !CanTargetBattler(gActiveBattler, gMultiUsePlayerCursor, move))
-                    i = 0;
-            } while (i == 0);
-        }
-
+        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, (u8*)identities, 1);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_ShowAsMoveTarget;
     }
 }
@@ -631,14 +616,17 @@ static void HandleInputChooseMove(void)
         if (moveTarget & MOVE_TARGET_USER)
             gMultiUsePlayerCursor = gActiveBattler;
         else
+        {
             gMultiUsePlayerCursor = GetBattlerAtPosition(BATTLE_OPPOSITE(GET_BATTLER_SIDE(gActiveBattler)));
+            gMultiUsePlayerCursor = GetNonAbsentBattler(gMultiUsePlayerCursor);
+        }
 
-        if (!gBattleResources->bufferA[gActiveBattler][1]) // not a double battle
+        if (!gBattleResources->bufferA[gActiveBattler][1]) // not a double or triple battle
         {
             if (moveTarget & MOVE_TARGET_USER_OR_SELECTED && !gBattleResources->bufferA[gActiveBattler][2])
                 canSelectTarget = 1;
         }
-        else // double battle
+        else // double or triple battle
         {
             if (!(moveTarget & (MOVE_TARGET_RANDOM | MOVE_TARGET_BOTH | MOVE_TARGET_DEPENDS | MOVE_TARGET_FOES_AND_ALLY | MOVE_TARGET_OPPONENTS_FIELD | MOVE_TARGET_USER | MOVE_TARGET_ALLY)))
                 canSelectTarget = 1; // either selected or user
@@ -652,7 +640,8 @@ static void HandleInputChooseMove(void)
             else if (!(moveTarget & (MOVE_TARGET_USER | MOVE_TARGET_USER_OR_SELECTED)) && CountAliveMonsInBattle(BATTLE_ALIVE_EXCEPT_ACTIVE) <= 1)
             {
                 gMultiUsePlayerCursor = GetDefaultMoveTarget(gActiveBattler);
-                canSelectTarget = 0;
+                gMultiUsePlayerCursor = GetNonAbsentBattler(gMultiUsePlayerCursor);
+                canSelectTarget = FALSE;
             }
 
         #if B_SHOW_TARGETS == TRUE
@@ -693,10 +682,16 @@ static void HandleInputChooseMove(void)
 
             if (moveTarget & (MOVE_TARGET_USER | MOVE_TARGET_USER_OR_SELECTED))
                 gMultiUsePlayerCursor = gActiveBattler;
+            else if (
+                (gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)])
+                && (gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE)])
+            )
+                gMultiUsePlayerCursor = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
             else if (gAbsentBattlerFlags & gBitTable[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)])
                 gMultiUsePlayerCursor = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
             else
                 gMultiUsePlayerCursor = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+            gMultiUsePlayerCursor = GetNonAbsentBattler(gMultiUsePlayerCursor);
 
             gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_ShowAsMoveTarget;
             break;
@@ -1149,6 +1144,39 @@ static void Intro_DelayAndEnd(void)
     }
 }
 
+static bool8 FinishedAllShinyMonAnims(void)
+{
+    u8 i;
+    u8 battler = gActiveBattler;
+    for (i = 0; i < MAX_BATTLERS_COUNT / 2; i++)
+    {
+        if (!IS_BATTLER_INVALID_OR_ABSENT(battler) && !gBattleSpritesDataPtr->healthBoxesData[battler].finishedShinyMonAnim)
+            return FALSE;
+        battler = BATTLER_TO_RIGHT(battler);
+    }
+    return TRUE;
+}
+
+static void ResetShinyAnims() {
+    u8 i;
+
+    FreeSpriteTilesByTag(ANIM_TAG_GOLD_STARS);
+    FreeSpritePaletteByTag(ANIM_TAG_GOLD_STARS);
+
+    for (i = 0; i < MAX_BATTLERS_COUNT / 2; i++)
+    {
+        gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].triedShinyMonAnim = FALSE;
+        gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].finishedShinyMonAnim = FALSE;
+
+        if (!IS_BATTLER_INVALID_OR_ABSENT(gActiveBattler))
+        {
+            HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], gActiveBattler);
+        }
+
+        gActiveBattler = BATTLER_TO_RIGHT(gActiveBattler);
+    }
+}
+
 static bool32 TwoIntroMons(u32 battlerId) // Double battle with both player pokemon active.
 {
     return (IsDoubleBattle() && IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[battlerId ^ BIT_FLANK]]));
@@ -1159,7 +1187,8 @@ static void Intro_WaitForShinyAnimAndHealthbox(void)
     bool8 healthboxAnimDone = FALSE;
 
     // Check if healthbox has finished sliding in
-    if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
+    // if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
+    if (!IsDoubleOrTripleBattle() || (IsDoubleBattle() && (gBattleTypeFlags & BATTLE_TYPE_MULTI)))
     {
         if (gSprites[gHealthboxSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy
          && gSprites[gHealthboxSpriteIds[BATTLE_PARTNER(gActiveBattler)]].callback == SpriteCallbackDummy)
@@ -1178,30 +1207,11 @@ static void Intro_WaitForShinyAnimAndHealthbox(void)
             healthboxAnimDone = TRUE;
     }
 
-
     // If healthbox and shiny anim are done
-    if (healthboxAnimDone && gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].finishedShinyMonAnim
-        && gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(gActiveBattler)].finishedShinyMonAnim)
+    if (healthboxAnimDone && FinishedAllShinyMonAnims())
     {
-        // Reset shiny anim (even if it didn't occur)
-        gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].triedShinyMonAnim = FALSE;
-        gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].finishedShinyMonAnim = FALSE;
-        gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(gActiveBattler)].triedShinyMonAnim = FALSE;
-        gBattleSpritesDataPtr->healthBoxesData[BATTLE_PARTNER(gActiveBattler)].finishedShinyMonAnim = FALSE;
-        FreeSpriteTilesByTag(ANIM_TAG_GOLD_STARS);
-        FreeSpritePaletteByTag(ANIM_TAG_GOLD_STARS);
-
-        HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], gActiveBattler);
-
-        if (TwoIntroMons(gActiveBattler))
-            HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[BATTLE_PARTNER(gActiveBattler)]], BATTLE_PARTNER(gActiveBattler));
-
-        if (IsTripleBattle())
-        {
-            HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[BATTLER_TO_RIGHT(gActiveBattler)]], gActiveBattler ^ BIT_FLANK);
-            HandleLowHpMusicChange(&gPlayerParty[gBattlerPartyIndexes[BATTLER_TO_LEFT(gActiveBattler)]], gActiveBattler ^ BIT_FLANK);
-        }
-
+        CreateAllBattleOrderMonIconSprites();
+        ResetShinyAnims();
         gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].introEndDelay = 3;
         gBattlerControllerFuncs[gActiveBattler] = Intro_DelayAndEnd;
     }
@@ -1225,10 +1235,16 @@ static void Intro_TryShinyAnimShowHealthbox(void)
 {
     bool32 bgmRestored = FALSE;
     bool32 battlerAnimsDone = FALSE;
+    u8 i;
 
-    TryShinyAnimationHelper(gActiveBattler);
-    TryShinyAnimationHelper(BATTLER_TO_RIGHT(gActiveBattler));
-    TryShinyAnimationHelper(BATTLER_TO_LEFT(gActiveBattler));
+    for (i = 0; i < MAX_BATTLERS_COUNT / 2; i++)
+    {
+        if (!IS_BATTLER_INVALID_OR_ABSENT(gActiveBattler))
+        {
+            TryShinyAnimationHelper(gActiveBattler);
+        }
+        gActiveBattler = BATTLER_TO_RIGHT(gActiveBattler);
+    }
 
     // Show healthbox after ball anim
     if (!gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].ballAnimActive
@@ -1237,13 +1253,14 @@ static void Intro_TryShinyAnimShowHealthbox(void)
     {
         if (!gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].healthboxSlideInStarted)
         {
-            StartHealthboxSlideInHelper(gActiveBattler);
-            if (IsDoubleBattle() && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
-                StartHealthboxSlideInHelper(BATTLE_PARTNER(gActiveBattler));
-            if (IsTripleBattle() && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
+            //if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
+            for (i = 0; i < MAX_BATTLERS_COUNT / 2; i++)
             {
-                StartHealthboxSlideInHelper(BATTLER_TO_RIGHT(gActiveBattler));
-                StartHealthboxSlideInHelper(BATTLER_TO_LEFT(gActiveBattler));
+                if (!IS_BATTLER_INVALID_OR_ABSENT(gActiveBattler))
+                {
+                    StartHealthboxSlideInHelper(gActiveBattler);
+                }
+                gActiveBattler = BATTLER_TO_RIGHT(gActiveBattler);
             }
         }
         gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].healthboxSlideInStarted = TRUE;
@@ -1268,7 +1285,8 @@ static void Intro_TryShinyAnimShowHealthbox(void)
     }
 
     // Wait for battler anims
-    if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
+    // if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
+    if (!IsDoubleOrTripleBattle() || (IsDoubleBattle() && (gBattleTypeFlags & BATTLE_TYPE_MULTI)))
     {
         if (gSprites[gBattleControllerData[gActiveBattler]].callback == SpriteCallbackDummy
             && gSprites[gBattlerSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy
@@ -1302,16 +1320,14 @@ static void Intro_TryShinyAnimShowHealthbox(void)
     // Clean up
     if (bgmRestored && battlerAnimsDone)
     {
-        if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
-            DestroySprite(&gSprites[gBattleControllerData[BATTLE_PARTNER(gActiveBattler)]]);
-
-        if (IsTripleBattle() && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
+        for (i = 0; i < MAX_BATTLERS_COUNT / 2; i++)
         {
-            DestroySprite(&gSprites[gBattleControllerData[BATTLER_TO_RIGHT(gActiveBattler)]]);
-            DestroySprite(&gSprites[gBattleControllerData[BATTLER_TO_LEFT(gActiveBattler)]]);
+            if (!IS_BATTLER_INVALID_OR_ABSENT(gActiveBattler))
+            {
+                DestroySprite(&gSprites[gBattleControllerData[gActiveBattler]]);
+            }
+            gActiveBattler = BATTLER_TO_RIGHT(gActiveBattler);
         }
-
-        DestroySprite(&gSprites[gBattleControllerData[gActiveBattler]]);
 
         gBattleSpritesDataPtr->animationData->introAnimActive = FALSE;
         gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].bgmRestored = FALSE;
@@ -1369,6 +1385,7 @@ static void SwitchIn_TryShinyAnimShowHealthbox(void)
         UpdateHealthboxAttribute(gHealthboxSpriteIds[gActiveBattler], &gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], HEALTHBOX_ALL);
         StartHealthboxSlideIn(gActiveBattler);
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[gActiveBattler]);
+        UpdateBattleOrderMonIconSprites();
         gBattlerControllerFuncs[gActiveBattler] = SwitchIn_CleanShinyAnimShowSubstitute;
     }
 }
@@ -1422,7 +1439,7 @@ static void Task_GiveExpToMon(u8 taskId)
     u8 battlerId = gTasks[taskId].tExpTask_battler;
     s32 gainedExp = GetTaskExpValue(taskId);
 
-    if (IsDoubleBattle() == TRUE || monId != gBattlerPartyIndexes[battlerId]) // Give exp without moving the expbar.
+    if (IsDoubleOrTripleBattle() || monId != gBattlerPartyIndexes[battlerId]) // Give exp without moving the expbar.
     {
         struct Pokemon *mon = &gPlayerParty[monId];
         u16 species = GetMonData(mon, MON_DATA_SPECIES);
@@ -1442,8 +1459,12 @@ static void Task_GiveExpToMon(u8 taskId)
             BtlController_EmitTwoReturnValues(BUFFER_B, RET_VALUE_LEVELED_UP, gainedExp);
             gActiveBattler = savedActiveBattler;
 
-            if (IsDoubleBattle() == TRUE
-             && ((u16)(monId) == gBattlerPartyIndexes[battlerId] || (u16)(monId) == gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)]))
+            if (IsDoubleOrTripleBattle()
+                && ((u16)(monId) == gBattlerPartyIndexes[battlerId]
+                    || (u16)(monId) == gBattlerPartyIndexes[BATTLER_TO_RIGHT(battlerId)]
+                    || (u16)(monId) == gBattlerPartyIndexes[BATTLER_TO_LEFT(battlerId)]
+                )
+            )
                 gTasks[taskId].func = Task_LaunchLvlUpAnim;
             else
                 gTasks[taskId].func = DestroyExpTaskAndCompleteOnInactiveTextPrinter;
@@ -1846,14 +1867,15 @@ static void PrintLinkStandbyMsg(void)
 
 static void PlayerHandleGetMonData(void)
 {
-    u8 monData[sizeof(struct Pokemon) * 2 + 56]; // this allows to get full data of two pokemon, trying to get more will result in overwriting data
+    u8 monData[sizeof(struct Pokemon) * 3 + 56]; // this allows to get full data of three pokemon, trying to get more will result in overwriting data
     u32 size = 0;
     u8 monToCheck;
     s32 i;
 
     if (gBattleResources->bufferA[gActiveBattler][2] == 0)
     {
-        size += CopyPlayerMonData(gBattlerPartyIndexes[gActiveBattler], monData);
+        if (gBattlerPartyIndexes[gActiveBattler] != PARTY_SIZE)
+            size += CopyPlayerMonData(gBattlerPartyIndexes[gActiveBattler], monData);
     }
     else
     {
@@ -3271,6 +3293,8 @@ void SpriteCB_FreePlayerSpriteLoadMonSprite(struct Sprite *sprite)
 // Send out at start of battle
 static void Task_StartSendOutAnim(u8 taskId)
 {
+    u8 i;
+
     if (gTasks[taskId].tStartTimer < 31)
     {
         gTasks[taskId].tStartTimer++;
@@ -3297,19 +3321,16 @@ static void Task_StartSendOutAnim(u8 taskId)
         }
         else // IsTripleBattle()
         {
-            gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
-            StartSendOutAnim(gActiveBattler, FALSE);
-            gActiveBattler = BATTLER_TO_RIGHT(gActiveBattler);
-
-            gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
-            BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], gActiveBattler);
-            StartSendOutAnim(gActiveBattler, FALSE);
-            gActiveBattler = BATTLER_TO_RIGHT(gActiveBattler);
-
-            gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
-            BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], gActiveBattler);
-            StartSendOutAnim(gActiveBattler, FALSE);
-            gActiveBattler = BATTLER_TO_RIGHT(gActiveBattler);
+            for (i = 0; i < MAX_BATTLERS_COUNT / 2; i++)
+            {
+                if (!IS_BATTLER_INVALID_OR_ABSENT(gActiveBattler))
+                {
+                    gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
+                    BattleLoadPlayerMonSpriteGfx(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], gActiveBattler);
+                    StartSendOutAnim(gActiveBattler, FALSE);
+                }
+                gActiveBattler = BATTLER_TO_RIGHT(gActiveBattler);
+            }
         }
         gBattlerControllerFuncs[gActiveBattler] = Intro_TryShinyAnimShowHealthbox;
         gActiveBattler = savedActiveBattler;

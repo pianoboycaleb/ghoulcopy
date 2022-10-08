@@ -8,6 +8,7 @@
 #include "battle_controllers.h"
 #include "battle_message.h"
 #include "battle_interface.h"
+#include "battle_order.h"
 #include "battle_setup.h"
 #include "battle_tower.h"
 #include "battle_tv.h"
@@ -332,14 +333,14 @@ static void Intro_TryShinyAnimShowHealthbox(void)
         TryShinyAnimationHelper(BATTLER_TO_LEFT(gActiveBattler));
     }
 
-    if (
-        !gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].ballAnimActive
+    if (!gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].ballAnimActive
      && !gBattleSpritesDataPtr->healthBoxesData[BATTLER_TO_RIGHT(gActiveBattler)].ballAnimActive
      && !gBattleSpritesDataPtr->healthBoxesData[BATTLER_TO_LEFT(gActiveBattler)].ballAnimActive)
     {
         if (!gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].healthboxSlideInStarted)
         {
             StartHealthboxSlideInHelper(gActiveBattler);
+            // if (twoMons && (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) || BATTLE_TWO_VS_ONE_OPPONENT))
             if (IsDoubleBattle() && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
                 StartHealthboxSlideInHelper(BATTLE_PARTNER(gActiveBattler));
             if (IsTripleBattle() && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
@@ -371,7 +372,8 @@ static void Intro_TryShinyAnimShowHealthbox(void)
         bgmRestored = TRUE;
     }
 
-    if (!twoMons || (twoMons && gBattleTypeFlags & BATTLE_TYPE_MULTI && !BATTLE_TWO_VS_ONE_OPPONENT))
+    // if (!twoMons || (twoMons && gBattleTypeFlags & BATTLE_TYPE_MULTI && !BATTLE_TWO_VS_ONE_OPPONENT))
+    if (!IsDoubleOrTripleBattle() || (IsDoubleBattle() && (gBattleTypeFlags & BATTLE_TYPE_MULTI)))
     {
         if (gSprites[gBattleControllerData[gActiveBattler]].callback == SpriteCallbackDummy
             && gSprites[gBattlerSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy)
@@ -538,6 +540,7 @@ static void SwitchIn_ShowHealthbox(void)
         StartHealthboxSlideIn(gActiveBattler);
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[gActiveBattler]);
         CopyBattleSpriteInvisibility(gActiveBattler);
+        UpdateBattleOrderMonIconSprites();
         gBattlerControllerFuncs[gActiveBattler] = SwitchIn_ShowSubstitute;
     }
 }
@@ -587,14 +590,15 @@ static void OpponentBufferExecCompleted(void)
 
 static void OpponentHandleGetMonData(void)
 {
-    u8 monData[sizeof(struct Pokemon) * 2 + 56]; // this allows to get full data of two pokemon, trying to get more will result in overwriting data
+    u8 monData[sizeof(struct Pokemon) * 3 + 56]; // this allows to get full data of three pokemon, trying to get more will result in overwriting data
     u32 size = 0;
     u8 monToCheck;
     s32 i;
 
     if (gBattleResources->bufferA[gActiveBattler][2] == 0)
     {
-        size += GetOpponentMonData(gBattlerPartyIndexes[gActiveBattler], monData);
+        if (gBattlerPartyIndexes[gActiveBattler] != PARTY_SIZE)
+            size += GetOpponentMonData(gBattlerPartyIndexes[gActiveBattler], monData);
     }
     else
     {
@@ -1717,20 +1721,26 @@ static void OpponentHandleChoosePokemon(void)
 
         if (chosenMonId == PARTY_SIZE)
         {
-            s32 battler1, battler2, firstId, lastId;
+            s32 battler1, battler2, battler3, firstId, lastId;
 
-            if (!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
+            if (IsTripleBattle())
             {
-                battler2 = battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+                battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+                battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
+                battler3 = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+            }
+            else if (IsDoubleBattle())
+            {
+                battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
+                battler3 = battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
             }
             else
             {
                 battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-                battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
+                battler3 = battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
                 pokemonInBattle = 2;
 
             }
-
             GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
 
             for (chosenMonId = (lastId-1); chosenMonId >= firstId; chosenMonId--)
@@ -1738,6 +1748,7 @@ static void OpponentHandleChoosePokemon(void)
                 if (GetMonData(&gEnemyParty[chosenMonId], MON_DATA_HP) != 0
                     && chosenMonId != gBattlerPartyIndexes[battler1]
                     && chosenMonId != gBattlerPartyIndexes[battler2]
+                    && chosenMonId != gBattlerPartyIndexes[battler3]
                     && (!(AI_THINKING_STRUCT->aiFlags & AI_FLAG_ACE_POKEMON)
                         || chosenMonId != CalculateEnemyPartyCount() - 1
                         || CountAIAliveNonEggMonsExcept(PARTY_SIZE) == pokemonInBattle))
@@ -2001,7 +2012,8 @@ static void Task_StartSendOutAnim(u8 taskId)
     u8 savedActiveBank = gActiveBattler;
 
     gActiveBattler = gTasks[taskId].data[0];
-    if ((!TwoIntroMons(gActiveBattler) || (gBattleTypeFlags & BATTLE_TYPE_MULTI)) && !BATTLE_TWO_VS_ONE_OPPONENT)
+    // if ((!TwoIntroMons(gActiveBattler) || (gBattleTypeFlags & BATTLE_TYPE_MULTI)) && !BATTLE_TWO_VS_ONE_OPPONENT)
+    if (!IsDoubleOrTripleBattle() || (gBattleTypeFlags & BATTLE_TYPE_MULTI))
     {
         gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
         StartSendOutAnim(gActiveBattler, FALSE);

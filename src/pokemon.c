@@ -6900,7 +6900,8 @@ static void DrawSpindaSpotsUnused(u16 species, u32 personality, u8 *dest)
 {
     if (species == SPECIES_SPINDA
         && dest != gMonSpritesGfxPtr->sprites.ptr[B_POSITION_PLAYER_LEFT]
-        && dest != gMonSpritesGfxPtr->sprites.ptr[B_POSITION_PLAYER_MIDDLE])
+        && dest != gMonSpritesGfxPtr->sprites.ptr[B_POSITION_PLAYER_MIDDLE]
+        && dest != gMonSpritesGfxPtr->sprites.ptr[B_POSITION_PLAYER_RIGHT])
         DRAW_SPINDA_SPOTS(personality, dest);
 }
 

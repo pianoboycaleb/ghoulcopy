@@ -68,7 +68,7 @@ bool16 InitWindows(const struct WindowTemplate *templates)
 
             if (attrib != 0xFFFF)
             {
-                allocatedTilemapBuffer = AllocZeroed(attrib);
+                allocatedTilemapBuffer = AllocZeroedTest(attrib);
 
                 if (allocatedTilemapBuffer == NULL)
                 {
@@ -84,7 +84,7 @@ bool16 InitWindows(const struct WindowTemplate *templates)
             }
         }
 
-        allocatedTilemapBuffer = AllocZeroed((u16)(32 * (templates[i].width * templates[i].height)));
+        allocatedTilemapBuffer = AllocZeroedTest((u16)(32 * (templates[i].width * templates[i].height)));
 
         if (allocatedTilemapBuffer == NULL)
         {
@@ -146,7 +146,7 @@ u16 AddWindow(const struct WindowTemplate *template)
 
         if (attrib != 0xFFFF)
         {
-            allocatedTilemapBuffer = AllocZeroed(attrib);
+            allocatedTilemapBuffer = AllocZeroedTest(attrib);
 
             if (allocatedTilemapBuffer == NULL)
                 return WINDOW_NONE;
@@ -159,7 +159,7 @@ u16 AddWindow(const struct WindowTemplate *template)
         }
     }
 
-    allocatedTilemapBuffer = AllocZeroed((u16)(32 * (template->width * template->height)));
+    allocatedTilemapBuffer = AllocZeroedTest((u16)(32 * (template->width * template->height)));
 
     if (allocatedTilemapBuffer == NULL)
     {
@@ -625,7 +625,7 @@ u16 AddWindow8Bit(const struct WindowTemplate *template)
             memAddress = AllocTest(attribute);
             if (memAddress == NULL)
                 return WINDOW_NONE;
-            for (i = 0; i < attribute; i++) // if we're going to zero out the memory anyway, why not call AllocZeroed?
+            for (i = 0; i < attribute; i++) // if we're going to zero out the memory anyway, why not call AllocZeroedTest?
                 memAddress[i] = 0;
             gWindowBgTilemapBuffers[bgLayer] = memAddress;
             SetBgTilemapBuffer(bgLayer, memAddress);

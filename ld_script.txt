@@ -157,6 +157,7 @@ SECTIONS {
         src/frontier_pass.o(.text);
         src/pokemon_storage_system.o(.text);
         src/pokemon_icon.o(.text);
+        src/battle_order.o(.text);
         src/script_movement.o(.text);
         src/fldeff_cut.o(.text);
         src/mail_data.o(.text);
@@ -341,6 +342,8 @@ SECTIONS {
         src/gym_leader_rematch.o(.text);
         src/battle_transition_frontier.o(.text);
         src/international_string_util.o(.text);
+        src/mgba.o(.text);
+        src/printf.o(.text);
         src/pokemon_debug.o(.text);
     } =0
 
@@ -541,6 +544,7 @@ SECTIONS {
         src/frontier_pass.o(.rodata);
         src/pokemon_storage_system.o(.rodata);
         src/pokemon_icon.o(.rodata);
+        src/battle_order.o(.rodata);
         src/fldeff_cut.o(.rodata);
         src/map_name_popup.o(.rodata);
         src/item_menu_icons.o(.rodata);
@@ -707,6 +711,7 @@ SECTIONS {
         data/mystery_gift.o(.rodata);
         src/m4a_tables.o(.rodata);
         data/sound_data.o(.rodata);
+        src/printf.o(.rodata);
         src/pokemon_debug.o(.rodata);
     } =0
 

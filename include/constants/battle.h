@@ -48,11 +48,16 @@
 #define B_SIDE_PLAYER     0
 #define B_SIDE_OPPONENT   1
 
-#define B_FLANK_LEFT  0
-#define B_FLANK_RIGHT 1
+#define FLANK_POS(id) ((id) >> 1)
+
+#define B_FLANK_LEFT    0
+#define B_FLANK_MIDDLE  1
+#define B_FLANK_RIGHT   2
 
 #define BIT_SIDE        1
 #define BIT_FLANK       2
+
+#define MAX_BATTLERS_ORDER_COUNT 7
 
 // Battle Type Flags
 #define BATTLE_TYPE_DOUBLE             (1 << 0)

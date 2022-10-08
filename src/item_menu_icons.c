@@ -631,7 +631,6 @@ static void LoadBerryGfx(u8 berryId)
 
 u8 CreateBerryTagSprite(u8 id, s16 x, s16 y)
 {
-
     static struct SpriteFrameImage sBerryPicSpriteImageTable;
     static struct SpriteTemplate sBerryPicSpriteTemplate;
 

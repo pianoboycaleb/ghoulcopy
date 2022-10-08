@@ -112,6 +112,7 @@ void AllocateBattleSpritesData(void)
     gBattleSpritesDataPtr->healthBoxesData = AllocZeroedTest(sizeof(struct BattleHealthboxInfo) * MAX_BATTLERS_COUNT);
     gBattleSpritesDataPtr->animationData = AllocZeroedTest(sizeof(struct BattleAnimationInfo));
     gBattleSpritesDataPtr->battleBars = AllocZeroedTest(sizeof(struct BattleBarInfo) * MAX_BATTLERS_COUNT);
+    gBattleSpritesDataPtr->battleOrderData = AllocZeroedTest(sizeof(struct BattleOrderInfo) * MAX_BATTLERS_ORDER_COUNT);
 }
 
 void FreeBattleSpritesData(void)
@@ -123,6 +124,7 @@ void FreeBattleSpritesData(void)
     FREE_AND_SET_NULL(gBattleSpritesDataPtr->animationData);
     FREE_AND_SET_NULL(gBattleSpritesDataPtr->healthBoxesData);
     FREE_AND_SET_NULL(gBattleSpritesDataPtr->battlerData);
+    FREE_AND_SET_NULL(gBattleSpritesDataPtr->battleOrderData);
     FREE_AND_SET_NULL(gBattleSpritesDataPtr);
 }
 
@@ -830,11 +832,6 @@ bool8 BattleInitAllSprites(u8 *state1, u8 *battlerId)
         break;
     case 4:
         InitBattlerHealthboxCoords(*battlerId);
-        if (gBattlerPositions[*battlerId] <= B_POSITION_OPPONENT_LEFT)
-            DummyBattleInterfaceFunc(gHealthboxSpriteIds[*battlerId], FALSE);
-        else
-            DummyBattleInterfaceFunc(gHealthboxSpriteIds[*battlerId], TRUE);
-
         (*battlerId)++;
         if (*battlerId == gBattlersCount)
         {
@@ -1318,6 +1315,8 @@ void FreeMonSpritesGfx(void)
     gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_LEFT] = NULL;
     gMonSpritesGfxPtr->sprites.ptr[B_POSITION_PLAYER_MIDDLE] = NULL;
     gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_MIDDLE] = NULL;
+    gMonSpritesGfxPtr->sprites.ptr[B_POSITION_PLAYER_RIGHT] = NULL;
+    gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_RIGHT] = NULL;
     FREE_AND_SET_NULL(gMonSpritesGfxPtr);
 }
 

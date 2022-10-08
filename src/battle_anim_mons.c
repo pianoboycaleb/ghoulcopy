@@ -19,7 +19,6 @@
 
 #define IS_DOUBLE_BATTLE() ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE))
 #define IS_TRIPLE_BATTLE() ((gBattleTypeFlags & BATTLE_TYPE_TRIPLE))
-#define BATTLE_TYPE_INDEX() ((IS_TRIPLE_BATTLE()) ? 2 : ((IS_DOUBLE_BATTLE()) ? 1 : 0))
 
 extern const struct OamData gOamData_AffineNormal_ObjNormal_64x64;
 
@@ -58,11 +57,11 @@ static const struct UCoords8 sBattlerCoords[][MAX_BATTLERS_COUNT] =
     },
     { // Triple battle
         { 30, 80 },
-        { 220, 40 },
+        { 200, 40 },
         { 70, 84 },
-        { 180, 36 },
-        { 120, 88 },
-        { 130, 32 },
+        { 160, 36 },
+        { 110, 88 },
+        { 120, 32 },
     },
 };
 

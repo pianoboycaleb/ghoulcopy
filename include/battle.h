@@ -14,6 +14,10 @@
 #include "pokeball.h"
 #include "battle_debug.h"
 
+#define IS_BATTLER_ABSENT(battler)            ((gAbsentBattlerFlags) & (gBitTable[battler]))
+#define IS_BATTLER_INVALID(battler)           ((!(gBattleTypeFlags & BATTLE_TYPE_TRIPLE) && ((!(gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && battler >= 2) || (battler >= 4))))
+#define IS_BATTLER_INVALID_OR_ABSENT(battler) ((IS_BATTLER_INVALID(battler)) || (IS_BATTLER_ABSENT(battler)))
+
 #define GET_BATTLER_SIDE(battler)         (GetBattlerPosition(battler) & BIT_SIDE)
 #define GET_BATTLER_SIDE2(battler)        (gBattlerPositions[battler] & BIT_SIDE)
 
@@ -812,12 +816,18 @@ struct BattleBarInfo
     s32 currValue;
 };
 
+struct BattleOrderInfo {
+    const u8* spriteCoords;
+    u8 monSpriteId;
+};
+
 struct BattleSpriteData
 {
     struct BattleSpriteInfo *battlerData;
     struct BattleHealthboxInfo *healthBoxesData;
     struct BattleAnimationInfo *animationData;
     struct BattleBarInfo *battleBars;
+    struct BattleOrderInfo *battleOrderData;
 };
 
 #include "sprite.h"
@@ -835,6 +845,12 @@ struct MonSpritesGfx
     u8 *barFontGfx;
     void *unusedPtr;
     u16 *buffer;
+};
+
+struct SpeciesData
+{
+    u16 species;
+    u32 personality;
 };
 
 struct TotemBoost
@@ -866,12 +882,20 @@ extern u32 gUnusedFirstBattleVar1;
 extern u8 *gBattleAnimBgTileBuffer;
 extern u8 *gBattleAnimBgTilemapBuffer;
 extern u8 gActiveBattler;
+extern u8 gCurrentBattler;
 extern u32 gBattleControllerExecFlags;
 extern u8 gBattlersCount;
+extern bool8 gHealthboxVisible;
 extern u16 gBattlerPartyIndexes[MAX_BATTLERS_COUNT];
 extern u8 gBattlerPositions[MAX_BATTLERS_COUNT];
 extern u8 gActionsByTurnOrder[MAX_BATTLERS_COUNT];
 extern u8 gBattlerByTurnOrder[MAX_BATTLERS_COUNT];
+extern u32 gBattlerTicks[MAX_BATTLERS_COUNT];
+extern u32 gBattlerTicks2[MAX_BATTLERS_COUNT];
+extern u8 gBattlerTurnOrder[MAX_BATTLERS_ORDER_COUNT];
+extern struct SpeciesData gSpeciesTurnOrder[MAX_BATTLERS_ORDER_COUNT];
+extern u8 gSpriteTurnOrder[MAX_BATTLERS_ORDER_COUNT];
+extern u8 gBgTurnOrder[MAX_BATTLERS_ORDER_COUNT];
 extern u8 gCurrentTurnActionNumber;
 extern u8 gCurrentActionFuncId;
 extern struct BattlePokemon gBattleMons[MAX_BATTLERS_COUNT];
@@ -887,6 +911,7 @@ extern s32 gTakenDmg[MAX_BATTLERS_COUNT];
 extern u16 gLastUsedItem;
 extern u16 gLastUsedAbility;
 extern u8 gBattlerAttacker;
+extern u8 gBattlerOriginalTarget;
 extern u8 gBattlerTarget;
 extern u8 gBattlerFainted;
 extern u8 gEffectBattler;

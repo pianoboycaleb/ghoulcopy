@@ -952,8 +952,8 @@ const u32 gHealthboxSinglesPlayerGfx[] = INCBIN_U32("graphics/battle_interface/h
 const u32 gHealthboxSinglesOpponentGfx[] = INCBIN_U32("graphics/battle_interface/healthbox_singles_opponent.4bpp.lz");
 const u32 gHealthboxDoublesPlayerGfx[] = INCBIN_U32( "graphics/battle_interface/healthbox_doubles_player.4bpp.lz");
 const u32 gHealthboxDoublesOpponentGfx[] = INCBIN_U32("graphics/battle_interface/healthbox_doubles_opponent.4bpp.lz");
-const u32 gHealthboxTriplesPlayerGfx[] = INCBIN_U32( "graphics/battle_interface/healthbox_doubles_player.4bpp.lz");
-const u32 gHealthboxTriplesOpponentGfx[] = INCBIN_U32("graphics/battle_interface/healthbox_doubles_opponent.4bpp.lz");
+const u32 gHealthboxTriplesPlayerGfx[] = INCBIN_U32( "graphics/battle_interface/healthbox_triples_player.4bpp.lz");
+const u32 gHealthboxTriplesOpponentGfx[] = INCBIN_U32("graphics/battle_interface/healthbox_triples_opponent.4bpp.lz");
 const u32 gHealthboxSafariGfx[] = INCBIN_U32("graphics/battle_interface/healthbox_safari.4bpp.lz");
 
 const u32 gUnusedGfx_Shadow[] = INCBIN_U32("graphics/unused/shadow.4bpp.lz");
@@ -2005,6 +2005,10 @@ const u16 gMonIconPalettes[][16] =
     INCBIN_U16("graphics/pokemon/icon_palettes/pal4.gbapal"),
     INCBIN_U16("graphics/pokemon/icon_palettes/pal5.gbapal"),
 };
+
+const u8 battleIconBg_Gfx[] = INCBIN_U8("graphics/pokemon/battle_icons/battle_icon_bg.4bpp");
+const u16 battleIconBgPlayer_Pal[] = INCBIN_U16("graphics/pokemon/battle_icons/battle_icon_bg_player.gbapal");
+const u16 battleIconBgOpponent_Pal[] = INCBIN_U16("graphics/pokemon/battle_icons/battle_icon_bg_opponent.gbapal");
 
 const u16 gTitleScreenBgPalettes[]         = INCBIN_U16("graphics/title_screen/pokemon_logo.gbapal",
                                                         "graphics/title_screen/rayquaza_and_clouds.gbapal");

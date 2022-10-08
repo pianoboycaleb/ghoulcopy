@@ -205,7 +205,7 @@ gBattleAnims_Moves::
 	.4byte Move_PROTECT
 	.4byte Move_MACH_PUNCH
 	.4byte Move_SCARY_FACE
-	.4byte Move_FAINT_ATTACK
+	.4byte MOVE_FEINT_ATTACK
 	.4byte Move_SWEET_KISS
 	.4byte Move_BELLY_DRUM
 	.4byte Move_SLUDGE_BOMB
@@ -15386,6 +15386,8 @@ Move_SELF_DESTRUCT:
 	createvisualtask AnimTask_ShakeMon2, 5, 6, 6, 0, 38, 1
 	createvisualtask AnimTask_ShakeMon2, 5, 7, 6, 0, 38, 1
 	createvisualtask AnimTask_ShakeMon2, 5, 8, 6, 0, 38, 1
+	createvisualtask AnimTask_ShakeMon2, 5, 9, 6, 0, 38, 1
+	createvisualtask AnimTask_ShakeMon2, 5, 10, 6, 0, 38, 1
 	call SelfDestructExplode
 	call SelfDestructExplode
 	waitforvisualfinish
@@ -15552,6 +15554,8 @@ Move_EXPLOSION:
 	createvisualtask AnimTask_ShakeMon2, 5, 6, 8, 0, 40, 1
 	createvisualtask AnimTask_ShakeMon2, 5, 7, 8, 0, 40, 1
 	createvisualtask AnimTask_ShakeMon2, 5, 8, 8, 0, 40, 1
+	createvisualtask AnimTask_ShakeMon2, 5, 9, 8, 0, 40, 1
+	createvisualtask AnimTask_ShakeMon2, 5, 10, 8, 0, 40, 1
 	call Explosion1
 	call Explosion1
 	waitforvisualfinish
@@ -19066,7 +19070,7 @@ SmogCloud:
 	delay 7
 	return
 
-Move_FAINT_ATTACK:
+MOVE_FEINT_ATTACK:
 	loadspritegfx ANIM_TAG_IMPACT
 	monbg ANIM_ATTACKER
 	fadetobg BG_DARK
@@ -21858,12 +21862,16 @@ Move_PERISH_SONG:
 	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 5, 0
 	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 6, 0
 	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 7, 0
+	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 8, 0
+	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 9, 0
 	delay 100
 	createsprite gSimplePaletteBlendSpriteTemplate, ANIM_ATTACKER, 2, F_PAL_BG, 3, 16, 0, RGB_BLACK
 	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 4, 1
 	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 5, 1
 	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 6, 1
 	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 7, 1
+	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 8, 1
+	createvisualtask AnimTask_SetGrayscaleOrOriginalPal, 5, 9, 1
 	waitforvisualfinish
 	end
 

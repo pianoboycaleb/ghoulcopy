@@ -15,12 +15,12 @@
 #include "battle_interface.h"
 #include "battle_anim.h"
 #include "data.h"
+#include "battle_order.h"
 
 // this file's functions
 static void CB2_ReshowBattleScreenAfterMenu(void);
 static bool8 LoadBattlerSpriteGfx(u8 battlerId);
 static void CreateBattlerSprite(u8 battlerId);
-static void CreateHealthboxSprite(u8 battlerId);
 static void ClearBattleBgCntBaseBlocks(void);
 
 void ReshowBattleScreenDummy(void)
@@ -183,6 +183,9 @@ static void CB2_ReshowBattleScreenAfterMenu(void)
             }
         }
         break;
+    case 26:
+        CreateAllBattleOrderMonIconSprites();
+        break;
     default:
         SetVBlankCallback(VBlankCB_Battle);
         ClearBattleBgCntBaseBlocks();
@@ -245,7 +248,7 @@ static void CreateBattlerSprite(u8 battler)
 
         if (GetBattlerSide(battler) != B_SIDE_PLAYER)
         {
-            if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
+            if (gBattlerPartyIndexes[battler] == PARTY_SIZE || GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
                 return;
             if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
                 return;
@@ -283,7 +286,7 @@ static void CreateBattlerSprite(u8 battler)
         }
         else
         {
-            if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
+            if (gBattlerPartyIndexes[battler] == PARTY_SIZE || GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
                 return;
 
             SetMultiuseSpriteTemplateToPokemon(GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_SPECIES), GetBattlerPosition(battler));
@@ -299,47 +302,5 @@ static void CreateBattlerSprite(u8 battler)
         }
 
         gSprites[gBattlerSpriteIds[battler]].invisible = gBattleSpritesDataPtr->battlerData[battler].invisible;
-    }
-}
-
-static void CreateHealthboxSprite(u8 battler)
-{
-    if (battler < gBattlersCount)
-    {
-        u8 healthboxSpriteId;
-
-        if (gBattleTypeFlags & BATTLE_TYPE_SAFARI && battler == B_POSITION_PLAYER_LEFT)
-            healthboxSpriteId = CreateSafariPlayerHealthboxSprites();
-        else if (gBattleTypeFlags & BATTLE_TYPE_WALLY_TUTORIAL && battler == B_POSITION_PLAYER_LEFT)
-            return;
-        else
-            healthboxSpriteId = CreateBattlerHealthboxSprites(battler);
-
-        gHealthboxSpriteIds[battler] = healthboxSpriteId;
-        InitBattlerHealthboxCoords(battler);
-        SetHealthboxSpriteVisible(healthboxSpriteId);
-
-        if (GetBattlerSide(battler) != B_SIDE_PLAYER)
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gEnemyParty[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
-        else if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gPlayerParty[gBattlerPartyIndexes[battler]], HEALTHBOX_SAFARI_ALL_TEXT);
-        else
-            UpdateHealthboxAttribute(gHealthboxSpriteIds[battler], &gPlayerParty[gBattlerPartyIndexes[battler]], HEALTHBOX_ALL);
-
-        if (GetBattlerPosition(battler) == B_POSITION_OPPONENT_MIDDLE || GetBattlerPosition(battler) == B_POSITION_PLAYER_MIDDLE)
-            DummyBattleInterfaceFunc(gHealthboxSpriteIds[battler], TRUE);
-        else
-            DummyBattleInterfaceFunc(gHealthboxSpriteIds[battler], FALSE);
-
-        if (GetBattlerSide(battler) != B_SIDE_PLAYER)
-        {
-            if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
-                SetHealthboxSpriteInvisible(healthboxSpriteId);
-        }
-        else if (!(gBattleTypeFlags & BATTLE_TYPE_SAFARI))
-        {
-            if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
-                SetHealthboxSpriteInvisible(healthboxSpriteId);
-        }
     }
 }
