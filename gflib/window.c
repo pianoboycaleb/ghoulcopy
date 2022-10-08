@@ -68,7 +68,7 @@ bool16 InitWindows(const struct WindowTemplate *templates)
 
             if (attrib != 0xFFFF)
             {
-                allocatedTilemapBuffer = AllocZeroedTest(attrib);
+                allocatedTilemapBuffer = AllocZeroed(attrib);
 
                 if (allocatedTilemapBuffer == NULL)
                 {
@@ -84,7 +84,7 @@ bool16 InitWindows(const struct WindowTemplate *templates)
             }
         }
 
-        allocatedTilemapBuffer = AllocZeroedTest((u16)(32 * (templates[i].width * templates[i].height)));
+        allocatedTilemapBuffer = AllocZeroed((u16)(32 * (templates[i].width * templates[i].height)));
 
         if (allocatedTilemapBuffer == NULL)
         {
@@ -146,7 +146,7 @@ u16 AddWindow(const struct WindowTemplate *template)
 
         if (attrib != 0xFFFF)
         {
-            allocatedTilemapBuffer = AllocZeroedTest(attrib);
+            allocatedTilemapBuffer = AllocZeroed(attrib);
 
             if (allocatedTilemapBuffer == NULL)
                 return WINDOW_NONE;
@@ -159,7 +159,7 @@ u16 AddWindow(const struct WindowTemplate *template)
         }
     }
 
-    allocatedTilemapBuffer = AllocZeroedTest((u16)(32 * (template->width * template->height)));
+    allocatedTilemapBuffer = AllocZeroed((u16)(32 * (template->width * template->height)));
 
     if (allocatedTilemapBuffer == NULL)
     {
@@ -622,16 +622,16 @@ u16 AddWindow8Bit(const struct WindowTemplate *template)
         if (attribute != 0xFFFF)
         {
             s32 i;
-            memAddress = AllocTest(attribute);
+            memAddress = Alloc(attribute);
             if (memAddress == NULL)
                 return WINDOW_NONE;
-            for (i = 0; i < attribute; i++) // if we're going to zero out the memory anyway, why not call AllocZeroedTest?
+            for (i = 0; i < attribute; i++) // if we're going to zero out the memory anyway, why not call AllocZeroed?
                 memAddress[i] = 0;
             gWindowBgTilemapBuffers[bgLayer] = memAddress;
             SetBgTilemapBuffer(bgLayer, memAddress);
         }
     }
-    memAddress = AllocTest((u16)(64 * (template->width * template->height)));
+    memAddress = Alloc((u16)(64 * (template->width * template->height)));
     if (memAddress == NULL)
     {
         if (GetNumActiveWindowsOnBg8Bit(bgLayer) == 0 && gWindowBgTilemapBuffers[bgLayer] != DummyWindowBgTilemap8Bit)

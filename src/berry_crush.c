@@ -1013,10 +1013,10 @@ void StartBerryCrush(MainCallback exitCallback)
         return;
     }
 
-    sGame = AllocZeroedTest(sizeof(*sGame));
+    sGame = AllocZeroed(sizeof(*sGame));
     if (!sGame)
     {
-        // AllocTest failed
+        // Alloc failed
         ERROR_EXIT(exitCallback);
         return;
     }
@@ -1949,7 +1949,7 @@ static void CopyPlayerNameWindowGfxToBg(struct BerryCrushGame *game)
     u8 i = 0;
     u8 *windowGfx;
 
-    gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+    gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
     LZ77UnCompWram(gBerryCrush_TextWindows_Tilemap, gDecompressionBuffer);
 
     for (windowGfx = gDecompressionBuffer; i < game->playerCount; i++)

@@ -200,7 +200,7 @@ void CB2_InitBerryFixProgram(void)
     ResetTasks();
     ScanlineEffect_Stop();
     SetGpuReg(REG_OFFSET_DISPCNT, 0);
-    sBerryFix = AllocZeroedTest(sizeof(*sBerryFix));
+    sBerryFix = AllocZeroed(sizeof(*sBerryFix));
     sBerryFix->state = MAINSTATE_INIT;
     sBerryFix->curScene = SCENE_NONE;
     SetMainCallback2(BerryFix_Main);

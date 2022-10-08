@@ -2066,7 +2066,7 @@ void BufferPokedexRatingForMatchCall(u8 *destStr)
     u8 *str;
     u8 dexRatingLevel;
 
-    u8 *buffer = AllocTest(sizeof(gStringVar4));
+    u8 *buffer = Alloc(sizeof(gStringVar4));
     if (!buffer)
     {
         destStr[0] = EOS;

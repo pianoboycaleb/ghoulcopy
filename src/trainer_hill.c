@@ -326,7 +326,7 @@ void InitTrainerHillBattleStruct(void)
     s32 i, j;
 
     SetUpDataStruct();
-    sFloorTrainers = AllocZeroedTest(sizeof(*sFloorTrainers));
+    sFloorTrainers = AllocZeroed(sizeof(*sFloorTrainers));
 
     for (i = 0; i < HILL_TRAINERS_PER_FLOOR; i++)
     {
@@ -348,7 +348,7 @@ static void SetUpDataStruct(void)
 {
     if (sHillData == NULL)
     {
-        sHillData = AllocZeroedTest(sizeof(*sHillData));
+        sHillData = AllocZeroed(sizeof(*sHillData));
         sHillData->floorId = gMapHeader.mapLayoutId - LAYOUT_TRAINER_HILL_1F;
 
         // This copy depends on the floor data for each challenge being directly after the

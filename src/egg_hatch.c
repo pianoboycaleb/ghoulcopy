@@ -494,7 +494,7 @@ static void CB2_LoadEggHatch(void)
     case 0:
         SetGpuReg(REG_OFFSET_DISPCNT, 0);
 
-        sEggHatchData = AllocTest(sizeof(*sEggHatchData));
+        sEggHatchData = Alloc(sizeof(*sEggHatchData));
         AllocateMonSpritesGfx();
         sEggHatchData->eggPartyId = gSpecialVar_0x8004;
         sEggHatchData->eggShardVelocityId = 0;

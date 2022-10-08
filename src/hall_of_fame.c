@@ -371,7 +371,7 @@ static bool8 InitHallOfFameScreen(void)
     case 0:
         SetVBlankCallback(NULL);
         ClearVramOamPltt_LoadHofPal();
-        sHofGfxPtr = AllocZeroedTest(sizeof(*sHofGfxPtr));
+        sHofGfxPtr = AllocZeroed(sizeof(*sHofGfxPtr));
         gMain.state = 1;
         break;
     case 1:
@@ -420,7 +420,7 @@ void CB2_DoHallOfFameScreen(void)
     {
         u8 taskId = CreateTask(Task_Hof_InitMonData, 0);
         gTasks[taskId].tDontSaveData = FALSE;
-        sHofMonPtr = AllocZeroedTest(sizeof(*sHofMonPtr));
+        sHofMonPtr = AllocZeroed(sizeof(*sHofMonPtr));
     }
 }
 
@@ -430,7 +430,7 @@ void CB2_DoHallOfFameScreenDontSaveData(void)
     {
         u8 taskId = CreateTask(Task_Hof_InitMonData, 0);
         gTasks[taskId].tDontSaveData = TRUE;
-        sHofMonPtr = AllocZeroedTest(sizeof(*sHofMonPtr));
+        sHofMonPtr = AllocZeroed(sizeof(*sHofMonPtr));
     }
 }
 
@@ -485,7 +485,7 @@ static void Task_Hof_InitTeamSaveData(u8 taskId)
 {
     u16 i;
     struct HallofFameTeam *lastSavedTeam;
-    gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+    gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
     lastSavedTeam = (struct HallofFameTeam *)(gDecompressionBuffer);
 
     if (!gHasHallOfFameRecords)
@@ -807,7 +807,7 @@ void CB2_DoHallOfFamePC(void)
     default:
         SetVBlankCallback(NULL);
         ClearVramOamPltt_LoadHofPal();
-        sHofGfxPtr = AllocZeroedTest(sizeof(*sHofGfxPtr));
+        sHofGfxPtr = AllocZeroed(sizeof(*sHofGfxPtr));
         gMain.state = 1;
         break;
     case 1:
@@ -825,7 +825,7 @@ void CB2_DoHallOfFamePC(void)
         if (!LoadHofBgs())
         {
             struct HallofFameTeam *fameTeam;
-            gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+            gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
             fameTeam = (struct HallofFameTeam *)(gDecompressionBuffer);
             fameTeam->mon[0] = sDummyFameMon;
             Free(gDecompressionBuffer);
@@ -856,7 +856,7 @@ void CB2_DoHallOfFamePC(void)
                 gTasks[taskId].tMonSpriteId(i) = SPRITE_NONE;
             }
 
-            sHofMonPtr = AllocZeroedTest(SECTOR_SIZE * NUM_HOF_SECTORS);
+            sHofMonPtr = AllocZeroed(SECTOR_SIZE * NUM_HOF_SECTORS);
             SetMainCallback2(CB2_HallOfFame);
         }
         break;
@@ -1051,7 +1051,7 @@ static void Task_HofPC_HandlePaletteOnExit(u8 taskId)
     struct HallofFameTeam *fameTeam;
 
     CpuCopy16(gPlttBufferFaded, gPlttBufferUnfaded, 0x400);
-    gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+    gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
     fameTeam = (struct HallofFameTeam *)(gDecompressionBuffer);
     fameTeam->mon[0] = sDummyFameMon;
     Free(gDecompressionBuffer);

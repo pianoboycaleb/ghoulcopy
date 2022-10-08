@@ -337,7 +337,7 @@ bool8 FldEff_CutGrass(void)
 
     SetCutGrassMetatiles(gPlayerFacingPosition.x - sTileCountFromPlayer_X, gPlayerFacingPosition.y - (1 + sTileCountFromPlayer_Y));
     DrawWholeMapView();
-    sCutGrassSpriteArrayPtr = AllocZeroedTest(CUT_SPRITE_ARRAY_COUNT);
+    sCutGrassSpriteArrayPtr = AllocZeroed(CUT_SPRITE_ARRAY_COUNT);
 
     // populate sprite ID array
     for (i = 0; i < CUT_SPRITE_ARRAY_COUNT; i++)

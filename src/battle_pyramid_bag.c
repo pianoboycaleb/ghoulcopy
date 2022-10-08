@@ -416,7 +416,7 @@ void CB2_ReturnToPyramidBagMenu(void)
 
 void GoToBattlePyramidBagMenu(u8 location, void (*exitCallback)(void))
 {
-    gPyramidBagMenu = AllocZeroedTest(sizeof(*gPyramidBagMenu));
+    gPyramidBagMenu = AllocZeroed(sizeof(*gPyramidBagMenu));
 
     if (location != PYRAMIDBAG_LOC_PREV)
         gPyramidBagMenuState.location = location;
@@ -1537,7 +1537,7 @@ static void FreeItemIconSprite(u8 spriteArrId)
 static void LoadPyramidBagPalette(void)
 {
     struct SpritePalette spritePalette;
-    u16 *palPtr = AllocTest(0x40);
+    u16 *palPtr = Alloc(0x40);
 
     LZDecompressWram(gBattlePyramidBag_Pal, palPtr);
     spritePalette.data = palPtr + (gSaveBlock2Ptr->frontier.lvlMode * 16);

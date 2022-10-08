@@ -17,24 +17,24 @@ void AllocateBattleResources(void)
     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER_HILL)
         InitTrainerHillBattleStruct();
 
-    gBattleStruct = AllocZeroedTest(sizeof(*gBattleStruct));
+    gBattleStruct = AllocZeroed(sizeof(*gBattleStruct));
 
-    gBattleResources = AllocZeroedTest(sizeof(*gBattleResources));
-    gBattleResources->secretBase = AllocZeroedTest(sizeof(*gBattleResources->secretBase));
-    gBattleResources->flags = AllocZeroedTest(sizeof(*gBattleResources->flags));
-    gBattleResources->battleScriptsStack = AllocZeroedTest(sizeof(*gBattleResources->battleScriptsStack));
-    gBattleResources->battleCallbackStack = AllocZeroedTest(sizeof(*gBattleResources->battleCallbackStack));
-    gBattleResources->beforeLvlUp = AllocZeroedTest(sizeof(*gBattleResources->beforeLvlUp));
-    gBattleResources->ai = AllocZeroedTest(sizeof(*gBattleResources->ai));
-    gBattleResources->aiData = AllocZeroedTest(sizeof(*gBattleResources->aiData));
-    gBattleResources->aiParty = AllocZeroedTest(sizeof(*gBattleResources->aiParty));
-    gBattleResources->battleHistory = AllocZeroedTest(sizeof(*gBattleResources->battleHistory));
+    gBattleResources = AllocZeroed(sizeof(*gBattleResources));
+    gBattleResources->secretBase = AllocZeroed(sizeof(*gBattleResources->secretBase));
+    gBattleResources->flags = AllocZeroed(sizeof(*gBattleResources->flags));
+    gBattleResources->battleScriptsStack = AllocZeroed(sizeof(*gBattleResources->battleScriptsStack));
+    gBattleResources->battleCallbackStack = AllocZeroed(sizeof(*gBattleResources->battleCallbackStack));
+    gBattleResources->beforeLvlUp = AllocZeroed(sizeof(*gBattleResources->beforeLvlUp));
+    gBattleResources->ai = AllocZeroed(sizeof(*gBattleResources->ai));
+    gBattleResources->aiData = AllocZeroed(sizeof(*gBattleResources->aiData));
+    gBattleResources->aiParty = AllocZeroed(sizeof(*gBattleResources->aiParty));
+    gBattleResources->battleHistory = AllocZeroed(sizeof(*gBattleResources->battleHistory));
 
-    gLinkBattleSendBuffer = AllocZeroedTest(BATTLE_BUFFER_LINK_SIZE);
-    gLinkBattleRecvBuffer = AllocZeroedTest(BATTLE_BUFFER_LINK_SIZE);
+    gLinkBattleSendBuffer = AllocZeroed(BATTLE_BUFFER_LINK_SIZE);
+    gLinkBattleRecvBuffer = AllocZeroed(BATTLE_BUFFER_LINK_SIZE);
 
-    gBattleAnimBgTileBuffer = AllocZeroedTest(0x2000);
-    gBattleAnimBgTilemapBuffer = AllocZeroedTest(0x1000);
+    gBattleAnimBgTileBuffer = AllocZeroed(0x2000);
+    gBattleAnimBgTilemapBuffer = AllocZeroed(0x1000);
 
     if (gBattleTypeFlags & BATTLE_TYPE_SECRET_BASE)
     {

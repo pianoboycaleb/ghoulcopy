@@ -1538,7 +1538,7 @@ u8 CreateObjectGraphicsSprite(u16 graphicsId, void (*callback)(struct Sprite *),
     struct Sprite *sprite;
     u8 spriteId;
 
-    spriteTemplate = AllocTest(sizeof(struct SpriteTemplate));
+    spriteTemplate = Alloc(sizeof(struct SpriteTemplate));
     CopyObjectGraphicsInfoToSpriteTemplate(graphicsId, callback, spriteTemplate, &subspriteTables);
     if (spriteTemplate->paletteTag != TAG_NONE)
         LoadObjectEventPalette(spriteTemplate->paletteTag);
@@ -8780,7 +8780,7 @@ u8 MovementAction_LockAnim_Step0(struct ObjectEvent *objectEvent, struct Sprite 
     bool32 ableToStore = FALSE;
     if (sLockedAnimObjectEvents == NULL)
     {
-        sLockedAnimObjectEvents = AllocZeroedTest(sizeof(struct LockedAnimObjectEvents));
+        sLockedAnimObjectEvents = AllocZeroed(sizeof(struct LockedAnimObjectEvents));
         sLockedAnimObjectEvents->localIds[0] = objectEvent->localId;
         sLockedAnimObjectEvents->count = 1;
         ableToStore = TRUE;

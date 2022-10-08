@@ -1352,7 +1352,7 @@ static void CB2_PreInitMultiBattle(void)
     case 0:
         if (gReceivedRemoteLinkPlayers && IsLinkTaskFinished())
         {
-            sMultiPartnerPartyBuffer = AllocTest(sizeof(gMultiPartnerParty));
+            sMultiPartnerPartyBuffer = Alloc(sizeof(gMultiPartnerParty));
             SetMultiPartnerMenuParty(0);
             SendBlock(BitmaskAllOtherLinkPlayers(), sMultiPartnerPartyBuffer, sizeof(gMultiPartnerParty));
             gBattleCommunication[MULTIUSE_STATE]++;
@@ -1434,7 +1434,7 @@ static void CB2_PreInitIngamePlayerPartnerBattle(void)
     switch (gBattleCommunication[MULTIUSE_STATE])
     {
     case 0:
-        sMultiPartnerPartyBuffer = AllocTest(sizeof(gMultiPartnerParty));
+        sMultiPartnerPartyBuffer = Alloc(sizeof(gMultiPartnerParty));
         SetMultiPartnerMenuParty(MULTI_PARTY_SIZE);
         gBattleCommunication[MULTIUSE_STATE]++;
         *savedCallback = gMain.savedCallback;

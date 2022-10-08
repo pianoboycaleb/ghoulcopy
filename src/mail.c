@@ -448,7 +448,7 @@ void ReadMail(struct Mail *mail, void (*exitCallback)(void), bool8 hasText)
     u16 buffer[2];
     u16 species;
 
-    sMailRead = AllocZeroedTest(sizeof(*sMailRead));
+    sMailRead = AllocZeroed(sizeof(*sMailRead));
     sMailRead->language = GAME_LANGUAGE;
     sMailRead->international = TRUE;
     sMailRead->parserSingle = CopyEasyChatWord;

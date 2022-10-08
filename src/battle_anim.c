@@ -1247,7 +1247,7 @@ void LoadMoveBg(u16 bgId)
         void *dmaSrc;
         void *dmaDest;
 
-        gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+        gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
         LZDecompressWram(tilemap, gDecompressionBuffer);
         RelocateBattleBgPal(GetBattleBgPaletteNum(), (void *)gDecompressionBuffer, 0x100, FALSE);
         dmaSrc = gDecompressionBuffer;

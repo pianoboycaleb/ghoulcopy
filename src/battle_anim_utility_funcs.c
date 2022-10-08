@@ -393,7 +393,7 @@ void InitStatsChangeAnimation(u8 taskId)
 {
     u8 i;
 
-    sAnimStatsChangeData = AllocZeroedTest(sizeof(struct AnimStatsChangeData));
+    sAnimStatsChangeData = AllocZeroed(sizeof(struct AnimStatsChangeData));
     for (i = 0; i < 8; i++)
         sAnimStatsChangeData->data[i] = gBattleAnimArgs[i];
 
@@ -912,7 +912,7 @@ void AnimTask_GetFieldTerrain(u8 taskId)
 
 void AnimTask_AllocBackupPalBuffer(u8 taskId)
 {
-    gMonSpritesGfxPtr->buffer = AllocZeroedTest(0x2000);
+    gMonSpritesGfxPtr->buffer = AllocZeroed(0x2000);
     DestroyAnimVisualTask(taskId);
 }
 

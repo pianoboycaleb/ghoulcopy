@@ -1170,7 +1170,7 @@ void CB2_Debug_Pokemon(void)
             //input task handler
             taskId = CreateTask(Handle_Input_Debug_Pokemon, 0);
 
-            data = AllocZeroedTest(sizeof(struct PokemonDebugMenu));
+            data = AllocZeroed(sizeof(struct PokemonDebugMenu));
             SetStructPtr(taskId, data);
 
             data->currentmonId = SPECIES_BULBASAUR;

@@ -315,8 +315,8 @@ static void Task_RecordMixing_Main(u8 taskId)
     switch (tState)
     {
     case 0: // init
-        sSentRecord = AllocTest(sizeof(*sSentRecord));
-        sReceivedRecords = AllocTest(sizeof(*sReceivedRecords) * MAX_LINK_PLAYERS);
+        sSentRecord = Alloc(sizeof(*sSentRecord));
+        sReceivedRecords = Alloc(sizeof(*sReceivedRecords) * MAX_LINK_PLAYERS);
         SetLocalLinkPlayerId(gSpecialVar_0x8005);
         VarSet(VAR_TEMP_0, 1);
         sReadyToReceive = FALSE;
@@ -689,7 +689,7 @@ static void ReceiveLilycoveLadyData(LilycoveLady *records, size_t recordSize, u8
 
     if (GetLilycoveLadyId() == 0)
     {
-        lilycoveLady = AllocTest(sizeof(*lilycoveLady));
+        lilycoveLady = Alloc(sizeof(*lilycoveLady));
         if (lilycoveLady == NULL)
             return;
 
@@ -1355,7 +1355,7 @@ static void SaveHighestWinStreakRecords(struct RecordMixingHallRecords *mixHallR
 static void ReceiveRankingHallRecords(struct PlayerHallRecords *records, size_t recordSize, u32 multiplayerId)
 {
     u8 linkPlayerCount = GetLinkPlayerCount();
-    struct RecordMixingHallRecords *mixHallRecords = AllocZeroedTest(sizeof(*mixHallRecords));
+    struct RecordMixingHallRecords *mixHallRecords = AllocZeroed(sizeof(*mixHallRecords));
 
     GetNewHallRecords(mixHallRecords, records, recordSize, multiplayerId, linkPlayerCount);
     SaveHighestWinStreakRecords(mixHallRecords);

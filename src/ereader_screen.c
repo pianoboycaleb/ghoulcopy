@@ -259,7 +259,7 @@ void CreateEReaderTask(void)
     data->unused2 = 0;
     data->unused3 = 0;
     data->status = 0;
-    data->unusedBuffer = AllocZeroedTest(0x40);
+    data->unusedBuffer = AllocZeroed(0x40);
 }
 
 static void ResetTimer(u16 *timer)
@@ -484,7 +484,7 @@ static void Task_EReader(u8 taskId)
         }
         break;
     case ER_STATE_SAVE:
-        gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+        gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
         if (TryWriteTrainerHill((struct EReaderTrainerHillSet *)&gDecompressionBuffer))
         {
             AddTextPrinterToWindow1(gJPText_ConnectionComplete);

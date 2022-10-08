@@ -2014,7 +2014,7 @@ void EnterPokeStorage(u8 boxOption)
 {
     ResetTasks();
     sCurrentBoxOption = boxOption;
-    sStorage = AllocTest(sizeof(*sStorage));
+    sStorage = Alloc(sizeof(*sStorage));
     if (sStorage == NULL)
     {
         SetMainCallback2(CB2_ExitPokeStorage);
@@ -2034,7 +2034,7 @@ void EnterPokeStorage(u8 boxOption)
 static void CB2_ReturnToPokeStorage(void)
 {
     ResetTasks();
-    sStorage = AllocTest(sizeof(*sStorage));
+    sStorage = Alloc(sizeof(*sStorage));
     if (sStorage == NULL)
     {
         SetMainCallback2(CB2_ExitPokeStorage);
@@ -8166,7 +8166,7 @@ EWRAM_DATA static struct
 
 static bool8 MultiMove_Init(void)
 {
-    sMultiMove = AllocTest(sizeof(*sMultiMove));
+    sMultiMove = Alloc(sizeof(*sMultiMove));
     if (sMultiMove != NULL)
     {
         sStorage->multiMoveWindowId = AddWindow8Bit(&sWindowTemplate_MultiMove);
@@ -9844,7 +9844,7 @@ static void TilemapUtil_Init(u8 count)
 {
     u16 i;
 
-    sTilemapUtil = AllocTest(sizeof(*sTilemapUtil) * count);
+    sTilemapUtil = Alloc(sizeof(*sTilemapUtil) * count);
     sNumTilemapUtilIds = (sTilemapUtil == NULL) ? 0 : count;
     for (i = 0; i < sNumTilemapUtilIds; i++)
     {

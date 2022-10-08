@@ -22,7 +22,7 @@ static void Task_LinkContest_InitFlags(u8);
 
 bool32 LinkContest_SendBlock(void *src, u16 size)
 {
-    gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+    gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
     memcpy(gDecompressionBuffer, src, size);
     if (SendBlock(BitmaskAllOtherLinkPlayers(), gDecompressionBuffer, size))
     {

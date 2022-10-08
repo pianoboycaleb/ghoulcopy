@@ -1996,7 +1996,7 @@ static void DebugAction_Give_PokemonSimple(u8 taskId)
     u8 windowId;
 
     //Mon data struct
-    sDebugMonData = AllocZeroedTest(sizeof(struct DebugMonData));
+    sDebugMonData = AllocZeroed(sizeof(struct DebugMonData));
     ResetMonDataStruct(sDebugMonData);
 
     //Window initialization
@@ -2034,7 +2034,7 @@ static void DebugAction_Give_PokemonComplex(u8 taskId)
     u8 windowId;
 
     //Mon data struct
-    sDebugMonData = AllocZeroedTest(sizeof(struct DebugMonData));
+    sDebugMonData = AllocZeroed(sizeof(struct DebugMonData));
     ResetMonDataStruct(sDebugMonData);
 
     //Window initialization

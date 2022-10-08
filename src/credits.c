@@ -539,7 +539,7 @@ static void Task_LoadShowMons(u8 taskId)
         struct SpriteSheet sSpriteSheet_MonBg;
         struct SpritePalette sSpritePalette_MonBg;
 
-        gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+        gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
         sSpriteSheet_MonBg.data = gDecompressionBuffer;
         sSpriteSheet_MonBg.size = MONBG_OFFSET;
         sSpriteSheet_MonBg.tag = TAG_MON_BG;

@@ -18,7 +18,7 @@ void LoadPokedexAreaMapGfx(const struct PokedexAreaMapTemplate *template)
 {
     u8 mode;
     void * tilemap;
-    sPokedexAreaMapBgNum = AllocTest(sizeof(sPokedexAreaMapBgNum));
+    sPokedexAreaMapBgNum = Alloc(sizeof(sPokedexAreaMapBgNum));
     mode = template->mode;
 
     if (mode == 0)

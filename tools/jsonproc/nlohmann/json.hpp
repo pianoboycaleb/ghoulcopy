@@ -13591,15 +13591,15 @@ class basic_json
     template<typename T, typename... Args>
     static T* create(Args&& ... args)
     {
-        AllocatorType<T> AllocTest;
+        AllocatorType<T> alloc;
         using AllocatorTraits = std::allocator_traits<AllocatorType<T>>;
 
         auto deleter = [&](T * object)
         {
-            AllocatorTraits::deallocate(AllocTest, object, 1);
+            AllocatorTraits::deallocate(alloc, object, 1);
         };
-        std::unique_ptr<T, decltype(deleter)> object(AllocatorTraits::allocate(AllocTest, 1), deleter);
-        AllocatorTraits::construct(AllocTest, object.get(), std::forward<Args>(args)...);
+        std::unique_ptr<T, decltype(deleter)> object(AllocatorTraits::allocate(alloc, 1), deleter);
+        AllocatorTraits::construct(alloc, object.get(), std::forward<Args>(args)...);
         assert(object != nullptr);
         return object.release();
     }
@@ -13766,25 +13766,25 @@ class basic_json
             {
                 case value_t::object:
                 {
-                    AllocatorType<object_t> AllocTest;
-                    std::allocator_traits<decltype(AllocTest)>::destroy(AllocTest, object);
-                    std::allocator_traits<decltype(AllocTest)>::deallocate(AllocTest, object, 1);
+                    AllocatorType<object_t> alloc;
+                    std::allocator_traits<decltype(alloc)>::destroy(alloc, object);
+                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, object, 1);
                     break;
                 }
 
                 case value_t::array:
                 {
-                    AllocatorType<array_t> AllocTest;
-                    std::allocator_traits<decltype(AllocTest)>::destroy(AllocTest, array);
-                    std::allocator_traits<decltype(AllocTest)>::deallocate(AllocTest, array, 1);
+                    AllocatorType<array_t> alloc;
+                    std::allocator_traits<decltype(alloc)>::destroy(alloc, array);
+                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, array, 1);
                     break;
                 }
 
                 case value_t::string:
                 {
-                    AllocatorType<string_t> AllocTest;
-                    std::allocator_traits<decltype(AllocTest)>::destroy(AllocTest, string);
-                    std::allocator_traits<decltype(AllocTest)>::deallocate(AllocTest, string, 1);
+                    AllocatorType<string_t> alloc;
+                    std::allocator_traits<decltype(alloc)>::destroy(alloc, string);
+                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, string, 1);
                     break;
                 }
 
@@ -16416,9 +16416,9 @@ class basic_json
 
                 if (is_string())
                 {
-                    AllocatorType<string_t> AllocTest;
-                    std::allocator_traits<decltype(AllocTest)>::destroy(AllocTest, m_value.string);
-                    std::allocator_traits<decltype(AllocTest)>::deallocate(AllocTest, m_value.string, 1);
+                    AllocatorType<string_t> alloc;
+                    std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.string);
+                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, m_value.string, 1);
                     m_value.string = nullptr;
                 }
 
@@ -16522,9 +16522,9 @@ class basic_json
 
                 if (is_string())
                 {
-                    AllocatorType<string_t> AllocTest;
-                    std::allocator_traits<decltype(AllocTest)>::destroy(AllocTest, m_value.string);
-                    std::allocator_traits<decltype(AllocTest)>::deallocate(AllocTest, m_value.string, 1);
+                    AllocatorType<string_t> alloc;
+                    std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.string);
+                    std::allocator_traits<decltype(alloc)>::deallocate(alloc, m_value.string, 1);
                     m_value.string = nullptr;
                 }
 

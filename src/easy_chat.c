@@ -1401,21 +1401,21 @@ static bool8 InitEasyChatScreen(u8 taskId)
     case 1:
         if (!InitEasyChatScreenWordData())
         {
-            // AllocTest failed, exit
+            // Alloc failed, exit
             ExitEasyChatScreen((MainCallback)GetWordTaskArg(taskId, TASKIDX_EXIT_CALLBACK));
         }
         break;
     case 2:
         if (!InitEasyChatScreenStruct(tType, (u16 *)GetWordTaskArg(taskId, TASKIDX_WORDS), tPersonType))
         {
-            // AllocTest failed, exit
+            // Alloc failed, exit
             ExitEasyChatScreen((MainCallback)GetWordTaskArg(taskId, TASKIDX_EXIT_CALLBACK));
         }
         break;
     case 3:
         if (!InitEasyChatScreenControl())
         {
-            // AllocTest failed, exit
+            // Alloc failed, exit
             ExitEasyChatScreen((MainCallback)GetWordTaskArg(taskId, TASKIDX_EXIT_CALLBACK));
         }
         break;
@@ -1627,7 +1627,7 @@ static bool8 InitEasyChatScreenStruct(u8 type, u16 *words, u8 displayedPersonTyp
     u8 templateId;
     int i;
 
-    sEasyChatScreen = AllocTest(sizeof(*sEasyChatScreen));
+    sEasyChatScreen = Alloc(sizeof(*sEasyChatScreen));
     if (sEasyChatScreen == NULL)
         return FALSE;
 
@@ -3882,7 +3882,7 @@ static bool8 ShowCantExitMsg(void)
 
 static bool8 InitEasyChatScreenControl_(void)
 {
-    sScreenControl = AllocTest(sizeof(*sScreenControl));
+    sScreenControl = Alloc(sizeof(*sScreenControl));
     if (!sScreenControl)
         return FALSE;
 
@@ -5566,7 +5566,7 @@ void InitEasyChatPhrases(void)
 
 static bool8 InitEasyChatScreenWordData(void)
 {
-    sWordData = AllocTest(sizeof(*sWordData));
+    sWordData = Alloc(sizeof(*sWordData));
     if (!sWordData)
         return FALSE;
 

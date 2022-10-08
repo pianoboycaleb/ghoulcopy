@@ -600,7 +600,7 @@ static u32 AllocateFrontierPassData(void (*callback)(void))
     if (sPassData != NULL)
         return ERR_ALREADY_DONE;
 
-    sPassData = AllocZeroedTest(sizeof(*sPassData));
+    sPassData = AllocZeroed(sizeof(*sPassData));
     if (sPassData == NULL)
         return ERR_ALLOC_FAILED;
 
@@ -651,7 +651,7 @@ static u32 AllocateFrontierPassGfx(void)
     if (sPassGfx != NULL)
         return ERR_ALREADY_DONE;
 
-    sPassGfx = AllocZeroedTest(sizeof(*sPassGfx));
+    sPassGfx = AllocZeroed(sizeof(*sPassGfx));
     if (sPassGfx == NULL)
         return ERR_ALLOC_FAILED;
 
@@ -1357,7 +1357,7 @@ static void ShowFrontierMap(void (*callback)(void))
     if (sMapData != NULL)
         SetMainCallback2(callback); // This line doesn't make sense at all, since it gets overwritten later anyway.
 
-    sMapData = AllocZeroedTest(sizeof(*sMapData));
+    sMapData = AllocZeroed(sizeof(*sMapData));
     sMapData->callback = callback;
     ResetTasks();
     CreateTask(Task_HandleFrontierMap, 0);

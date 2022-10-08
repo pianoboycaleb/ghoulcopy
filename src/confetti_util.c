@@ -19,10 +19,10 @@ bool32 ConfettiUtil_Init(u8 count)
     if (count > 64)
         count = 64;
 
-    sWork = AllocZeroedTest(sizeof(*sWork));
+    sWork = AllocZeroed(sizeof(*sWork));
     if (sWork == NULL)
         return FALSE;
-    sWork->array = AllocZeroedTest(count * sizeof(struct ConfettiUtil));
+    sWork->array = AllocZeroed(count * sizeof(struct ConfettiUtil));
     if (sWork->array == NULL)
     {
         FREE_AND_SET_NULL(sWork);
