@@ -40,13 +40,13 @@ struct RecordedBattleSave
 {
     struct Pokemon playerParty[PARTY_SIZE];
     struct Pokemon opponentParty[PARTY_SIZE];
-    u8 playersName[MAX_BATTLERS_COUNT][PLAYER_NAME_LENGTH + 1];
-    u8 playersGender[MAX_BATTLERS_COUNT];
-    u32 playersTrainerId[MAX_BATTLERS_COUNT];
-    u8 playersLanguage[MAX_BATTLERS_COUNT];
+    u8 playersName[MAX_BATTLERS_COUNT_DOUBLE][PLAYER_NAME_LENGTH + 1];
+    u8 playersGender[MAX_BATTLERS_COUNT_DOUBLE];
+    u32 playersTrainerId[MAX_BATTLERS_COUNT_DOUBLE];
+    u8 playersLanguage[MAX_BATTLERS_COUNT_DOUBLE];
     u32 rngSeed;
     u32 battleFlags;
-    u8 playersBattlers[MAX_BATTLERS_COUNT];
+    u8 playersBattlers[MAX_BATTLERS_COUNT_DOUBLE];
     u16 opponentA;
     u16 opponentB;
     u16 partnerId;
@@ -63,7 +63,7 @@ struct RecordedBattleSave
     u16 easyChatSpeech[EASY_CHAT_BATTLE_WORDS_COUNT];
     u8 recordMixFriendLanguage;
     u8 apprenticeLanguage;
-    u8 battleRecord[MAX_BATTLERS_COUNT][BATTLER_RECORD_SIZE];
+    u8 battleRecord[MAX_BATTLERS_COUNT_DOUBLE][BATTLER_RECORD_SIZE];
     u32 checksum;
 };
 

@@ -1152,27 +1152,27 @@ static void RestoreHiddenHealthboxes(u8 priority)
         CreateAllHealthboxes();
 }
 
-// static void TryToggleHealboxVisibility(u8 priority, u8 healthboxLeftSpriteId, u8 healthboxRightSpriteId, u8 healthbarSpriteId, u8 indicatorSpriteId)
-// {
-//     u8 spriteIds[4] = {healthboxLeftSpriteId, healthboxRightSpriteId, healthbarSpriteId, indicatorSpriteId};
-//     int i;
+static void TryToggleHealboxVisibility(u8 priority, u8 healthboxLeftSpriteId, u8 healthboxRightSpriteId, u8 healthbarSpriteId, u8 indicatorSpriteId)
+{
+    u8 spriteIds[4] = {healthboxLeftSpriteId, healthboxRightSpriteId, healthbarSpriteId, indicatorSpriteId};
+    int i;
 
-//     for (i = 0; i < NELEMS(spriteIds); i++)
-//     {
-//         if (spriteIds[i] == 0xFF)
-//             continue;
+    for (i = 0; i < NELEMS(spriteIds); i++)
+    {
+        if (spriteIds[i] == 0xFF)
+            continue;
 
-//         switch (priority)
-//         {
-//         case 0: //start of anim -> make invisible
-//             gSprites[spriteIds[i]].invisible = TRUE;
-//             break;
-//         case 1: //end of anim -> make visible
-//             gSprites[spriteIds[i]].invisible = FALSE;
-//             break;
-//         }
-//     }
-// }
+        switch (priority)
+        {
+        case 0: //start of anim -> make invisible
+            gSprites[spriteIds[i]].invisible = TRUE;
+            break;
+        case 1: //end of anim -> make visible
+            gSprites[spriteIds[i]].invisible = FALSE;
+            break;
+        }
+    }
+}
 
 void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)
 {

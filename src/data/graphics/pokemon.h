@@ -7406,6 +7406,7 @@ const u8 gMonBattleIcon_Latios[] = INCBIN_U8("graphics/pokemon/latios/battle_ico
 const u8 gMonBattleIcon_Jirachi[] = INCBIN_U8("graphics/pokemon/jirachi/battle_icon.4bpp");
 const u8 gMonBattleIcon_Deoxys[] = INCBIN_U8("graphics/pokemon/deoxys/battle_icon.4bpp");
 const u8 gMonBattleIcon_DeoxysSpeed[] = INCBIN_U8("graphics/pokemon/deoxys/battle_icon.4bpp");
+const u8 gMonBattleIcon_Chimecho[] = INCBIN_U8("graphics/pokemon/chimecho/battle_icon.4bpp");
 const u8 gMonBattleIcon_UnownB[] = INCBIN_U8("graphics/pokemon/unown/b/battle_icon.4bpp");
 const u8 gMonBattleIcon_UnownC[] = INCBIN_U8("graphics/pokemon/unown/c/battle_icon.4bpp");
 const u8 gMonBattleIcon_UnownD[] = INCBIN_U8("graphics/pokemon/unown/d/battle_icon.4bpp");
