@@ -272,16 +272,6 @@ static const union AnimCmd *const sAnims_Rival[] =
     sAnim_Rival_Still,
 };
 
-#define MONBG_OFFSET (MON_PIC_SIZE * 3)
-static const struct SpriteSheet sSpriteSheet_MonBg[] = {
-    { gDecompressionBuffer, MONBG_OFFSET, TAG_MON_BG },
-    {},
-};
-static const struct SpritePalette sSpritePalette_MonBg[] = {
-    { (const u16 *)&gDecompressionBuffer[MONBG_OFFSET], TAG_MON_BG },
-    {},
-};
-
 static const struct OamData sOamData_MonBg =
 {
     .y = DISPLAY_HEIGHT,
@@ -544,6 +534,19 @@ static void Task_LoadShowMons(u8 taskId)
         u16 i;
         u16 *temp;
 
+        #define MONBG_OFFSET (MON_PIC_SIZE * 3)
+
+        struct SpriteSheet sSpriteSheet_MonBg;
+        struct SpritePalette sSpritePalette_MonBg;
+
+        gDecompressionBuffer = AllocZeroedTest(DECOMPRESSION_BUFFER_SIZE);
+        sSpriteSheet_MonBg.data = gDecompressionBuffer;
+        sSpriteSheet_MonBg.size = MONBG_OFFSET;
+        sSpriteSheet_MonBg.tag = TAG_MON_BG;
+
+        sSpritePalette_MonBg.data = (const u16 *)&gDecompressionBuffer[MONBG_OFFSET];
+        sSpritePalette_MonBg.tag = TAG_MON_BG;
+
         ResetSpriteData();
         ResetAllPicSprites();
         FreeAllSpritePalettes();
@@ -565,8 +568,9 @@ static void Task_LoadShowMons(u8 taskId)
         temp[2] = RGB(31, 20, 20); // light red
         temp[3] = RGB(20, 20, 31); // light blue
 
-        LoadSpriteSheet(sSpriteSheet_MonBg);
-        LoadSpritePalette(sSpritePalette_MonBg);
+        LoadSpriteSheet(&sSpriteSheet_MonBg);
+        LoadSpritePalette(&sSpritePalette_MonBg);
+        Free(gDecompressionBuffer);
 
         gMain.state++;
         break;
