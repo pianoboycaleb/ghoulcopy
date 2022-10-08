@@ -57,7 +57,7 @@ const struct SpritePalette battleIconBgPalettes[2] = {
 
 struct SpeciesData getSpeciesData(struct BattlePokemon mon)
 {
-    return (struct SpeciesData){mon.species, mon.personality, TRUE};
+    return (struct SpeciesData){mon.species, mon.personality};
 }
 
 u8 GetBattlerWithLowestTicks()
@@ -167,19 +167,14 @@ void SpriteCallback_Redraw(struct Sprite* sprite)
     RedrawSprite(sprite);
 }
 
-const u8* GetMonBattleIconTiles(u16 species, bool32 handleDeoxys)
+const u8* GetMonBattleIconTiles(u16 species)
 {
-    const u8* iconSprite = gMonBattleIconTable[species];
-    if (species == SPECIES_DEOXYS && handleDeoxys == TRUE)
-    {
-        iconSprite = (const u8*)(0x400 + (u32)iconSprite); // use the specific Deoxys form icon (Speed in this case)
-    }
-    return iconSprite;
+    return gMonBattleIconTable[species];
 }
 
-const u8 *GetMonBattleIconPtr(u16 species, u32 personality, bool32 handleDeoxys)
+const u8 *GetMonBattleIconPtr(u16 species, u32 personality)
 {
-    return GetMonBattleIconTiles(GetIconSpecies(species, personality), handleDeoxys);
+    return GetMonBattleIconTiles(GetIconSpecies(species, personality));
 }
 
 u8 CreateSpriteFromData(void *image, struct OamData oam, u16 paletteTag, s16 x, s16 y, u8 subpriority)
@@ -209,9 +204,9 @@ u8 CreateSpriteFromData(void *image, struct OamData oam, u16 paletteTag, s16 x, 
     return spriteId;
 }
 
-u8 CreateBattleMonTurnIcon(u16 species, u32 personality, bool32 handleDeoxys, s16 x, s16 y, u8 subpriority)
+u8 CreateBattleMonTurnIcon(u16 species, u32 personality, s16 x, s16 y, u8 subpriority)
 {
-    void *image = (void*) GetMonBattleIconPtr(species, personality, handleDeoxys);
+    void *image = (void*) GetMonBattleIconPtr(species, personality);
     struct OamData oam = sMonBattleIconOamData;
     u16 paletteTag = POKE_ICON_BASE_PAL_TAG + gMonIconPaletteIndices[species];
 
@@ -225,7 +220,6 @@ u8 CreateBattleOrderMonIconSprite(u8 battlerId, s16 x, s16 y)
     u8 spriteId = CreateBattleMonTurnIcon(
         speciesData.species,
         speciesData.personality,
-        speciesData.handleDeoxys,
         x,
         y,
         4
@@ -252,13 +246,11 @@ void UpdateBattleOrderMonIconSprite(u8 spriteId, u8 bgSpriteId, u8 battlerId, st
     if (
         speciesData.species != oldSpeciesData.species
         || speciesData.personality != oldSpeciesData.personality
-        || speciesData.handleDeoxys != oldSpeciesData.handleDeoxys
     )
     {
         image = (void*) GetMonBattleIconPtr(
             speciesData.species,
-            speciesData.personality,
-            speciesData.handleDeoxys
+            speciesData.personality
         );
         sprite = &gSprites[spriteId];
         sprite->images = (const struct SpriteFrameImage *)image;

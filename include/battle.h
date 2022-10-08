@@ -851,7 +851,6 @@ struct SpeciesData
 {
     u16 species;
     u32 personality;
-    bool32 handleDeoxys;
 };
 
 struct TotemBoost
