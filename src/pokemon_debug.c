@@ -832,7 +832,7 @@ static void LoadAndCreateEnemyShadowSpriteCustom(struct PokemonDebugMenu *data, 
     bool8 invisible = FALSE;
     if (gEnemyMonElevation[species] == 0 && !IsCastformForm(species))
         invisible = TRUE;
-    LoadCompressedSpriteSheet(&gSpriteSheet_EnemyShadow);
+    LoadCompressedSpriteSheetUsingHeap(&gSpriteSheet_EnemyShadow);
     LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[0]);
     x = sBattlerCoords[0][1].x;
     y = sBattlerCoords[0][1].y;
@@ -1181,7 +1181,7 @@ void CB2_Debug_Pokemon(void)
 
             //Palettes
             palette = GetMonSpritePalStructCustom(species, data->isFemale, data->isShiny);
-            LoadCompressedSpritePalette(palette);
+            LoadCompressedSpritePaletteUsingHeap(palette);
             //Front
             HandleLoadSpecialPokePic(TRUE, gMonSpritesGfxPtr->sprites.ptr[1], species, (data->isFemale ? FEMALE_PERSONALITY : MALE_PERSONALITY));
             data->isShiny = FALSE;
@@ -1693,7 +1693,7 @@ static void ReloadPokemonSprites(struct PokemonDebugMenu *data)
 
     //Palettes
     palette = GetMonSpritePalStructCustom(species, data->isFemale, data->isShiny);
-    LoadCompressedSpritePalette(palette);
+    LoadCompressedSpritePaletteUsingHeap(palette);
     //Front
     HandleLoadSpecialPokePic(TRUE, gMonSpritesGfxPtr->sprites.ptr[1], species, (data->isFemale ? FEMALE_PERSONALITY : MALE_PERSONALITY));
     BattleLoadOpponentMonSpriteGfxCustom(species, data->isFemale, data->isShiny, 1);

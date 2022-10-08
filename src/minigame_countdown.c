@@ -211,7 +211,7 @@ static void StaticCountdown_CreateSprites(u8 taskId, s16 *data)
     u8 i;
     struct Sprite *sprite;
 
-    LoadCompressedSpriteSheet(&sSpriteSheet_321Start_Static[tSpriteSheetId]);
+    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_321Start_Static[tSpriteSheetId]);
     LoadSpritePalette(&sSpritePalette_321Start_Static[tSpritePalId]);
     for (i = 0; i < tNumSprites; i++)
         tSpriteIds(i) = CreateSprite(&sSpriteTemplate_StaticCountdown[tSpriteTemplateId], tX, tY, tSubpriority);
@@ -609,7 +609,7 @@ static void Load321StartGfx(u16 tileTag, u16 palTag)
     spriteSheet.tag = tileTag;
     spritePalette.tag = palTag;
 
-    LoadCompressedSpriteSheet(&spriteSheet);
+    LoadCompressedSpriteSheetUsingHeap(&spriteSheet);
     LoadSpritePalette(&spritePalette);
 }
 

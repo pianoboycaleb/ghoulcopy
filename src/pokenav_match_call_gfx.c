@@ -1176,7 +1176,7 @@ static void AllocMatchCallSprites(void)
 
     // Load options cursor gfx
     for (i = 0; i < ARRAY_COUNT(sOptionsCursorSpriteSheets); i++)
-        LoadCompressedSpriteSheet(&sOptionsCursorSpriteSheets[i]);
+        LoadCompressedSpriteSheetUsingHeap(&sOptionsCursorSpriteSheets[i]);
     Pokenav_AllocAndLoadPalettes(sOptionsCursorSpritePalettes);
     gfx->optionsCursorSprite = NULL;
 

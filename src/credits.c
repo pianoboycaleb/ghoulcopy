@@ -1210,9 +1210,9 @@ static bool8 LoadBikeScene(u8 scene, u8 taskId)
     case 2:
         if (gSaveBlock2Ptr->playerGender == MALE)
         {
-            LoadCompressedSpriteSheet(gSpriteSheet_CreditsBrendan);
-            LoadCompressedSpriteSheet(gSpriteSheet_CreditsRivalMay);
-            LoadCompressedSpriteSheet(gSpriteSheet_CreditsBicycle);
+            LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_CreditsBrendan);
+            LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_CreditsRivalMay);
+            LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_CreditsBicycle);
             LoadSpritePalettes(gSpritePalettes_Credits);
 
             spriteId = CreateIntroBrendanSprite(120, 46);
@@ -1227,9 +1227,9 @@ static bool8 LoadBikeScene(u8 scene, u8 taskId)
         }
         else
         {
-            LoadCompressedSpriteSheet(gSpriteSheet_CreditsMay);
-            LoadCompressedSpriteSheet(gSpriteSheet_CreditsRivalBrendan);
-            LoadCompressedSpriteSheet(gSpriteSheet_CreditsBicycle);
+            LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_CreditsMay);
+            LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_CreditsRivalBrendan);
+            LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_CreditsBicycle);
             LoadSpritePalettes(gSpritePalettes_Credits);
 
             spriteId = CreateIntroMaySprite(120, 46);

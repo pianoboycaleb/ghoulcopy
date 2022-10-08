@@ -3030,7 +3030,7 @@ static void Task_ShowTourneyInfoCard(u8 taskId)
         DecompressAndLoadBgGfxUsingHeap(2, gDomeTourneyInfoCard_Gfx, 0x2000, 0, 0);
         DecompressAndLoadBgGfxUsingHeap(2, gDomeTourneyInfoCard_Tilemap, 0x2000, 0, 1);
         DecompressAndLoadBgGfxUsingHeap(3, gDomeTourneyInfoCardBg_Tilemap, 0x800, 0, 1);
-        LoadCompressedSpriteSheet(sTourneyTreeButtonsSpriteSheet);
+        LoadCompressedSpriteSheetUsingHeap(sTourneyTreeButtonsSpriteSheet);
         LoadCompressedPalette(gDomeTourneyTree_Pal, 0, 0x200);
         LoadCompressedPalette(gDomeTourneyTreeButtons_Pal, 0x100, 0x200);
         LoadCompressedPalette(gBattleWindowTextPalette, 0xF0, 0x20);
@@ -5320,7 +5320,7 @@ static void Task_ShowTourneyTree(u8 taskId)
         gTasks[taskId].tState++;
         break;
     case 3:
-        LoadCompressedSpriteSheet(sTourneyTreeButtonsSpriteSheet);
+        LoadCompressedSpriteSheetUsingHeap(sTourneyTreeButtonsSpriteSheet);
         if (notInteractive == FALSE)
         {
             for (i = 0; i < ARRAY_COUNT(sTourneyTreePokeballCoords); i++)

@@ -1975,7 +1975,7 @@ static void CreateGameSprites(struct BerryCrushGame *game)
     gSpriteCoordOffsetX = 0;
     gSpriteCoordOffsetY = CRUSHER_START_Y;
     for (i = 0; i < ARRAY_COUNT(sSpriteSheets) - 1; i++)
-        LoadCompressedSpriteSheet(&sSpriteSheets[i]);
+        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets[i]);
     LoadSpritePalettes(sSpritePals);
 
     // Create sprite for crusher base

@@ -293,7 +293,7 @@ static void CB2_LoadCableCar(void)
         break;
     case 2:
         for (i = 0; i < ARRAY_COUNT(sSpriteSheets) - 1; i++)
-            LoadCompressedSpriteSheet(&sSpriteSheets[i]);
+            LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets[i]);
 
         LoadSpritePalettes(sSpritePalettes);
         sCableCar->groundTilemap = malloc_and_decompress(sGround_Tilemap, &sizeOut);

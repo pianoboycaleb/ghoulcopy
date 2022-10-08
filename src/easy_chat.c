@@ -4615,7 +4615,7 @@ static void LoadEasyChatGfx(void)
     LoadSpriteSheets(sSpriteSheets);
     LoadSpritePalettes(sSpritePalettes);
     for (i = 0; i < ARRAY_COUNT(sCompressedSpriteSheets); i++)
-        LoadCompressedSpriteSheet(&sCompressedSpriteSheets[i]);
+        LoadCompressedSpriteSheetUsingHeap(&sCompressedSpriteSheets[i]);
 }
 
 #define sDelayTimer    data[0]

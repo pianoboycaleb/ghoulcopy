@@ -1183,10 +1183,10 @@ static void Task_Scene1_Load(u8 taskId)
     SetGpuReg(REG_OFFSET_BG2CNT, BGCNT_PRIORITY(2) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(20) | BGCNT_16COLOR | BGCNT_TXT256x512);
     SetGpuReg(REG_OFFSET_BG1CNT, BGCNT_PRIORITY(1) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(18) | BGCNT_16COLOR | BGCNT_TXT256x512);
     SetGpuReg(REG_OFFSET_BG0CNT, BGCNT_PRIORITY(0) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(16) | BGCNT_16COLOR | BGCNT_TXT256x512);
-    LoadCompressedSpriteSheet(sSpriteSheet_WaterDropsAndLogo);
-    LoadCompressedSpriteSheet(sSpriteSheet_FlygonSilhouette);
+    LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_WaterDropsAndLogo);
+    LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_FlygonSilhouette);
     LoadSpritePalettes(sSpritePalettes_Intro1);
-    LoadCompressedSpriteSheet(sSpriteSheet_Sparkle);
+    LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_Sparkle);
     LoadSpritePalettes(sSpritePalette_Sparkle);
     CpuCopy16(&gPlttBufferUnfaded[0x100], &gPlttBufferUnfaded[0x1F0], 0x20);
     CpuCopy16(&gPlttBufferUnfaded[0x100], &gPlttBufferUnfaded[0x1E1], 0x1E);
@@ -1372,16 +1372,16 @@ static void Task_Scene2_CreateSprites(u8 taskId)
 
     // Load sprite sheets
     if (sIntroCharacterGender == MALE)
-        LoadCompressedSpriteSheet(gSpriteSheet_IntroBrendan);
+        LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_IntroBrendan);
     else
-        LoadCompressedSpriteSheet(gSpriteSheet_IntroMay);
+        LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_IntroMay);
 
-    LoadCompressedSpriteSheet(gSpriteSheet_IntroBicycle);
-    LoadCompressedSpriteSheet(gSpriteSheet_IntroFlygon);
+    LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_IntroBicycle);
+    LoadCompressedSpriteSheetUsingHeap(gSpriteSheet_IntroFlygon);
 
     // Load sprite palettes
     for (spriteId = 0; spriteId < ARRAY_COUNT(sSpriteSheet_RunningPokemon) - 1; spriteId++)
-        LoadCompressedSpriteSheet(&sSpriteSheet_RunningPokemon[spriteId]);
+        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_RunningPokemon[spriteId]);
 
     LoadSpritePalettes(gSpritePalettes_IntroPlayerFlygon);
     LoadSpritePalettes(sSpritePalettes_RunningPokemon);
@@ -2048,7 +2048,7 @@ static void Task_Scene3_LoadKyogre(u8 taskId)
     LZDecompressVram(gIntroKyogre_Gfx, (void *)VRAM);
     LZDecompressVram(gIntroKyogre_Tilemap, (void *)(BG_CHAR_ADDR(3)));
     LZDecompressVram(gIntroKyogreBg_Tilemap, (void *)(BG_SCREEN_ADDR(28)));
-    LoadCompressedSpriteSheet(sSpriteSheet_Bubbles);
+    LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_Bubbles);
     LoadSpritePalette(sSpritePalette_Bubbles);
     BeginNormalPaletteFade(PALETTES_ALL & ~1, 0, 16, 0, RGB_WHITEALPHA);
     gTasks[taskId].func = Task_Scene3_Kyogre;
@@ -2521,7 +2521,7 @@ static void Task_Scene3_LoadRayquazaAttack(u8 taskId)
 {
     u8 attackTaskId;
 
-    LoadCompressedSpriteSheet(sSpriteSheet_RayquazaOrb);
+    LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_RayquazaOrb);
     LoadSpritePalettes(sSpritePalette_RayquazaOrb);
     SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_MODE_0
                                 | DISPCNT_OBJ_1D_MAP
