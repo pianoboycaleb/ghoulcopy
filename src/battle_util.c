@@ -1000,6 +1000,7 @@ void HandleAction_ActionFinished(void)
         }
     }
     #endif
+    UpdateBattleOrderMonIconSprites();
 }
 
 static const u8 sMovesNotAffectedByStench[] =

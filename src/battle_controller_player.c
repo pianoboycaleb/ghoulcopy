@@ -1215,7 +1215,6 @@ static void Intro_WaitForShinyAnimAndHealthbox(void)
     // If healthbox and shiny anim are done
     if (healthboxAnimDone && FinishedAllShinyMonAnims())
     {
-        CreateAllBattleOrderMonIconSprites();
         ResetShinyAnims();
         gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].introEndDelay = 3;
         gBattlerControllerFuncs[gActiveBattler] = Intro_DelayAndEnd;
@@ -1388,7 +1387,6 @@ static void SwitchIn_TryShinyAnimShowHealthbox(void)
         UpdateHealthboxAttribute(gHealthboxSpriteIds[gActiveBattler], &gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], HEALTHBOX_ALL);
         StartHealthboxSlideIn(gActiveBattler);
         SetHealthboxSpriteVisible(gHealthboxSpriteIds[gActiveBattler]);
-        UpdateBattleOrderMonIconSprites();
         gBattlerControllerFuncs[gActiveBattler] = SwitchIn_CleanShinyAnimShowSubstitute;
     }
 }

@@ -291,6 +291,7 @@ void CreateAllBattleOrderMonIconSprites()
 void UpdateBattleOrderMonIconSprites()
 {
     u8 i, battlerId;
+    MgbaPrintf(MGBA_LOG_INFO, "UpdateOrderSprites");
 
     CalculateBattleOrder();
 

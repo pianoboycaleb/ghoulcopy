@@ -251,7 +251,6 @@ EWRAM_DATA u8 gLastUsedBall = 0;
 EWRAM_DATA u16 gLastThrownBall = 0;
 EWRAM_DATA u8 gPartyCriticalHits[PARTY_SIZE] = {0};
 EWRAM_DATA static u8 sTriedEvolving = 0;
-EWRAM_DATA struct BattleOrderBox *gBattleOrderBoxes = NULL;
 
 void (*gPreBattleCallback1)(void);
 void (*gBattleMainFunc)(void);
@@ -3654,6 +3653,7 @@ static void TryDoEventsBeforeFirstTurn(void)
             gBattlerTicks[i] = CalculateAddedTicks(i, DEFAULT_MOVE_SPEED);
         }
     }
+    CreateAllBattleOrderMonIconSprites();
     if (!gBattleStruct->overworldWeatherDone
         && AbilityBattleEffects(0, 0, 0, ABILITYEFFECT_SWITCH_IN_WEATHER, 0) != 0)
     {
@@ -3958,8 +3958,6 @@ static void HandleTurnActionSelectionState(void)
     u8 battlerToLeft;
     bool8 battlerConfirmedAction;
     u8 position;
-
-    UpdateBattleOrderMonIconSprites();
 
     battlerConfirmedAction = 0;
     gActiveBattler = gCurrentBattler = GetBattlerWithLowestTicks();
