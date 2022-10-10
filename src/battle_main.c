@@ -241,7 +241,6 @@ EWRAM_DATA struct BattleHealthboxInfo *gBattleControllerOpponentFlankHealthboxDa
 EWRAM_DATA u16 gBattleMovePower = 0;
 EWRAM_DATA u16 gMoveToLearn = 0;
 EWRAM_DATA u8 gBattleMonForms[MAX_BATTLERS_COUNT] = {0};
-EWRAM_DATA struct BattleOrderBox *gBattleOrderBoxes = NULL;
 EWRAM_DATA u32 gFieldStatuses = 0;
 EWRAM_DATA struct FieldTimer gFieldTimers = {0};
 EWRAM_DATA u8 gBattlerAbility = 0;
@@ -252,6 +251,7 @@ EWRAM_DATA u8 gLastUsedBall = 0;
 EWRAM_DATA u16 gLastThrownBall = 0;
 EWRAM_DATA u8 gPartyCriticalHits[PARTY_SIZE] = {0};
 EWRAM_DATA static u8 sTriedEvolving = 0;
+EWRAM_DATA struct BattleOrderBox *gBattleOrderBoxes = NULL;
 
 void (*gPreBattleCallback1)(void);
 void (*gBattleMainFunc)(void);
@@ -3389,7 +3389,7 @@ static void DoBattleIntro(void)
                 BattleArena_InitPoints();
         }
 
-        for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
+        for (gActiveBattler = 0; gActiveBattler < MAX_BATTLERS_COUNT; gActiveBattler++)
         {
             if (gBattleMons[gActiveBattler].hp == 0
                 || gBattlerPartyIndexes[gActiveBattler] == PARTY_SIZE)
@@ -4758,6 +4758,7 @@ void SpecialStatusesClear(void)
 
 static void CheckMegaEvolutionBeforeTurn(void)
 {
+    gActiveBattler = gCurrentBattler;
     if (!(gHitMarker & HITMARKER_RUN))
     {
         while (gBattleStruct->mega.battlerId < gBattlersCount)
@@ -4789,28 +4790,12 @@ static void CheckMegaEvolutionBeforeTurn(void)
 // In gen7, priority and speed are recalculated during the turn in which a pokemon mega evolves
 static void TryChangeTurnOrder(void)
 {
-    s32 i, j;
-    for (i = 0; i < gBattlersCount - 1; i++)
-    {
-        for (j = i + 1; j < gBattlersCount; j++)
-        {
-            u8 battler1 = gBattlerByTurnOrder[i];
-            u8 battler2 = gBattlerByTurnOrder[j];
-            if (gActionsByTurnOrder[i] == B_ACTION_USE_MOVE
-                && gActionsByTurnOrder[j] == B_ACTION_USE_MOVE)
-            {
-                if (GetWhoStrikesFirst(battler1, battler2, FALSE))
-                    SwapTurnOrder(i, j);
-            }
-        }
-    }
     gBattleMainFunc = CheckFocusPunch_ClearVarsBeforeTurnStarts;
     gBattleStruct->focusPunchBattlerId = 0;
 }
 
 static void CheckFocusPunch_ClearVarsBeforeTurnStarts(void)
 {
-    u32 i;
     gActiveBattler = gCurrentBattler;
 
     if (!(gHitMarker & HITMARKER_RUN))
@@ -4843,6 +4828,7 @@ static void CheckFocusPunch_ClearVarsBeforeTurnStarts(void)
 static void CheckQuickClaw_CustapBerryActivation(void)
 {
     u32 i;
+    gActiveBattler = gCurrentBattler;
 
     if (!(gHitMarker & HITMARKER_RUN))
     {

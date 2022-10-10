@@ -437,6 +437,13 @@ static void Task_LaunchLvlUpAnim(u8 taskId)
 
     if (IsDoubleBattle() == TRUE && monIndex == gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)])
         battlerId ^= BIT_FLANK;
+    else if (IsTripleBattle())
+    {
+        if (monIndex == gBattlerPartyIndexes[BATTLER_TO_RIGHT(battlerId)])
+            battlerId = BATTLER_TO_RIGHT(battlerId);
+        else if (monIndex == gBattlerPartyIndexes[BATTLER_TO_LEFT(battlerId)])
+            battlerId = BATTLER_TO_LEFT(battlerId);
+    }
 
     InitAndLaunchSpecialAnimation(battlerId, battlerId, battlerId, B_ANIM_LVL_UP);
     gTasks[taskId].func = Task_UpdateLvlInHealthbox;
@@ -454,6 +461,10 @@ static void Task_UpdateLvlInHealthbox(u8 taskId)
 
         if (IsDoubleBattle() == TRUE && monIndex == gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)])
             UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battlerId)], &gPlayerParty[monIndex], HEALTHBOX_ALL);
+        else if (IsTripleBattle() && monIndex == gBattlerPartyIndexes[BATTLER_TO_RIGHT(battlerId)])
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLER_TO_RIGHT(battlerId)], &gPlayerParty[monIndex], HEALTHBOX_ALL);
+        else if (IsTripleBattle() && monIndex == gBattlerPartyIndexes[BATTLER_TO_LEFT(battlerId)])
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLER_TO_LEFT(battlerId)], &gPlayerParty[monIndex], HEALTHBOX_ALL);
         else
             UpdateHealthboxAttribute(gHealthboxSpriteIds[battlerId], &gPlayerParty[monIndex], HEALTHBOX_ALL);
 

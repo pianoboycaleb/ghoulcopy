@@ -41,34 +41,13 @@ def displayIconAndGetCoords(icon_path):
                 return (small_x, small_y)
 
 
-BASE_DIR = "graphics/pokemon"
-
 with open("scripts/pokemon_icon_data.json", "r") as f:
     pokemon_icon_data = json.load(f)
 
-pokemon_list = os.listdir(BASE_DIR)
-pokemon_list.remove("icon_palettes")
-pokemon_list.remove("question_mark")
-pokemon_list.remove("unown")
-for letter in os.listdir(os.path.join(BASE_DIR, "unown")):
-    if os.path.isdir(os.path.join(BASE_DIR, "unown", letter)):
-        pokemon_list.append(f"unown_{letter}")
-
-for pokemon in pokemon_list:
-    if pokemon.startswith("unown"):
-        sp = pokemon.split("_")
-        pokemon_dir = os.path.join(BASE_DIR, *pokemon.split("_", maxsplit=1))
-    else:
-        pokemon_dir = os.path.join(BASE_DIR, pokemon)
-
-    if not os.path.isdir(pokemon_dir):
-        continue
-
-    if pokemon not in pokemon_icon_data:
-        raise Exception(f"Pokemon {pokemon} not found in POKEMON_ICON_DATA")
-
+for pokemon in pokemon_icon_data:
     print(pokemon)
-    x, y = displayIconAndGetCoords(os.path.join(pokemon_dir, "icon.png"))
+    icon_path = pokemon_icon_data[pokemon]["icon_file"]
+    x, y = displayIconAndGetCoords(icon_path)
     pokemon_icon_data[pokemon]["icon_x"] = x
     pokemon_icon_data[pokemon]["icon_y"] = y
     with open("scripts/pokemon_icon_data.json", "w") as f:

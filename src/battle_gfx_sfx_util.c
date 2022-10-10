@@ -1183,7 +1183,7 @@ void LoadAndCreateEnemyShadowSprites(void)
 
     if (IsTripleBattle())
     {
-        battlerId = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
+        battlerId = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
         gBattleSpritesDataPtr->healthBoxesData[battlerId].shadowSpriteId = CreateSprite(&gSpriteTemplate_EnemyShadow,
                                                                                         GetBattlerSpriteCoord(battlerId, BATTLER_COORD_X),
                                                                                         GetBattlerSpriteCoord(battlerId, BATTLER_COORD_Y) + 29,

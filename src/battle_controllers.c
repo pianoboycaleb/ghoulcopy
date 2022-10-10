@@ -611,7 +611,7 @@ static void InitLinkBtlControllers(void)
     }
 }
 
-bool32 IsValidForBattleIncludeFainted(struct Pokemon *mon, bool8 include_fainted)
+static bool32 IsValidForBattleIncludeFainted(struct Pokemon *mon, bool8 include_fainted)
 {
     u32 species = GetMonData(mon, MON_DATA_SPECIES2);
     return (species != SPECIES_NONE && species != SPECIES_EGG
@@ -639,7 +639,7 @@ static s32 GetBattlePartyIndex(s32 i, bool8 include_fainted)
             else
             {
                 if (IsValidForBattleIncludeFainted(&gEnemyParty[j], include_fainted))
-                   return j;
+                    return j;
             }
         }
         else

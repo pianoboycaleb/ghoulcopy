@@ -322,7 +322,7 @@ static void Intro_TryShinyAnimShowHealthbox(void)
     twoMons = TwoIntroMons(gActiveBattler);
     if (!(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
      && !(gBattleTypeFlags & BATTLE_TYPE_MULTI)
-     && IsDoubleBattle())
+     && twoMons)
         TryShinyAnimationHelper(BATTLE_PARTNER(gActiveBattler));
 
     if (!(gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS)
@@ -340,7 +340,6 @@ static void Intro_TryShinyAnimShowHealthbox(void)
         if (!gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].healthboxSlideInStarted)
         {
             StartHealthboxSlideInHelper(gActiveBattler);
-            // if (twoMons && (!(gBattleTypeFlags & BATTLE_TYPE_MULTI) || BATTLE_TWO_VS_ONE_OPPONENT))
             if (IsDoubleBattle() && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
                 StartHealthboxSlideInHelper(BATTLE_PARTNER(gActiveBattler));
             if (IsTripleBattle() && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
@@ -372,8 +371,7 @@ static void Intro_TryShinyAnimShowHealthbox(void)
         bgmRestored = TRUE;
     }
 
-    // if (!twoMons || (twoMons && gBattleTypeFlags & BATTLE_TYPE_MULTI && !BATTLE_TWO_VS_ONE_OPPONENT))
-    if (!IsDoubleOrTripleBattle() || (IsDoubleBattle() && (gBattleTypeFlags & BATTLE_TYPE_MULTI)))
+    if (!IsDoubleOrTripleBattle() || (gBattleTypeFlags & BATTLE_TYPE_MULTI))
     {
         if (gSprites[gBattleControllerData[gActiveBattler]].callback == SpriteCallbackDummy
             && gSprites[gBattlerSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy)
@@ -1728,19 +1726,19 @@ static void OpponentHandleChoosePokemon(void)
                 battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
                 battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
                 battler3 = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+                pokemonInBattle = 3;
             }
             else if (IsDoubleBattle())
             {
                 battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
                 battler3 = battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
+                pokemonInBattle = 2;
             }
             else
             {
-                battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-                battler3 = battler2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
-                pokemonInBattle = 2;
-
+                battler3 = battler2 = battler1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             }
+
             GetAIPartyIndexes(gActiveBattler, &firstId, &lastId);
 
             for (chosenMonId = (lastId-1); chosenMonId >= firstId; chosenMonId--)
@@ -2012,8 +2010,7 @@ static void Task_StartSendOutAnim(u8 taskId)
     u8 savedActiveBank = gActiveBattler;
 
     gActiveBattler = gTasks[taskId].data[0];
-    // if ((!TwoIntroMons(gActiveBattler) || (gBattleTypeFlags & BATTLE_TYPE_MULTI)) && !BATTLE_TWO_VS_ONE_OPPONENT)
-    if (!IsDoubleOrTripleBattle() || (gBattleTypeFlags & BATTLE_TYPE_MULTI))
+    if ((!IsDoubleOrTripleBattle() || (gBattleTypeFlags & BATTLE_TYPE_MULTI)) && !BATTLE_TWO_VS_ONE_OPPONENT)
     {
         gBattleResources->bufferA[gActiveBattler][1] = gBattlerPartyIndexes[gActiveBattler];
         StartSendOutAnim(gActiveBattler, FALSE);

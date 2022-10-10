@@ -814,19 +814,6 @@ static u32 GetBestMonBatonPass(struct Pokemon *party, int firstId, int lastId, u
     return PARTY_SIZE;
 }
 
-u8 GetBattlerToRight(u8 battlerId)
-{
-    return GetBattlerAtPosition(BATTLER_TO_RIGHT(GetBattlerPosition(battlerId)));
-}
-
-u8 GetNonAbsentBattlerToRight(u8 battlerId)
-{
-    u8 nextBattlerId = GetBattlerToRight(battlerId);
-    while (gAbsentBattlerFlags & gBitTable[nextBattlerId])
-        nextBattlerId = GetBattlerToRight(nextBattlerId);
-    return nextBattlerId;
-}
-
 static u32 GetBestMonTypeMatchup(struct Pokemon *party, int firstId, int lastId, u8 invalidMons, u32 opposingBattler)
 {
     int i, bits = 0;
@@ -941,6 +928,19 @@ static u32 GetBestMonDmg(struct Pokemon *party, int firstId, int lastId, u8 inva
     }
 
     return bestMonId;
+}
+
+static u8 GetBattlerToRight(u8 battlerId)
+{
+    return GetBattlerAtPosition(BATTLER_TO_RIGHT(GetBattlerPosition(battlerId)));
+}
+
+static u8 GetNonAbsentBattlerToRight(u8 battlerId)
+{
+    u8 nextBattlerId = GetBattlerToRight(battlerId);
+    while (gAbsentBattlerFlags & gBitTable[nextBattlerId])
+        nextBattlerId = GetBattlerToRight(nextBattlerId);
+    return nextBattlerId;
 }
 
 u8 GetMostSuitableMonToSwitchInto(void)

@@ -295,7 +295,7 @@ struct AI_ThinkingStruct
     u32 aiFlags;
     u8 aiAction;
     u8 aiLogicId;
-    struct AI_SavedBattleMon saved[4];
+    struct AI_SavedBattleMon saved[MAX_BATTLERS_COUNT];
     bool8 switchMon; // Because all available moves have no/little effect.
 };
 
@@ -847,17 +847,17 @@ struct MonSpritesGfx
     u16 *buffer;
 };
 
-struct SpeciesData
-{
-    u16 species;
-    u32 personality;
-};
-
 struct TotemBoost
 {
     u8 stats;   // bitfield for each battle stat that is set if the stat changes
     s8 statChanges[NUM_BATTLE_STATS - 1];    // highest bit being set decreases the stat
 }; /* size = 8 */
+
+struct SpeciesData
+{
+    u16 species;
+    u32 personality;
+};
 
 // All battle variables are declared in battle_main.c
 extern u16 gBattle_BG0_X;

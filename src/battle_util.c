@@ -475,8 +475,6 @@ void HandleAction_UseMove(void)
                 if (GetBattlerSide(gBattlerAttacker) == GetBattlerSide(gBattlerTarget))
                 {
                     gBattlerTarget = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gBattlerAttacker)));
-                    if (!IsBattlerAlive(gBattlerTarget))
-                        gBattlerTarget = GetNonAbsentTarget(gBattlerTarget);
                 }
                 gBattlerTarget = GetNonAbsentTarget(gBattlerTarget);
             }
@@ -526,8 +524,6 @@ void HandleAction_UseMove(void)
             if (GetBattlerSide(gBattlerAttacker) != GetBattlerSide(gBattlerTarget))
             {
                 gBattlerTarget = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gBattlerAttacker)));
-                if (!IsBattlerAlive(gBattlerTarget))
-                    gBattlerTarget = GetNonAbsentTarget(gBattlerTarget);
             }
             gBattlerTarget = GetNonAbsentTarget(gBattlerTarget);
         }
@@ -761,7 +757,7 @@ bool8 TryRunFromBattle(u8 battler)
 
     if (effect != 0)
     {
-        gCurrentTurnActionNumber = gBattlersCount;
+        gCurrentTurnActionNumber = 1;
         gBattleOutcome = B_OUTCOME_RAN;
     }
 
@@ -774,7 +770,7 @@ void HandleAction_Run(void)
 
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
     {
-        gCurrentTurnActionNumber = gBattlersCount;
+        gCurrentTurnActionNumber = 1;
 
         for (gActiveBattler = 0; gActiveBattler < gBattlersCount; gActiveBattler++)
         {
@@ -815,7 +811,7 @@ void HandleAction_Run(void)
             }
             else
             {
-                gCurrentTurnActionNumber = gBattlersCount;
+                gCurrentTurnActionNumber = 1;
                 gBattleOutcome = B_OUTCOME_MON_FLED;
             }
         }
@@ -913,7 +909,7 @@ void HandleAction_SafariZoneRun(void)
 {
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
     PlaySE(SE_FLEE);
-    gCurrentTurnActionNumber = gBattlersCount;
+    gCurrentTurnActionNumber = 1;
     gBattleOutcome = B_OUTCOME_RAN;
 }
 
@@ -3445,7 +3441,7 @@ bool8 HandleFaintedMonActions(void)
             // Don't switch mons until all pokemon performed their actions or the battle's over.
             if (gBattleOutcome == 0
                 && !NoAliveMonsForEitherParty()
-                && gCurrentTurnActionNumber != gBattlersCount)
+                && gCurrentTurnActionNumber < 1)
             {
                 gAbsentBattlerFlags |= gBitTable[gBattlerFainted];
                 return FALSE;
@@ -3457,7 +3453,7 @@ bool8 HandleFaintedMonActions(void)
             // Don't switch mons until all pokemon performed their actions or the battle's over.
             if (gBattleOutcome == 0
                 && !NoAliveMonsForEitherParty()
-                && gCurrentTurnActionNumber != gBattlersCount)
+                && gCurrentTurnActionNumber < 1)
             {
                 return FALSE;
             }
@@ -4893,7 +4889,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u16 ability, u8 special, u16 move
         }
         break;
     case ABILITYEFFECT_ENDTURN: // 1
-        if (gBattleMons[battler].hp != 0)
+        if (gBattleMons[battler].hp != 0 && battler == gCurrentBattler)
         {
             gBattlerAttacker = battler;
             switch (gLastUsedAbility)
@@ -6150,7 +6146,7 @@ u32 GetBattlerAbility(u8 battlerId)
             && sAbilitiesAffectedByMoldBreaker[gBattleMons[battlerId].ability]
             && gBattlerByTurnOrder[gCurrentTurnActionNumber] == gBattlerAttacker
             && gActionsByTurnOrder[gBattlerByTurnOrder[gBattlerAttacker]] == B_ACTION_USE_MOVE
-            && gCurrentTurnActionNumber < gBattlersCount)
+            && gCurrentTurnActionNumber < 1)
         return ABILITY_NONE;
 
     return gBattleMons[battlerId].ability;

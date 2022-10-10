@@ -75,7 +75,6 @@
 #define B_TXT_ACTIVE_NAME 0x3E
 #define B_TXT_ACTIVE_NAME2 0x3F // no Illusion check
 
-
 // for B_TXT_BUFF1, B_TXT_BUFF2 and B_TXT_BUFF3
 
 #define B_BUFF_STRING                   0

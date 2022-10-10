@@ -81,15 +81,13 @@ enum
 };
 
 u32 WhichBattleCoords(u32 battlerId);
-u8 GetMegaIndicatorSpriteId(u32 healthboxSpriteId);
 void CreateHealthboxSprite(u8 battlerId); // better than CreateBattlerHealthboxSprites
 u8 CreateBattlerHealthboxSprites(u8 battler);
 u8 CreateSafariPlayerHealthboxSprites(void);
 void SetBattleBarStruct(u8 battler, u8 healthboxSpriteId, s32 maxVal, s32 currVal, s32 receivedValue);
 void SetHealthboxSpriteInvisible(u8 healthboxSpriteId);
 void SetHealthboxSpriteVisible(u8 healthboxSpriteId);
-void DestroyHealthboxSprite(u8 healthboxSpriteId);
-void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes);
+void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHpBoxes);
 void InitBattlerHealthboxCoords(u8 battler);
 void UpdateHpTextInHealthbox(u32 healthboxSpriteId, u32 maxOrCurrent, s16 currHp, s16 maxHp);
 void SwapHpBarsWithHpText(void);

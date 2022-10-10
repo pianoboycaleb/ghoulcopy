@@ -4074,7 +4074,7 @@ static void Cmd_getexp(void)
                 if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER)
                     && (gBattleMons[0].hp || (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gBattleMons[2].hp))
                     && !IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT))
-                    && !IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT))
+                    && !IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE))
                     && !gBattleStruct->wildVictorySong)
                 {
                     BattleStopLowHpSound();
@@ -5117,16 +5117,20 @@ static bool32 TryKnockOffBattleScript(u32 battlerDef)
 
 static u32 GetNextTarget(u32 moveTarget)
 {
-    u32 i;
-    for (i = 0; i < MAX_BATTLERS_COUNT; i++)
+    u8 battlerId;
+    for (battlerId = (gBattlerTarget + 1) % gBattlersCount; battlerId != gBattlerOriginalTarget; battlerId = (battlerId+1) % gBattlersCount)
     {
-        if (i != gBattlerAttacker
-            && IsBattlerAlive(i)
-            && !(gBattleStruct->targetsDone[gBattlerAttacker] & gBitTable[i])
-            && (GetBattlerSide(i) != GetBattlerSide(gBattlerAttacker) || moveTarget == MOVE_TARGET_FOES_AND_ALLY))
-                break;
+        if (battlerId == gBattlerAttacker)
+            continue;
+        if (moveTarget == MOVE_TARGET_BOTH
+            && GET_BATTLER_SIDE2(battlerId) == GET_BATTLER_SIDE2(gBattlerAttacker))
+            continue;
+        if (!TargetValidIfOppositePosition(battlerId, gBattlerAttacker))
+            continue;
+        if (IsBattlerAlive(battlerId))
+            break;
     }
-    return i;
+    return battlerId;
 }
 
 static void Cmd_moveend(void)
@@ -5527,17 +5531,17 @@ static void Cmd_moveend(void)
 
             gBattleStruct->targetsDone[gBattlerAttacker] |= gBitTable[gBattlerTarget];
             if (!(gHitMarker & HITMARKER_UNABLE_TO_USE_MOVE)
-                && gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TRIPLE)
-                && !gProtectStructs[gBattlerAttacker].chargingTurn&& (moveTarget == MOVE_TARGET_BOTH
-                    || moveTarget == MOVE_TARGET_FOES_AND_ALLY)
+                && (gBattleTypeFlags & (BATTLE_TYPE_DOUBLE | BATTLE_TYPE_TRIPLE))
+                && !gProtectStructs[gBattlerAttacker].chargingTurn
+                && (moveTarget == MOVE_TARGET_BOTH || moveTarget == MOVE_TARGET_FOES_AND_ALLY)
                 && !(gHitMarker & HITMARKER_NO_ATTACKSTRING))
             {
                 u32 nextTarget = GetNextTarget(moveTarget);
                 gHitMarker |= HITMARKER_NO_PPDEDUCT;
 
-                if (nextTarget != MAX_BATTLERS_COUNT)
+                if (nextTarget != gBattlerOriginalTarget)
                 {
-                    gBattleStruct->moveTarget[gBattlerAttacker] = gBattlerTarget = nextTarget; // Fix for moxie spread moves
+                    gBattlerTarget = nextTarget;
                     gBattleScripting.moveendState = 0;
                     MoveValuesCleanUp();
                     gBattleScripting.moveEffect = gBattleScripting.savedMoveEffect;
@@ -5986,7 +5990,7 @@ bool32 CanBattlerSwitch(u32 battlerId)
     if (BATTLE_TWO_VS_ONE_OPPONENT && GetBattlerSide(battlerId) == B_SIDE_OPPONENT)
     {
         battlerIn1 = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
-        battlerIn2 = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+        battlerIn2 = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
         party = gEnemyParty;
 
         for (i = 0; i < PARTY_SIZE; i++)
@@ -8845,7 +8849,7 @@ static void Cmd_various(void)
             u16 megaSpecies;
             gBattleStruct->mega.evolvedSpecies[gActiveBattler] = gBattleMons[gActiveBattler].species;
             if (GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_LEFT
-                || (GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_RIGHT && !(gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER))))
+                || (GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_MIDDLE && !(gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER))))
             {
                 gBattleStruct->mega.playerEvolvedSpecies = gBattleStruct->mega.evolvedSpecies[gActiveBattler];
             }
@@ -8892,7 +8896,7 @@ static void Cmd_various(void)
             u16 primalSpecies;
             gBattleStruct->mega.primalRevertedSpecies[gActiveBattler] = gBattleMons[gActiveBattler].species;
             if (GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_LEFT
-                || (GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_RIGHT && !(gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER))))
+                || (GetBattlerPosition(gActiveBattler) == B_POSITION_PLAYER_MIDDLE && !(gBattleTypeFlags & (BATTLE_TYPE_MULTI | BATTLE_TYPE_INGAME_PARTNER))))
             {
                 gBattleStruct->mega.playerPrimalRevertedSpecies = gBattleStruct->mega.primalRevertedSpecies[gActiveBattler];
             }
@@ -9930,7 +9934,7 @@ static void Cmd_setprotectlike(void)
     if (!(gBattleMoves[gLastResultingMoves[gBattlerAttacker]].flags & FLAG_PROTECTION_MOVE))
         gDisableStructs[gBattlerAttacker].protectUses = 0;
 
-    if (gCurrentTurnActionNumber == (gBattlersCount - 1))
+    if (gCurrentTurnActionNumber == 0)
         notLastTurn = FALSE;
 
     if (sProtectSuccessRates[gDisableStructs[gBattlerAttacker].protectUses] >= Random() && notLastTurn)
@@ -13341,7 +13345,7 @@ static void Cmd_trysetmagiccoat(void)
 {
     gBattlerTarget = gBattlerAttacker;
     gSpecialStatuses[gBattlerAttacker].ppNotAffectedByPressure = TRUE;
-    if (gCurrentTurnActionNumber == gBattlersCount - 1) // moves last turn
+    if (gCurrentTurnActionNumber == 0) // moves last turn
     {
         gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
     }
@@ -13356,7 +13360,7 @@ static void Cmd_trysetmagiccoat(void)
 static void Cmd_trysetsnatch(void)
 {
     gSpecialStatuses[gBattlerAttacker].ppNotAffectedByPressure = TRUE;
-    if (gCurrentTurnActionNumber == gBattlersCount - 1) // moves last turn
+    if (gCurrentTurnActionNumber == 0) // moves last turn
     {
         gBattlescriptCurrInstr = T1_READ_PTR(gBattlescriptCurrInstr + 1);
     }
@@ -13894,7 +13898,7 @@ u8 GetCatchingBattler(void)
     if (IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)))
         return GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
     else
-        return GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
+        return GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
 }
 
 static void Cmd_handleballthrow(void)
@@ -14474,7 +14478,7 @@ static void Cmd_finishaction(void)
 static void Cmd_finishturn(void)
 {
     gCurrentActionFuncId = B_ACTION_FINISHED;
-    gCurrentTurnActionNumber = gBattlersCount;
+    gCurrentTurnActionNumber = 1;
 }
 
 static void Cmd_trainerslideout(void)

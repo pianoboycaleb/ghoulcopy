@@ -2762,10 +2762,6 @@ void BufferStringBattle(u16 stringID)
             {
                 stringPtr = GetBattlerSendoutStringPtr(TRUE);
             }
-            else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE)
-            {
-                stringPtr = sText_GoThreePkmn;
-            }
             else
             {
                 stringPtr = sText_GoPkmn;
@@ -2791,10 +2787,6 @@ void BufferStringBattle(u16 stringID)
             else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE)
             {
                 stringPtr = GetBattlerSendoutStringPtr(FALSE);
-            }
-            else if (gBattleTypeFlags & BATTLE_TYPE_TRIPLE)
-            {
-                stringPtr = sText_Trainer1SentOutThreePkmn;
             }
             else
             {
@@ -3111,7 +3103,7 @@ static const u8 *BattleStringGetOpponentName(u8 *text, u8 multiplayerId, u8 batt
     case B_POSITION_OPPONENT_LEFT:
         toCpy = BattleStringGetOpponentNameByTrainerId(gTrainerBattleOpponent_A, text, multiplayerId, battlerId);
         break;
-    case B_POSITION_OPPONENT_RIGHT:
+    case B_POSITION_OPPONENT_MIDDLE:
         if (gBattleTypeFlags & (BATTLE_TYPE_TWO_OPPONENTS | BATTLE_TYPE_MULTI) && !BATTLE_TWO_VS_ONE_OPPONENT)
             toCpy = BattleStringGetOpponentNameByTrainerId(gTrainerBattleOpponent_B, text, multiplayerId, battlerId);
         else
@@ -3134,7 +3126,7 @@ static const u8 *BattleStringGetPlayerName(u8 *text, u8 battlerId)
         else
             toCpy = gSaveBlock2Ptr->playerName;
         break;
-    case B_POSITION_PLAYER_RIGHT:
+    case B_POSITION_PLAYER_MIDDLE:
         if (gBattleTypeFlags & BATTLE_TYPE_LINK && gBattleTypeFlags & (BATTLE_TYPE_RECORDED | BATTLE_TYPE_MULTI))
         {
             toCpy = gLinkPlayers[2].name;
@@ -3516,7 +3508,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 toCpy = BattleStringGetOpponentClassByTrainerId(gTrainerBattleOpponent_B);
                 break;
             case B_TXT_TRAINER2_NAME:
-                toCpy = BattleStringGetOpponentNameByTrainerId(gTrainerBattleOpponent_B, text, multiplayerId, GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT));
+                toCpy = BattleStringGetOpponentNameByTrainerId(gTrainerBattleOpponent_B, text, multiplayerId, GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE));
                 break;
             case B_TXT_TRAINER2_LOSE_TEXT:
                 if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
@@ -3550,7 +3542,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 toCpy = gTrainerClassNames[GetFrontierOpponentClass(gPartnerTrainerId)];
                 break;
             case B_TXT_PARTNER_NAME:
-                toCpy = BattleStringGetPlayerName(text, GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT));
+                toCpy = BattleStringGetPlayerName(text, GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE));
                 break;
             case B_TXT_ATK_TRAINER_NAME:
                 toCpy = BattleStringGetTrainerName(text, multiplayerId, gBattlerAttacker);
@@ -3558,14 +3550,14 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
             case B_TXT_ATK_TRAINER_CLASS:
                 switch (GetBattlerPosition(gBattlerAttacker))
                 {
-                case B_POSITION_PLAYER_RIGHT:
+                case B_POSITION_PLAYER_MIDDLE:
                     if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
                         toCpy = gTrainerClassNames[GetFrontierOpponentClass(gPartnerTrainerId)];
                     break;
                 case B_POSITION_OPPONENT_LEFT:
                     toCpy = BattleStringGetOpponentClassByTrainerId(gTrainerBattleOpponent_A);
                     break;
-                case B_POSITION_OPPONENT_RIGHT:
+                case B_POSITION_OPPONENT_MIDDLE:
                     if (gBattleTypeFlags & BATTLE_TYPE_TWO_OPPONENTS && !BATTLE_TWO_VS_ONE_OPPONENT)
                         toCpy = BattleStringGetOpponentClassByTrainerId(gTrainerBattleOpponent_B);
                     else

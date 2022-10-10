@@ -368,9 +368,14 @@ static u8 GetNumberOpponentMons()
     + (u8)(!IS_BATTLER_INVALID_OR_ABSENT(B_POSITION_OPPONENT_RIGHT));
 }
 
-static bool8 IsValidTarget(u8 target)
+static bool8 IsValidTarget(u8 target, u16 move)
 {
     if (IS_BATTLER_INVALID_OR_ABSENT(target))
+        return FALSE;
+
+    if ((gBattleMoves[move].target & (MOVE_TARGET_USER | MOVE_TARGET_ALLY))
+        && GET_BATTLER_SIDE2(target) != GET_BATTLER_SIDE2(gActiveBattler)
+    )
         return FALSE;
 
     if (!TargetValidIfOppositePosition(target, gActiveBattler))
@@ -399,7 +404,7 @@ static bool8 IsValidTarget(u8 target)
     return FALSE;
 }
 
-static u8 GetNextValidTarget(u8 currentTarget, u8 *identities, s8 dir)
+static u8 GetNextValidTarget(u8 currentTarget, u8 *identities, s8 dir, u16 move)
 {
     s32 i;
     u8 nextTarget, currSelIdentity;
@@ -423,7 +428,7 @@ static u8 GetNextValidTarget(u8 currentTarget, u8 *identities, s8 dir)
                 i = 0;
             nextTarget = GetBattlerAtPosition(identities[i]);
         } while (nextTarget == gBattlersCount);
-    } while (!IsValidTarget(nextTarget));
+    } while (!IsValidTarget(nextTarget, move));
 
     return nextTarget;
 }
@@ -473,14 +478,14 @@ static void HandleInputChooseTarget(void)
     {
         PlaySE(SE_SELECT);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_HideAsMoveTarget;
-        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, (u8*)identities, -1);
+        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, (u8*)identities, -1, move);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_ShowAsMoveTarget;
     }
     else if (JOY_NEW(DPAD_RIGHT | DPAD_DOWN))
     {
         PlaySE(SE_SELECT);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_HideAsMoveTarget;
-        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, (u8*)identities, 1);
+        gMultiUsePlayerCursor = GetNextValidTarget(gMultiUsePlayerCursor, (u8*)identities, 1, move);
         gSprites[gBattlerSpriteIds[gMultiUsePlayerCursor]].callback = SpriteCB_ShowAsMoveTarget;
     }
 }
@@ -1144,6 +1149,11 @@ static void Intro_DelayAndEnd(void)
     }
 }
 
+static bool32 TwoIntroMons(u32 battlerId) // Double battle with both player pokemon active.
+{
+    return (IsDoubleBattle() && IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)]]));
+}
+
 static bool8 FinishedAllShinyMonAnims(void)
 {
     u8 i;
@@ -1177,27 +1187,22 @@ static void ResetShinyAnims() {
     }
 }
 
-static bool32 TwoIntroMons(u32 battlerId) // Double battle with both player pokemon active.
-{
-    return (IsDoubleBattle() && IsValidForBattle(&gPlayerParty[gBattlerPartyIndexes[battlerId ^ BIT_FLANK]]));
-}
-
 static void Intro_WaitForShinyAnimAndHealthbox(void)
 {
     bool8 healthboxAnimDone = FALSE;
 
     // Check if healthbox has finished sliding in
-    // if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
     if (!IsDoubleOrTripleBattle() || (IsDoubleBattle() && (gBattleTypeFlags & BATTLE_TYPE_MULTI)))
     {
-        if (gSprites[gHealthboxSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy
-         && gSprites[gHealthboxSpriteIds[BATTLE_PARTNER(gActiveBattler)]].callback == SpriteCallbackDummy)
+        if (gSprites[gHealthboxSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy)
             healthboxAnimDone = TRUE;
     }
     else if (IsDoubleBattle())
     {
-        if (gSprites[gHealthboxSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy)
+        if (gSprites[gHealthboxSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy
+         && gSprites[gHealthboxSpriteIds[BATTLE_PARTNER(gActiveBattler)]].callback == SpriteCallbackDummy)
             healthboxAnimDone = TRUE;
+
     }
     else // IsTripleBattle()
     {
@@ -1253,7 +1258,6 @@ static void Intro_TryShinyAnimShowHealthbox(void)
     {
         if (!gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].healthboxSlideInStarted)
         {
-            //if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
             for (i = 0; i < MAX_BATTLERS_COUNT / 2; i++)
             {
                 if (!IS_BATTLER_INVALID_OR_ABSENT(gActiveBattler))
@@ -1284,9 +1288,15 @@ static void Intro_TryShinyAnimShowHealthbox(void)
         bgmRestored = TRUE;
     }
 
-    // Wait for battler anims
-    // if (TwoIntroMons(gActiveBattler) && !(gBattleTypeFlags & BATTLE_TYPE_MULTI))
-    if (!IsDoubleOrTripleBattle() || (IsDoubleBattle() && (gBattleTypeFlags & BATTLE_TYPE_MULTI)))
+    if (!IsDoubleOrTripleBattle() || (gBattleTypeFlags & BATTLE_TYPE_MULTI))
+    {
+        if (gSprites[gBattleControllerData[gActiveBattler]].callback == SpriteCallbackDummy
+            && gSprites[gBattlerSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy)
+        {
+            battlerAnimsDone = TRUE;
+        }
+    }
+    else if (IsDoubleBattle())
     {
         if (gSprites[gBattleControllerData[gActiveBattler]].callback == SpriteCallbackDummy
             && gSprites[gBattlerSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy
@@ -1295,14 +1305,7 @@ static void Intro_TryShinyAnimShowHealthbox(void)
         {
             battlerAnimsDone = TRUE;
         }
-    }
-    else if (IsDoubleBattle())
-    {
-        if (gSprites[gBattleControllerData[gActiveBattler]].callback == SpriteCallbackDummy
-            && gSprites[gBattlerSpriteIds[gActiveBattler]].callback == SpriteCallbackDummy)
-        {
-            battlerAnimsDone = TRUE;
-        }
+
     }
     else // IsTripleBattle()
     {
@@ -1559,8 +1562,15 @@ static void Task_LaunchLvlUpAnim(u8 taskId)
     u8 battlerId = gTasks[taskId].tExpTask_battler;
     u8 monIndex = gTasks[taskId].tExpTask_monId;
 
-    if (IsDoubleBattle() == TRUE && monIndex == gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)])
+    if (IsDoubleBattle() && monIndex == gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)])
         battlerId ^= BIT_FLANK;
+    else if (IsTripleBattle())
+    {
+        if (monIndex == gBattlerPartyIndexes[BATTLER_TO_RIGHT(battlerId)])
+            battlerId = BATTLER_TO_RIGHT(battlerId);
+        else if (monIndex == gBattlerPartyIndexes[BATTLER_TO_LEFT(battlerId)])
+            battlerId = BATTLER_TO_LEFT(battlerId);
+    }
 
     InitAndLaunchSpecialAnimation(battlerId, battlerId, battlerId, B_ANIM_LVL_UP);
     gTasks[taskId].func = Task_UpdateLvlInHealthbox;
@@ -1574,10 +1584,12 @@ static void Task_UpdateLvlInHealthbox(u8 taskId)
     {
         u8 monIndex = gTasks[taskId].tExpTask_monId;
 
-        GetMonData(&gPlayerParty[monIndex], MON_DATA_LEVEL);  // Unused return value.
-
-        if (IsDoubleBattle() == TRUE && monIndex == gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)])
+        if (IsDoubleBattle() && monIndex == gBattlerPartyIndexes[BATTLE_PARTNER(battlerId)])
             UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLE_PARTNER(battlerId)], &gPlayerParty[monIndex], HEALTHBOX_ALL);
+        else if (IsTripleBattle() && monIndex == gBattlerPartyIndexes[BATTLER_TO_RIGHT(battlerId)])
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLER_TO_RIGHT(battlerId)], &gPlayerParty[monIndex], HEALTHBOX_ALL);
+        else if (IsTripleBattle() && monIndex == gBattlerPartyIndexes[BATTLER_TO_LEFT(battlerId)])
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[BATTLER_TO_LEFT(battlerId)], &gPlayerParty[monIndex], HEALTHBOX_ALL);
         else
             UpdateHealthboxAttribute(gHealthboxSpriteIds[battlerId], &gPlayerParty[monIndex], HEALTHBOX_ALL);
 

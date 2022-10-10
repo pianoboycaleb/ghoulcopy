@@ -639,18 +639,6 @@ static const struct WindowTemplate sHealthboxWindowTemplate = {
     .baseBlock = 0
 };
 
-static u32 _getYForBattleType()
-{
-    /**
-    Used for AddTextPrinterAndCreateWindowOnHealthbox
-    We want to shift text so that it fits on smaller healthbox.
-    **/
-    if (IsTripleBattle())
-        return 5;
-    return 3;
-
-}
-
 static const u8 sMegaTriggerGfx[] = INCBIN_U8("graphics/battle_interface/mega_trigger.4bpp");
 static const u16 sMegaTriggerPal[] = INCBIN_U16("graphics/battle_interface/mega_trigger.gbapal");
 
@@ -812,6 +800,17 @@ static const struct SpriteTemplate sSpriteTemplate_OmegaIndicator =
 #define hBar_HealthBoxSpriteId      data[5]
 #define hBar_Data6                  data[6]
 
+static u32 _getYForBattleType()
+{
+    /**
+    Used for AddTextPrinterAndCreateWindowOnHealthbox
+    We want to shift text so that it fits on smaller healthbox.
+    **/
+    if (IsTripleBattle())
+        return 5;
+    return 3;
+}
+
 void CreateHealthboxSprite(u8 battler)
 {
     if (battler < gBattlersCount)
@@ -848,6 +847,7 @@ void CreateHealthboxSprite(u8 battler)
         }
     }
 }
+
 u8 GetMegaIndicatorSpriteId(u32 healthboxSpriteId)
 {
     u8 spriteId = gSprites[healthboxSpriteId].oam.affineParam;
@@ -1083,14 +1083,6 @@ static void UpdateSpritePos(u8 spriteId, s16 x, s16 y)
     gSprites[spriteId].y = y;
 }
 
-void DestroyHealthboxSprite(u8 healthboxSpriteId)
-{
-    DestroyMegaIndicatorSprite(healthboxSpriteId);
-    DestroySprite(&gSprites[gSprites[healthboxSpriteId].oam.affineParam]);
-    DestroySprite(&gSprites[gSprites[healthboxSpriteId].hMain_HealthBarSpriteId]);
-    DestroySprite(&gSprites[healthboxSpriteId]);
-}
-
 static void LoadAllHealthboxSpriteSheets()
 {
     u8 state;
@@ -1111,36 +1103,39 @@ static void CreateAllHealthboxes()
     for (battlerId = 0; battlerId < gBattlersCount; battlerId++)
     {
         CreateHealthboxSprite(battlerId);
+        if (!IsBattlerAlive(battlerId))
+            gSprites[gHealthboxSpriteIds[battlerId]].invisible = TRUE;
     }
+}
+
+static void DestroyHealthboxSprite(u8 spriteId)
+{
+    u16 tileTag = gSprites[spriteId].template->tileTag;
+    if (spriteId == 0xFF)
+        return;
+    DestroySprite(&gSprites[spriteId]);
+    FreeSpriteTilesByTag(tileTag);
 }
 
 static void DestroyAllHealthboxes()
 {
-    u8 spriteId;
-    u16 tileTag;
+    u8 battlerId;
 
     if (!gHealthboxVisible) return;
     gHealthboxVisible = FALSE;
 
-    for (spriteId = 0; spriteId < MAX_SPRITES; ++spriteId)
+    for (battlerId = 0; battlerId < gBattlersCount; battlerId++)
     {
-        tileTag = gSprites[spriteId].template->tileTag;
-        switch (tileTag) {
-            case TAG_HEALTHBOX_PLAYER1_TILE:
-            case TAG_HEALTHBOX_PLAYER2_TILE:
-            case TAG_HEALTHBOX_PLAYER3_TILE:
-            case TAG_HEALTHBOX_OPPONENT1_TILE:
-            case TAG_HEALTHBOX_OPPONENT2_TILE:
-            case TAG_HEALTHBOX_OPPONENT3_TILE:
-            case TAG_HEALTHBAR_PLAYER1_TILE:
-            case TAG_HEALTHBAR_PLAYER2_TILE:
-            case TAG_HEALTHBAR_PLAYER3_TILE:
-            case TAG_HEALTHBAR_OPPONENT1_TILE:
-            case TAG_HEALTHBAR_OPPONENT2_TILE:
-            case TAG_HEALTHBAR_OPPONENT3_TILE:
-                DestroyHealthboxSprite(spriteId);
-                FreeSpriteTilesByTag(tileTag);
-        }
+        u8 healthboxLeftSpriteId = gHealthboxSpriteIds[battlerId];
+        u8 healthboxRightSpriteId = gSprites[gHealthboxSpriteIds[battlerId]].oam.affineParam;
+        u8 healthbarSpriteId = gSprites[gHealthboxSpriteIds[battlerId]].hMain_HealthBarSpriteId;
+        u8 indicatorSpriteId = GetMegaIndicatorSpriteId(healthboxLeftSpriteId);
+
+        DestroyHealthboxSprite(healthboxLeftSpriteId);
+        DestroyHealthboxSprite(healthboxRightSpriteId);
+        DestroyHealthboxSprite(healthbarSpriteId);
+        DestroyHealthboxSprite(indicatorSpriteId);
+        gHealthboxSpriteIds[battlerId] = 0xFF;
     }
 }
 
@@ -1192,8 +1187,8 @@ void UpdateOamPriorityInAllHealthboxes(u8 priority, bool32 hideHPBoxes)
             gSprites[indicatorSpriteId].oam.priority = priority;
 
     #if B_HIDE_HEALTHBOX_IN_ANIMS
-        if (hideHPBoxes && IsBattlerAlive(i))
-            TryToggleHealboxVisibility(priority, healthboxLeftSpriteId, healthboxRightSpriteId, healthbarSpriteId, indicatorSpriteId);
+        //if (hideHPBoxes && IsBattlerAlive(i))
+        //    TryToggleHealboxVisibility(priority, healthboxLeftSpriteId, healthboxRightSpriteId, healthbarSpriteId, indicatorSpriteId);
     #endif
     }
     RestoreHiddenHealthboxes(priority);
@@ -1411,7 +1406,7 @@ static void UpdateOpponentHpTextSingles(u32 healthboxSpriteId, s16 value, u32 ma
 void UpdateHpTextInHealthbox(u32 healthboxSpriteId, u32 maxOrCurrent, s16 currHp, s16 maxHp)
 {
     u32 battlerId = gSprites[healthboxSpriteId].hMain_Battler;
-    if (WhichBattleCoords(battlerId))
+    if (WhichBattleCoords(battlerId) != 0)
     {
         UpdateHpTextInHealthboxInDoubles(healthboxSpriteId, maxOrCurrent, currHp, maxHp);
     }
@@ -1714,8 +1709,8 @@ static const s8 sIndicatorPositions[][2] =
 {
     [B_POSITION_PLAYER_LEFT] = {52, -9},
     [B_POSITION_OPPONENT_LEFT] = {44, -9},
-    [B_POSITION_PLAYER_RIGHT] = {52, -9},
-    [B_POSITION_OPPONENT_RIGHT] = {44, -9},
+    [B_POSITION_PLAYER_MIDDLE] = {52, -9},
+    [B_POSITION_OPPONENT_MIDDLE] = {44, -9},
 };
 
 u32 CreateMegaIndicatorSprite(u32 battlerId, u32 which)
@@ -2549,7 +2544,7 @@ void UpdateHealthboxAttribute(u8 healthboxSpriteId, struct Pokemon *mon, u8 elem
             MoveBattleBar(battlerId, healthboxSpriteId, HEALTH_BAR, 0);
         }
         isDoublesOrTriples = IsDoubleOrTripleBattle();
-        if (isDoublesOrTriples == 0 && (elementId == HEALTHBOX_EXP_BAR || elementId == HEALTHBOX_ALL))
+        if (!isDoublesOrTriples && (elementId == HEALTHBOX_EXP_BAR || elementId == HEALTHBOX_ALL))
         {
             u16 species;
             u32 exp, currLevelExp;
