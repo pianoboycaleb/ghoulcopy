@@ -1,5 +1,3 @@
-#include "battle_order.h"
-
 const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
 {
     [MOVE_NONE] =

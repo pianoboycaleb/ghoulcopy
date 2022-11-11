@@ -48,8 +48,8 @@ const struct SpriteFrameImage gBattlerPicTable_OpponentRight[] =
 
 const struct SpriteFrameImage gBattlerPicTable_PlayerMiddle[] =
 {
-    BATTLER_OFFSET(16),  MON_PIC_SIZE,
-    BATTLER_OFFSET(17),  MON_PIC_SIZE,
+    BATTLER_OFFSET(16), MON_PIC_SIZE,
+    BATTLER_OFFSET(17), MON_PIC_SIZE,
     BATTLER_OFFSET(18), MON_PIC_SIZE,
     BATTLER_OFFSET(19), MON_PIC_SIZE,
 };
