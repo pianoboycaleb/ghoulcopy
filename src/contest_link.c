@@ -21,8 +21,11 @@ static void Task_LinkContest_InitFlags(u8);
 
 bool32 LinkContest_SendBlock(void *src, u16 size)
 {
-    memcpy(gDecompressionBuffer, src, size);
-    if (SendBlock(BitmaskAllOtherLinkPlayers(), gDecompressionBuffer, size))
+    // NOTE: This should always fit, but a more sane approach would want to use Alloc here.
+    AGB_ASSERT(size < sizeof(gBlockSendBuffer));
+
+    memcpy(gBlockSendBuffer, src, size);
+    if (SendBlock(BitmaskAllOtherLinkPlayers(), gBlockSendBuffer, size))
         return TRUE;
     else
         return FALSE;
