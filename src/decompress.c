@@ -19,15 +19,22 @@ void LZDecompressVram(const u32 *src, void *dest)
     LZ77UnCompVram(src, dest);
 }
 
+// NOTE: Functionally equivalent to LoadCompressedSpriteSheetUsingHeap, but returns tileStart
 u16 LoadCompressedSpriteSheet(const struct CompressedSpriteSheet *src)
 {
     struct SpriteSheet dest;
+    void *buffer;
+    u16 tileStart;
+    buffer = AllocZeroed(src->data[0] >> 8);
+    LZ77UnCompWram(src->data, buffer);
 
-    LZ77UnCompWram(src->data, gDecompressionBuffer);
-    dest.data = gDecompressionBuffer;
+    dest.data = buffer;
     dest.size = src->size;
     dest.tag = src->tag;
-    return LoadSpriteSheet(&dest);
+
+    tileStart = LoadSpriteSheet(&dest);
+    Free(buffer);
+    return tileStart;
 }
 
 void LoadCompressedSpriteSheetOverrideBuffer(const struct CompressedSpriteSheet *src, void *buffer)
@@ -43,12 +50,7 @@ void LoadCompressedSpriteSheetOverrideBuffer(const struct CompressedSpriteSheet 
 
 void LoadCompressedSpritePalette(const struct CompressedSpritePalette *src)
 {
-    struct SpritePalette dest;
-
-    LZ77UnCompWram(src->data, gDecompressionBuffer);
-    dest.data = (void *) gDecompressionBuffer;
-    dest.tag = src->tag;
-    LoadSpritePalette(&dest);
+    (void) LoadCompressedSpritePaletteUsingHeap(src);
 }
 
 void LoadCompressedSpritePaletteOverrideBuffer(const struct CompressedSpritePalette *src, void *buffer)
