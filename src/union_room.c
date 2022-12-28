@@ -2467,7 +2467,7 @@ static void ScheduleFieldMessageAndExit(const u8 *src)
 
 static void CopyPlayerListToBuffer(struct WirelessLink_URoom *uroom)
 {
-    memcpy(&gDecompressionBuffer[sizeof(gDecompressionBuffer) - (MAX_UNION_ROOM_LEADERS * sizeof(struct RfuPlayer))],
+    memcpy(uroom->buffer,
             uroom->playerList,
             MAX_UNION_ROOM_LEADERS * sizeof(struct RfuPlayer));
 }
@@ -2475,7 +2475,7 @@ static void CopyPlayerListToBuffer(struct WirelessLink_URoom *uroom)
 static void CopyPlayerListFromBuffer(struct WirelessLink_URoom *uroom)
 {
     memcpy(uroom->playerList,
-           &gDecompressionBuffer[sizeof(gDecompressionBuffer) - (MAX_UNION_ROOM_LEADERS * sizeof(struct RfuPlayer))],
+           uroom->buffer,
            MAX_UNION_ROOM_LEADERS * sizeof(struct RfuPlayer));
 }
 
@@ -2494,6 +2494,7 @@ static void Task_RunUnionRoom(u8 taskId)
         uroom->incomingParentList = AllocZeroed(RFU_CHILD_MAX * sizeof(struct RfuIncomingPlayer));
         uroom->playerList = AllocZeroed(MAX_UNION_ROOM_LEADERS * sizeof(struct RfuPlayer));
         uroom->spawnPlayer = AllocZeroed(sizeof(struct RfuPlayer));
+        uroom->buffer = AllocZeroed(MAX_UNION_ROOM_LEADERS * sizeof(struct RfuPlayer));
         ClearRfuPlayerList(uroom->playerList->players, MAX_UNION_ROOM_LEADERS);
         gPlayerCurrActivity = IN_UNION_ROOM;
         uroom->searchTaskId = CreateTask_SearchForChildOrParent(uroom->incomingParentList, uroom->incomingChildList, LINK_GROUP_UNION_ROOM_RESUME);
@@ -3020,6 +3021,7 @@ static void Task_RunUnionRoom(u8 taskId)
         Free(uroom->playerList);
         Free(uroom->incomingParentList);
         Free(uroom->incomingChildList);
+        Free(uroom->buffer);
         DestroyTask(uroom->searchTaskId);
         DestroyUnionRoomPlayerSprites(uroom->spriteIds);
         uroom->state = UR_STATE_START_ACTIVITY_FADE;
@@ -3368,6 +3370,7 @@ static void Task_InitUnionRoom(u8 taskId)
         Free(data->playerList);
         Free(data->incomingParentList);
         Free(data->incomingChildList);
+        Free(data->buffer);
         DestroyTask(data->searchTaskId);
         Free(sWirelessLinkMain.uRoom);
         LinkRfu_Shutdown();
