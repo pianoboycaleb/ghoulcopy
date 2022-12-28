@@ -140,7 +140,7 @@ bool32 DigitObjUtil_CreatePrinter(u32 id, s32 num, const struct DigitObjUtilTemp
 
             compSpriteSheet = *(struct CompressedSpriteSheet *)(template->spriteSheet);
             compSpriteSheet.size = GetDecompressedDataSize(template->spriteSheet->data);
-            sOamWork->array[id].tileStart = LoadCompressedSpriteSheetUsingHeap(&compSpriteSheet);
+            sOamWork->array[id].tileStart = LoadCompressedSpriteSheet(&compSpriteSheet);
         }
 
         if (sOamWork->array[id].tileStart == 0xFFFF)

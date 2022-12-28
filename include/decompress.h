@@ -8,6 +8,7 @@ extern u8 *gDecompressionBuffer;
 void LZDecompressWram(const u32 *src, void *dest);
 void LZDecompressVram(const u32 *src, void *dest);
 
+u16 LoadCompressedSpriteSheet(const struct CompressedSpriteSheet *src);
 bool8 LoadCompressedSpriteSheetUsingHeap(const struct CompressedSpriteSheet *src);
 bool8 LoadCompressedSpritePaletteUsingHeap(const struct CompressedSpritePalette *src);
 
