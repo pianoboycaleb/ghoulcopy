@@ -104,6 +104,7 @@ EWRAM_DATA u16 gBlockRecvBuffer[MAX_RFU_PLAYERS][BLOCK_BUFFER_SIZE / 2] = {};
 EWRAM_DATA u8 gBlockSendBuffer[BLOCK_BUFFER_SIZE] = {};
 static EWRAM_DATA bool8 sLinkOpen = FALSE;
 EWRAM_DATA u16 gLinkType = 0;
+EWRAM_DATA u8 *gLinkBuffer = NULL;
 static EWRAM_DATA u16 sTimeOutCounter = 0;
 EWRAM_DATA struct LinkPlayer gLocalLinkPlayer = {};
 EWRAM_DATA struct LinkPlayer gLinkPlayers[MAX_RFU_PLAYERS] = {};
@@ -566,7 +567,7 @@ static void ProcessRecvCmds(u8 unused)
                     u16 *buffer;
                     u16 j;
 
-                    buffer = (u16 *)gDecompressionBuffer;
+                    buffer = (u16 *)gLinkBuffer;
                     for (j = 0; j < CMD_LENGTH - 1; j++)
                     {
                         buffer[(sBlockRecv[i].pos / 2) + j] = gRecvCmds[i][j + 1];
