@@ -11,12 +11,12 @@
  *
  *   + ------------------------- +
  *   |           Opponent's side |
- *   |            Right    Left  |
- *   |              3       1    |
+ *   |    Right   Middle   Left  |
+ *   |      5       3       1    |
  *   |                           |
  *   | Player's side             |
- *   |  Left   Right             |
- *   |   0       2               |
+ *   |  Left   Middle  Right     |
+ *   |   0       2       4       |
  *   ----------------------------+
  *   |                           |
  *   |                           |

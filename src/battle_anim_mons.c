@@ -44,24 +44,24 @@ static const struct UCoords8 sBattlerCoords[][MAX_BATTLERS_COUNT] =
 #endif
 {
     { // Single battle
-        { 72, 80 },
-        { 176, 40 },
-        { 48, 40 },
-        { 112, 80 },
+        [B_POSITION_PLAYER_LEFT]     = { 72,  80 },
+        [B_POSITION_OPPONENT_LEFT]   = { 176, 40 },
+        [B_POSITION_PLAYER_MIDDLE]   = { 48,  40 },
+        [B_POSITION_OPPONENT_MIDDLE] = { 112, 80 },
     },
     { // Double battle
-        { 32, 80 },
-        { 200, 40 },
-        { 90, 88 },
-        { 152, 32 },
+        [B_POSITION_PLAYER_LEFT]     = { 32,  80 },
+        [B_POSITION_OPPONENT_LEFT]   = { 200, 40 },
+        [B_POSITION_PLAYER_MIDDLE]   = { 90,  88 },
+        [B_POSITION_OPPONENT_MIDDLE] = { 152, 32 },
     },
     { // Triple battle
-        { 30, 80 },
-        { 200, 40 },
-        { 70, 84 },
-        { 160, 36 },
-        { 110, 88 },
-        { 120, 32 },
+        [B_POSITION_PLAYER_LEFT]     = { 30,  80 },
+        [B_POSITION_OPPONENT_LEFT]   = { 220, 40 },
+        [B_POSITION_PLAYER_MIDDLE]   = { 70,  84 },
+        [B_POSITION_OPPONENT_MIDDLE] = { 175, 36 },
+        [B_POSITION_PLAYER_RIGHT]    = { 120, 88 },
+        [B_POSITION_OPPONENT_RIGHT]  = { 130, 32 },
     },
 };
 

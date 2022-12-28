@@ -759,7 +759,14 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
         else // IsTripleBattle()
         {
             if (state == 2)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesPlayerHealthbox[0]);
+            {
+                switch(WhichBattleCoords(0))
+                {
+                case 0: LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SinglesPlayerHealthbox); break;
+                case 1: LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesPlayerHealthbox[0]); break;
+                case 2: LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesPlayerHealthbox[0]); break;
+                }
+            }
             else if (state == 3)
                 LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesPlayerHealthbox[1]);
             else if (state == 4)
