@@ -18,7 +18,6 @@
 #include "sprite.h"
 #include "task.h"
 #include "constants/battle_anim.h"
-#include "constants/battle_config.h"
 #include "constants/moves.h"
 
 /*
