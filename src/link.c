@@ -455,7 +455,7 @@ static void LinkTestProcessKeyInput(void)
     }
     if (JOY_NEW(R_BUTTON))
     {
-        TrySavingData(SAVE_LINK);
+        TrySavingData(SAVE_LINK, NULL);
     }
     if (JOY_NEW(SELECT_BUTTON))
     {

@@ -701,7 +701,7 @@ static void Task_ResetRtcScreen(u8 taskId)
         }
         break;
     case MAINSTATE_SAVE:
-        if (TrySavingData(SAVE_NORMAL) == SAVE_STATUS_OK)
+        if (TrySavingData(SAVE_NORMAL, NULL) == SAVE_STATUS_OK)
         {
             ShowMessage(gText_SaveCompleted);
             PlaySE(SE_DING_DONG);
