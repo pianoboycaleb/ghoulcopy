@@ -77,6 +77,7 @@ struct MysteryGiftClient
     u32 cmdidx;
     void * sendBuffer;
     void * recvBuffer;
+    void * execBuffer;
     struct MysteryGiftClientCmd * script;
     void * msg;
     struct MysteryGiftLink link;

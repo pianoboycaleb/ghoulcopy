@@ -71,6 +71,7 @@ static void MysteryGiftClient_Init(struct MysteryGiftClient * client, u32 sendPl
     client->funcState = 0;
     client->sendBuffer = AllocZeroed(MG_LINK_BUFFER_SIZE);
     client->recvBuffer = AllocZeroed(MG_LINK_BUFFER_SIZE);
+    client->execBuffer = AllocZeroed(MG_LINK_BUFFER_SIZE * 2); // NOTE: Twice as big s.t. on occasion the transmitted code could use a scratchpad.
     client->script = AllocZeroed(MG_LINK_BUFFER_SIZE);
     client->msg = AllocZeroed(CLIENT_MAX_MSG_SIZE);
     MysteryGiftLink_Init(&client->link, sendPlayerId, recvPlayerId);
@@ -80,6 +81,7 @@ static void MysteryGiftClient_Free(struct MysteryGiftClient * client)
 {
     Free(client->sendBuffer);
     Free(client->recvBuffer);
+    Free(client->execBuffer);
     Free(client->script);
     Free(client->msg);
 }
@@ -236,7 +238,7 @@ static u32 Client_Run(struct MysteryGiftClient * client)
         ValidateEReaderTrainer();
         break;
     case CLI_RUN_BUFFER_SCRIPT:
-        memcpy(gDecompressionBuffer, client->recvBuffer, MG_LINK_BUFFER_SIZE);
+        memcpy(client->execBuffer, client->recvBuffer, MG_LINK_BUFFER_SIZE);
         client->funcId = FUNC_RUN_BUFFER;
         client->funcState = 0;
         break;
@@ -277,7 +279,7 @@ static u32 Client_RunMysteryEventScript(struct MysteryGiftClient * client)
 static u32 Client_RunBufferScript(struct MysteryGiftClient * client)
 {
     // exec arbitrary code
-    u32 (*func)(u32 *, struct SaveBlock2 *, struct SaveBlock1 *) = (void *)gDecompressionBuffer;
+    u32 (*func)(u32 *, struct SaveBlock2 *, struct SaveBlock1 *) = client->execBuffer;
     if (func(&client->param, gSaveBlock2Ptr, gSaveBlock1Ptr) == 1)
     {
         client->funcId = FUNC_RUN;
