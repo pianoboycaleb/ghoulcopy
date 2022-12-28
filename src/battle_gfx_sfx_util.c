@@ -556,6 +556,7 @@ void BattleLoadOpponentMonSpriteGfx(struct Pokemon *mon, u8 battlerId)
     u8 position;
     u16 paletteOffset;
     const void *lzPaletteData;
+    void *decompressionBuffer;
 
     monsPersonality = GetMonData(mon, MON_DATA_PERSONALITY);
 
@@ -583,10 +584,11 @@ void BattleLoadOpponentMonSpriteGfx(struct Pokemon *mon, u8 battlerId)
     else
         lzPaletteData = GetMonSpritePalFromSpeciesAndPersonality(species, otId, monsPersonality);
 
-    LZDecompressWram(lzPaletteData, gDecompressionBuffer);
-    LoadPalette(gDecompressionBuffer, paletteOffset, 0x20);
-    LoadPalette(gDecompressionBuffer, 0x80 + battlerId * 16, 0x20);
-
+    decompressionBuffer = Alloc(0x20);
+    LZDecompressWram(lzPaletteData, decompressionBuffer);
+    LoadPalette(decompressionBuffer, paletteOffset, 0x20);
+    LoadPalette(decompressionBuffer, 0x80 + battlerId * 16, 0x20);
+    Free(decompressionBuffer);
     if (species == SPECIES_CASTFORM)
     {
         paletteOffset = 0x100 + battlerId * 16;
@@ -609,6 +611,7 @@ void BattleLoadPlayerMonSpriteGfx(struct Pokemon *mon, u8 battlerId)
     u8 position;
     u16 paletteOffset;
     const void *lzPaletteData;
+    void *decompressionBuffer;
 
     monsPersonality = GetMonData(mon, MON_DATA_PERSONALITY);
 
@@ -646,10 +649,11 @@ void BattleLoadPlayerMonSpriteGfx(struct Pokemon *mon, u8 battlerId)
     else
         lzPaletteData = GetMonSpritePalFromSpeciesAndPersonality(species, otId, monsPersonality);
 
-    LZDecompressWram(lzPaletteData, gDecompressionBuffer);
-    LoadPalette(gDecompressionBuffer, paletteOffset, 0x20);
-    LoadPalette(gDecompressionBuffer, 0x80 + battlerId * 16, 0x20);
-
+    decompressionBuffer = Alloc(0x20);
+    LZDecompressWram(lzPaletteData, decompressionBuffer);
+    LoadPalette(decompressionBuffer, paletteOffset, 0x20);
+    LoadPalette(decompressionBuffer, 0x80 + battlerId * 16, 0x20);
+    Free(decompressionBuffer);
     if (species == SPECIES_CASTFORM)
     {
         paletteOffset = 0x100 + battlerId * 16;
@@ -899,6 +903,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform)
     u32 otId;
     u8 position;
     const u32 *lzPaletteData;
+    void *decompressionBuffer;
 
     if (castform)
     {
@@ -967,9 +972,10 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform)
         DmaCopy32(3, src, dst, MON_PIC_SIZE);
         paletteOffset = 0x100 + battlerAtk * 16;
         lzPaletteData = GetMonSpritePalFromSpeciesAndPersonality(targetSpecies, otId, personalityValue);
-        LZDecompressWram(lzPaletteData, gDecompressionBuffer);
-        LoadPalette(gDecompressionBuffer, paletteOffset, 32);
-
+        decompressionBuffer = Alloc(0x20);
+        LZDecompressWram(lzPaletteData, decompressionBuffer);
+        LoadPalette(decompressionBuffer, paletteOffset, 32);
+        Free(decompressionBuffer);
         if (targetSpecies == SPECIES_CASTFORM)
         {
             gSprites[gBattlerSpriteIds[battlerAtk]].anims = gMonFrontAnimsPtrTable[targetSpecies];
