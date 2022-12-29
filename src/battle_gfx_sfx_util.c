@@ -573,6 +573,7 @@ static void BattleLoadMonSpriteGfx(struct Pokemon *mon, u32 battlerId, bool32 op
 {
     u32 monsPersonality, currentPersonality, otId, species, paletteOffset, position;
     const void *lzPaletteData;
+    void *decompressionBuffer;
     struct Pokemon *illusionMon = GetIllusionMonPtr(battlerId);
     if (illusionMon != NULL)
         mon = illusionMon;
@@ -610,9 +611,12 @@ static void BattleLoadMonSpriteGfx(struct Pokemon *mon, u32 battlerId, bool32 op
         lzPaletteData = GetMonFrontSpritePal(mon);
     else
         lzPaletteData = GetMonSpritePalFromSpeciesAndPersonality(species, otId, monsPersonality);
-    LoadCompressedPalette(lzPaletteData, paletteOffset, 0x20);
-    LoadCompressedPalette(lzPaletteData, 0x80 + battlerId * 16, 0x20);
 
+    decompressionBuffer = Alloc(0x20);
+    LZDecompressWram(lzPaletteData, decompressionBuffer);
+    LoadPalette(decompressionBuffer, paletteOffset, 0x20);
+    LoadPalette(decompressionBuffer, 0x80 + battlerId * 16, 0x20);
+    Free(decompressionBuffer);
     if (species == SPECIES_CASTFORM || species == SPECIES_CHERRIM)
     {
         paletteOffset = 0x100 + battlerId * 16;
@@ -901,6 +905,7 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
     u32 personalityValue, otId, position, paletteOffset, targetSpecies;
     const void *lzPaletteData, *src;
     void *dst;
+    void *decompressionBuffer;
 
     if (IsContest())
     {
@@ -967,10 +972,10 @@ void HandleSpeciesGfxDataChange(u8 battlerAtk, u8 battlerDef, bool8 castform, bo
         DmaCopy32(3, src, dst, MON_PIC_SIZE);
         paletteOffset = 0x100 + battlerAtk * 16;
         lzPaletteData = GetMonSpritePalFromSpeciesAndPersonality(targetSpecies, otId, personalityValue);
-        gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
-        LZDecompressWram(lzPaletteData, gDecompressionBuffer);
-        LoadCompressedPalette(lzPaletteData, paletteOffset, 32);
-        Free(gDecompressionBuffer);
+        decompressionBuffer = Alloc(0x20);
+        LZDecompressWram(lzPaletteData, decompressionBuffer);
+        LoadPalette(decompressionBuffer, paletteOffset, 32);
+        Free(decompressionBuffer);
 
         if (targetSpecies == SPECIES_CASTFORM || targetSpecies == SPECIES_CHERRIM)
         {

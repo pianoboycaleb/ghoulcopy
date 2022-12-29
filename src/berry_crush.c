@@ -1947,12 +1947,14 @@ static void DrawPlayerNameWindows(struct BerryCrushGame *game)
 static void CopyPlayerNameWindowGfxToBg(struct BerryCrushGame *game)
 {
     u8 i = 0;
-    u8 *windowGfx;
+    u8 * windowGfx;
+    u8 *decompressionBuffer;
 
-    gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
-    LZ77UnCompWram(gBerryCrush_TextWindows_Tilemap, gDecompressionBuffer);
+    decompressionBuffer = Alloc(10*2*TILE_SIZE_4BPP); //TODO: Verify
 
-    for (windowGfx = gDecompressionBuffer; i < game->playerCount; i++)
+    LZ77UnCompWram(gBerryCrush_TextWindows_Tilemap, decompressionBuffer);
+
+    for (windowGfx = decompressionBuffer; i < game->playerCount; i++)
     {
         CopyToBgTilemapBufferRect(
             3,
@@ -1963,7 +1965,6 @@ static void CopyPlayerNameWindowGfxToBg(struct BerryCrushGame *game)
             2
         );
     }
-    Free(gDecompressionBuffer);
     CopyBgTilemapBufferToVram(3);
 }
 

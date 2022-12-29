@@ -707,6 +707,7 @@ static void BattleLoadOpponentMonSpriteGfxCustom(u16 species, bool8 isFemale, bo
     u16 paletteOffset;
     const void *lzPaletteData;
     const struct CompressedSpritePalette *palette;
+    void *decompressionBuffer;
 
     paletteOffset = 0x100 + battlerId * 16;
 
@@ -727,9 +728,11 @@ static void BattleLoadOpponentMonSpriteGfxCustom(u16 species, bool8 isFemale, bo
             lzPaletteData = gMonPaletteTable[species].data;
     }
 
-    LZDecompressWram(lzPaletteData, gDecompressionBuffer);
-    LoadPalette(gDecompressionBuffer, paletteOffset, 0x20);
-    LoadPalette(gDecompressionBuffer, 0x80 + battlerId * 16, 0x20);
+    decompressionBuffer = Alloc(0x20);
+    LZDecompressWram(lzPaletteData, decompressionBuffer);
+    LoadPalette(decompressionBuffer, paletteOffset, 0x20);
+    LoadPalette(decompressionBuffer, 0x80 + battlerId * 16, 0x20);
+    Free(decompressionBuffer);
 }
 
 static bool8 IsCastformForm(species)

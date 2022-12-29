@@ -533,19 +533,10 @@ static void Task_LoadShowMons(u8 taskId)
     {
         u16 i;
         u16 *temp;
-
-        #define MONBG_OFFSET (MON_PIC_SIZE * 3)
-
-        struct SpriteSheet sSpriteSheet_MonBg;
-        struct SpritePalette sSpritePalette_MonBg;
-
-        gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
-        sSpriteSheet_MonBg.data = gDecompressionBuffer;
-        sSpriteSheet_MonBg.size = MONBG_OFFSET;
-        sSpriteSheet_MonBg.tag = TAG_MON_BG;
-
-        sSpritePalette_MonBg.data = (const u16 *)&gDecompressionBuffer[MONBG_OFFSET];
-        sSpritePalette_MonBg.tag = TAG_MON_BG;
+        struct SpriteSheet spriteSheetMonBg;
+        struct SpritePalette spritePaletteMonBg;
+        u8 *spriteGfxBuffer;
+        u16 *spritePaletteBuffer;
 
         ResetSpriteData();
         ResetAllPicSprites();
@@ -555,22 +546,34 @@ static void Task_LoadShowMons(u8 taskId)
         LZ77UnCompVram(gBirchGrassTilemap, (void *)(BG_SCREEN_ADDR(7)));
         LoadPalette(gBirchBagGrassPal[0] + 1, 1, 31 * 2);
 
-        for (i = 0; i < MON_PIC_SIZE; i++)
-            gDecompressionBuffer[i] = 0x11;
-        for (i = 0; i < MON_PIC_SIZE; i++)
-            (gDecompressionBuffer + MON_PIC_SIZE)[i] = 0x22;
-        for (i = 0; i < MON_PIC_SIZE; i++)
-            (gDecompressionBuffer + MON_PIC_SIZE * 2)[i] = 0x33;
+        spriteGfxBuffer = Alloc(MON_PIC_SIZE * 3);
 
-        temp = (u16 *)(&gDecompressionBuffer[MONBG_OFFSET]);
-        temp[0] = RGB_BLACK;
-        temp[1] = RGB(31, 31, 20); // light yellow
-        temp[2] = RGB(31, 20, 20); // light red
-        temp[3] = RGB(20, 20, 31); // light blue
+        for (i = 0; i < MON_PIC_SIZE; i++)
+            spriteGfxBuffer[i] = 0x11;
+        for (i = 0; i < MON_PIC_SIZE; i++)
+            (spriteGfxBuffer + MON_PIC_SIZE)[i] = 0x22;
+        for (i = 0; i < MON_PIC_SIZE; i++)
+            (spriteGfxBuffer + MON_PIC_SIZE * 2)[i] = 0x33;
 
-        LoadSpriteSheet(&sSpriteSheet_MonBg);
-        LoadSpritePalette(&sSpritePalette_MonBg);
-        Free(gDecompressionBuffer);
+        spritePaletteBuffer = Alloc(0x20);
+
+        spritePaletteBuffer[0] = RGB_BLACK;
+        spritePaletteBuffer[1] = RGB(31, 31, 20); // light yellow
+        spritePaletteBuffer[2] = RGB(31, 20, 20); // light red
+        spritePaletteBuffer[3] = RGB(20, 20, 31); // light blue
+
+        spriteSheetMonBg.data = spriteGfxBuffer;
+        spriteSheetMonBg.tag = TAG_MON_BG;
+        spriteSheetMonBg.size = MON_PIC_SIZE * 3;
+
+        spritePaletteMonBg.data = spritePaletteBuffer;
+        spritePaletteMonBg.tag = TAG_MON_BG;
+
+        LoadSpriteSheet(&spriteSheetMonBg);
+        LoadSpritePalette(&spritePaletteMonBg);
+
+        Free(spriteGfxBuffer);
+        Free(spritePaletteBuffer);
 
         gMain.state++;
         break;

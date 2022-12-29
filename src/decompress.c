@@ -6,8 +6,6 @@
 #include "pokemon_debug.h"
 #include "text.h"
 
-EWRAM_DATA u8 *gDecompressionBuffer = NULL;
-
 void LZDecompressWram(const u32 *src, void *dest)
 {
     LZ77UnCompWram(src, dest);
@@ -48,15 +46,9 @@ void LoadCompressedSpriteSheetOverrideBuffer(const struct CompressedSpriteSheet 
     LoadSpriteSheet(&dest);
 }
 
-// No longer used in favor of LoadCompressedSpritePaletteUsingHeap
 void LoadCompressedSpritePalette(const struct CompressedSpritePalette *src)
 {
-    struct SpritePalette dest;
-
-    LZ77UnCompWram(src->data, gDecompressionBuffer);
-    dest.data = (void *) gDecompressionBuffer;
-    dest.tag = src->tag;
-    LoadSpritePalette(&dest);
+    (void) LoadCompressedSpritePaletteUsingHeap(src);
 }
 
 // No longer used in favor of LoadCompressedSpritePaletteUsingHeap

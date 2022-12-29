@@ -461,7 +461,7 @@ static void CreateBerrySprite(void)
 static void DestroyBerrySprite(void)
 {
     DestroySprite(&gSprites[sBerryTag->berrySpriteId]);
-    FreeBerryTagSpritePalette();
+    FreeBerryTagSpriteAssets();
 }
 
 static void CreateFlavorCircleSprites(void)

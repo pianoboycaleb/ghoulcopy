@@ -17,6 +17,7 @@
 #include "sound.h"
 #include "sprite.h"
 #include "task.h"
+#include "malloc.h"
 #include "constants/battle_anim.h"
 #include "constants/moves.h"
 
@@ -1245,16 +1246,16 @@ void LoadMoveBg(u16 bgId)
         const u32 *tilemap = gBattleAnimBackgroundTable[bgId].tilemap;
         void *dmaSrc;
         void *dmaDest;
+        void *decompressionBuffer = Alloc(0x800);
 
-        gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
-        LZDecompressWram(tilemap, gDecompressionBuffer);
-        RelocateBattleBgPal(GetBattleBgPaletteNum(), (void *)gDecompressionBuffer, 0x100, FALSE);
-        dmaSrc = gDecompressionBuffer;
+        LZDecompressWram(tilemap, decompressionBuffer);
+        RelocateBattleBgPal(GetBattleBgPaletteNum(), decompressionBuffer, 0x100, FALSE);
+        dmaSrc = decompressionBuffer;
         dmaDest = (void *)BG_SCREEN_ADDR(26);
         DmaCopy32(3, dmaSrc, dmaDest, 0x800);
+        Free(decompressionBuffer);
         LZDecompressVram(gBattleAnimBackgroundTable[bgId].image, (void *)BG_SCREEN_ADDR(4));
         LoadCompressedPalette(gBattleAnimBackgroundTable[bgId].palette, GetBattleBgPaletteNum() * 16, 32);
-        Free(gDecompressionBuffer);
     }
     else
     {

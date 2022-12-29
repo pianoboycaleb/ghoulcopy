@@ -18,6 +18,7 @@
 #include "gpu_regs.h"
 #include "text_window.h"
 #include "decompress.h"
+#include "malloc.h"
 #include "constants/rgb.h"
 
 static void CB2_MysteryEventMenu(void);
@@ -150,6 +151,8 @@ static void CB2_MysteryEventMenu(void)
         {
             gMain.state++;
             gLinkType = LINKTYPE_MYSTERY_EVENT;
+            TRY_FREE_AND_SET_NULL(gLinkBuffer);
+            gLinkBuffer = AllocZeroed(0x2000);
             OpenLink();
         }
         break;
@@ -252,10 +255,10 @@ static void CB2_MysteryEventMenu(void)
     case 11:
         if (gReceivedRemoteLinkPlayers == 0)
         {
-            u16 status = RunMysteryEventScript(gDecompressionBuffer);
-            CpuFill32(0, gDecompressionBuffer, 0x7D4);
+            u16 status = RunMysteryEventScript(gLinkBuffer);
+            CpuFill32(0, gLinkBuffer, 0x7D4);
             if (!GetEventLoadMessage(gStringVar4, status))
-                TrySavingData(SAVE_NORMAL);
+                TrySavingData(SAVE_NORMAL, NULL);
             gMain.state++;
         }
         break;
@@ -268,6 +271,7 @@ static void CB2_MysteryEventMenu(void)
         {
             gMain.state++;
             sUnused = 0;
+            TRY_FREE_AND_SET_NULL(gLinkBuffer);
         }
         break;
     case 14:
@@ -279,6 +283,7 @@ static void CB2_MysteryEventMenu(void)
         break;
     case 15:
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 0x10, RGB_BLACK);
+        TRY_FREE_AND_SET_NULL(gLinkBuffer);
         gMain.state++;
         break;
     case 16:

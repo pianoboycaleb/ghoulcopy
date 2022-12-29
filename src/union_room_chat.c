@@ -1559,7 +1559,7 @@ static void Chat_SaveAndExit(void)
         if (!IsDisplaySubtaskActive(0))
         {
             SetContinueGameWarpStatusToDynamicWarp();
-            TrySavingData(SAVE_NORMAL);
+            TrySavingData(SAVE_NORMAL, NULL);
             sChat->funcState = 8;
         }
         break;

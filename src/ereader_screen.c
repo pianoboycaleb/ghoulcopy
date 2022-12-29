@@ -97,7 +97,8 @@ static u8 EReader_Transfer(struct EReaderData *eReader)
 
 static void OpenEReaderLink(void)
 {
-    //memset(gDecompressionBuffer, 0, 0x2000);
+    TRY_FREE_AND_SET_NULL(gLinkBuffer);
+    gLinkBuffer = AllocZeroed(0x2000);
     gLinkType = LINKTYPE_EREADER;
     OpenLink();
     SetSuppressLinkErrorMessage(TRUE);
@@ -332,6 +333,7 @@ static void Task_EReader(u8 taskId)
         if (!IsChildConnected())
         {
             CloseLink();
+            TRY_FREE_AND_SET_NULL(gLinkBuffer);
             data->state = ER_STATE_MSG_SELECT_CONNECT;
         }
         else
@@ -470,7 +472,7 @@ static void Task_EReader(u8 taskId)
         }
         break;
     case ER_STATE_VALIDATE_CARD:
-        data->status = ValidateTrainerHillData((struct EReaderTrainerHillSet *)gDecompressionBuffer);
+        data->status = ValidateTrainerHillData((struct EReaderTrainerHillSet *)gLinkBuffer);
         SetCloseLinkCallbackAndType(data->status);
         data->state = ER_STATE_WAIT_DISCONNECT;
         break;
@@ -484,8 +486,7 @@ static void Task_EReader(u8 taskId)
         }
         break;
     case ER_STATE_SAVE:
-        gDecompressionBuffer = AllocZeroed(DECOMPRESSION_BUFFER_SIZE);
-        if (TryWriteTrainerHill((struct EReaderTrainerHillSet *)&gDecompressionBuffer))
+        if (TryWriteTrainerHill((struct EReaderTrainerHillSet *)&gLinkBuffer))
         {
             AddTextPrinterToWindow1(gJPText_ConnectionComplete);
             ResetTimer(&data->timer);
@@ -495,7 +496,6 @@ static void Task_EReader(u8 taskId)
         {
             data->state = ER_STATE_SAVE_FAILED;
         }
-        Free(gDecompressionBuffer);
         break;
     case ER_STATE_SUCCESS_MSG:
         if (UpdateTimer(&data->timer, 120))
@@ -527,6 +527,7 @@ static void Task_EReader(u8 taskId)
         break;
     case ER_STATE_END:
         Free(data->unusedBuffer);
+        TRY_FREE_AND_SET_NULL(gLinkBuffer);
         DestroyTask(taskId);
         SetMainCallback2(MainCB_FreeAllBuffersAndReturnToInitTitleScreen);
         break;

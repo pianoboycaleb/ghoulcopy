@@ -711,7 +711,7 @@ static void SavePikeChallenge(void)
     VarSet(VAR_TEMP_0, 0);
     gSaveBlock2Ptr->frontier.challengePaused = TRUE;
     SaveMapView();
-    TrySavingData(SAVE_LINK);
+    TrySavingData(SAVE_LINK, NULL);
 }
 
 static void PikeDummy1(void)

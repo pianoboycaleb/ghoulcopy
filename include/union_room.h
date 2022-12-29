@@ -107,6 +107,7 @@ struct WirelessLink_URoom
     struct RfuIncomingPlayerList *incomingChildList;
     struct RfuPlayerList *spawnPlayer;
     struct RfuIncomingPlayerList *incomingParentList;
+    u8 *buffer;
     u16 unknown; // Never read
     u16 unreadPlayerId;
     u8 state;

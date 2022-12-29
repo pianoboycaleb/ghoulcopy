@@ -13,6 +13,7 @@
 #include "starter_choose.h"
 #include "gba/flash_internal.h"
 #include "text_window.h"
+#include "malloc.h"
 #include "constants/rgb.h"
 
 #define MSG_WIN_TOP 12
@@ -39,11 +40,20 @@ enum
     CLOCK_WIN_ID
 };
 
+struct SaveFailedData
+{
+    u8 bgBuffer[0x800];
+    u8 textTiles[0x1500];
+    u8 clockTiles[0x1500];
+};
+
 static EWRAM_DATA u16 sSaveFailedType = {0};
 static EWRAM_DATA u16 sClockInfo[2] = {0};
 static EWRAM_DATA u8 sUnused1[12] = {0};
 static EWRAM_DATA u8 sWindowIds[2] = {0};
 static EWRAM_DATA u8 sUnused2[4] = {0};
+static EWRAM_DATA u8 *sSaveFailedBuffer = NULL;
+static EWRAM_DATA struct SaveFailedData *sSaveFailedData = NULL;
 
 static const struct OamData sClockOamData =
 {
@@ -156,7 +166,7 @@ static void SaveFailedScreenTextPrint(const u8 *text, u8 x, u8 y)
     AddTextPrinterParameterized4(sWindowIds[TEXT_WIN_ID], FONT_NORMAL, x * 8, y * 8 + 1, 0, 0, color, 0, text);
 }
 
-void DoSaveFailedScreen(u8 saveType)
+void DoSaveFailedScreen(u8 saveType, u8 *buffer)
 {
     SetMainCallback2(CB2_SaveFailedScreen);
     sSaveFailedType = saveType;
@@ -164,6 +174,7 @@ void DoSaveFailedScreen(u8 saveType)
     sClockInfo[DEBUG_TIMER] = 0;
     sWindowIds[TEXT_WIN_ID] = 0;
     sWindowIds[CLOCK_WIN_ID] = 0;
+    sSaveFailedBuffer = buffer;
 }
 
 static void VBlankCB(void)
@@ -202,14 +213,14 @@ static void CB2_SaveFailedScreen(void)
         LZ77UnCompVram(sSaveFailedClockGfx, (void *)(OBJ_VRAM0 + 0x20));
         ResetBgsAndClearDma3BusyFlags(0);
         InitBgsFromTemplates(0, sBgTemplates, ARRAY_COUNT(sBgTemplates));
-        SetBgTilemapBuffer(0, (void *)&gDecompressionBuffer[0x2000]);
-        CpuFill32(0, &gDecompressionBuffer[0x2000], 0x800);
+        sSaveFailedData = AllocZeroed(sizeof(struct SaveFailedData));
+        SetBgTilemapBuffer(0, (void *)sSaveFailedData->bgBuffer);
         LoadBgTiles(0, gTextWindowFrame1_Gfx, 0x120, 0x214);
         InitWindows(sDummyWindowTemplate);
         sWindowIds[TEXT_WIN_ID] = AddWindowWithoutTileMap(sWindowTemplate_Text);
-        SetWindowAttribute(sWindowIds[TEXT_WIN_ID], 7, (u32)&gDecompressionBuffer[0x2800]);
+        SetWindowAttribute(sWindowIds[TEXT_WIN_ID], 7, (u32) (&sSaveFailedData->textTiles[0]));
         sWindowIds[CLOCK_WIN_ID] = AddWindowWithoutTileMap(sWindowTemplate_Clock);
-        SetWindowAttribute(sWindowIds[CLOCK_WIN_ID], 7, (u32)&gDecompressionBuffer[0x3D00]);
+        SetWindowAttribute(sWindowIds[CLOCK_WIN_ID], 7, (u32) (&sSaveFailedData->clockTiles[0]));
         DeactivateAllTextPrinters();
         ResetSpriteData();
         ResetTasks();
@@ -262,7 +273,7 @@ static void CB2_WipeSave(void)
 
         FillWindowPixelBuffer(sWindowIds[TEXT_WIN_ID], PIXEL_FILL(1));
         SaveFailedScreenTextPrint(gText_CheckCompleted, 1, 0);
-        HandleSavingData(sSaveFailedType);
+        HandleSavingData(sSaveFailedType, sSaveFailedBuffer);
 
         if (gDamagedSaveSectors != 0)
         {

@@ -2429,7 +2429,7 @@ void SaveGameFrontier(void)
     i = gPlayerPartyCount;
     LoadPlayerParty();
     SetContinueGameWarpStatusToDynamicWarp();
-    TrySavingData(SAVE_LINK);
+    TrySavingData(SAVE_LINK, NULL);
     ClearContinueGameWarpStatus2();
     gPlayerPartyCount = i;
 

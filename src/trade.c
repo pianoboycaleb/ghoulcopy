@@ -2912,6 +2912,8 @@ void LinkTradeDrawWindow(void)
 
 static void InitTradeBgInternal(void)
 {
+    void *buffer = Alloc(0x1000);
+
     SetGpuReg(REG_OFFSET_DISPCNT, 0);
     ResetBgsAndClearDma3BusyFlags(0);
     InitBgsFromTemplates(0, sTradeSequenceBgTemplates, ARRAY_COUNT(sTradeSequenceBgTemplates));
@@ -2922,14 +2924,16 @@ static void InitTradeBgInternal(void)
     SetBgTilemapBuffer(3, Alloc(BG_SCREEN_SIZE));
     DeactivateAllTextPrinters();
     DecompressAndLoadBgGfxUsingHeap(0, gBattleTextboxTiles, 0, 0, 0);
-    LZDecompressWram(gBattleTextboxTilemap, gDecompressionBuffer);
-    CopyToBgTilemapBuffer(0, gDecompressionBuffer, 0x800, 0);
+    LZDecompressWram(gBattleTextboxTilemap, buffer);
+    CopyToBgTilemapBuffer(0, buffer, 0x800, 0);
     LoadCompressedPalette(gBattleTextboxPalette, 0, 0x20);
     InitWindows(sTradeSequenceWindowTemplates);
     DecompressAndLoadBgGfxUsingHeap(0, gBattleTextboxTiles, 0, 0, 0);
-    LZDecompressWram(gBattleTextboxTilemap, gDecompressionBuffer);
-    CopyToBgTilemapBuffer(0, gDecompressionBuffer, 0x800, 0);
+    LZDecompressWram(gBattleTextboxTilemap, buffer);
+    CopyToBgTilemapBuffer(0, buffer, 0x800, 0);
     LoadCompressedPalette(gBattleTextboxPalette, 0, 0x20);
+
+    Free(buffer);
 }
 
 static void CB2_InGameTrade(void)
