@@ -1198,7 +1198,7 @@ static void CB2_InitSelectScreen(void)
     case 4:
         LoadSpritePalettes(sSelect_SpritePalettes);
         LoadSpriteSheets(sSelect_SpriteSheets);
-        LoadCompressedSpriteSheetUsingHeap(sSelect_BallGfx);
+        LoadCompressedSpriteSheet(sSelect_BallGfx);
         ShowBg(0);
         ShowBg(1);
         SetVBlankCallback(VBlankCB_SelectScreen);
@@ -3324,7 +3324,7 @@ static void CB2_InitSwapScreen(void)
     case 4:
         LoadSpritePalettes(sSwap_SpritePalettes);
         LoadSpriteSheets(sSwap_SpriteSheets);
-        LoadCompressedSpriteSheetUsingHeap(sSwap_BallGfx);
+        LoadCompressedSpriteSheet(sSwap_BallGfx);
         SetVBlankCallback(Swap_VblankCb);
         gMain.state++;
         break;

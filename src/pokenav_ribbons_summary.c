@@ -1215,7 +1215,7 @@ static void CreateBigRibbonSprite(struct Pokenav_RibbonsSummaryMenu *menu)
 {
     u8 spriteId;
 
-    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_RibbonIconsBig);
+    LoadCompressedSpriteSheet(&sSpriteSheet_RibbonIconsBig);
     Pokenav_AllocAndLoadPalettes(sSpritePalettes_RibbonIcons);
 
     spriteId = CreateSprite(&sSpriteTemplate_RibbonIconBig, 0, 0, 0);

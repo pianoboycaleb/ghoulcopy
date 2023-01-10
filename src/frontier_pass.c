@@ -1299,8 +1299,8 @@ static void LoadCursorAndSymbolSprites(void)
     FreeAllSpritePalettes();
     ResetAffineAnimData();
     LoadSpritePalettes(sSpritePalettes);
-    LoadCompressedSpriteSheetUsingHeap(&sCursorSpriteSheets[0]);
-    LoadCompressedSpriteSheetUsingHeap(&sCursorSpriteSheets[2]);
+    LoadCompressedSpriteSheet(&sCursorSpriteSheets[0]);
+    LoadCompressedSpriteSheet(&sCursorSpriteSheets[2]);
     spriteId = CreateSprite(&sSpriteTemplates_Cursors[0], sPassData->cursorX, sPassData->cursorY, 0);
     sPassGfx->cursorSprite = &gSprites[spriteId];
     sPassGfx->cursorSprite->oam.priority = 0;
@@ -1627,14 +1627,14 @@ static void InitFrontierMapSprites(void)
     FreeAllSpritePalettes();
     LoadSpritePalettes(sSpritePalettes);
 
-    LoadCompressedSpriteSheetUsingHeap(&sCursorSpriteSheets[0]);
+    LoadCompressedSpriteSheet(&sCursorSpriteSheets[0]);
     spriteId = CreateSprite(&sSpriteTemplates_Cursors[0], 155, (sMapData->cursorPos * 16) + 8, 2);
     sMapData->cursorSprite = &gSprites[spriteId];
     sMapData->cursorSprite->oam.priority = 0;
     sMapData->cursorSprite->hFlip = TRUE;
     StartSpriteAnim(sMapData->cursorSprite, 1);
 
-    LoadCompressedSpriteSheetUsingHeap(&sCursorSpriteSheets[1]);
+    LoadCompressedSpriteSheet(&sCursorSpriteSheets[1]);
     spriteId = CreateSprite(&sSpriteTemplates_Cursors[1], sMapLandmarks[sMapData->cursorPos].x, sMapLandmarks[sMapData->cursorPos].y, 1);
     sMapData->mapIndicatorSprite = &gSprites[spriteId];
     sMapData->mapIndicatorSprite->oam.priority = 0;
@@ -1680,7 +1680,7 @@ static void InitFrontierMapSprites(void)
             }
         }
 
-        LoadCompressedSpriteSheetUsingHeap(sHeadsSpriteSheet);
+        LoadCompressedSpriteSheet(sHeadsSpriteSheet);
         sprite = sSpriteTemplate_PlayerHead;
         sprite.paletteTag = gSaveBlock2Ptr->playerGender + TAG_HEAD_MALE; // TAG_HEAD_FEMALE if gender is FEMALE
         if (id != 0)

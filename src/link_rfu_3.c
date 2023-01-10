@@ -789,7 +789,7 @@ void DestroyWirelessStatusIndicatorSprite(void)
 void LoadWirelessStatusIndicatorSpriteGfx(void)
 {
     if (GetSpriteTileStartByTag(sWirelessStatusIndicatorSpriteSheet.tag) == 0xFFFF)
-        LoadCompressedSpriteSheetUsingHeap(&sWirelessStatusIndicatorSpriteSheet);
+        LoadCompressedSpriteSheet(&sWirelessStatusIndicatorSpriteSheet);
     LoadSpritePalette(&sWirelessStatusIndicatorSpritePalette);
     gWirelessStatusIndicatorSpriteId = SPRITE_NONE;
 }

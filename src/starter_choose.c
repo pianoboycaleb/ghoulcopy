@@ -422,8 +422,8 @@ void CB2_ChooseStarter(void)
 
     LoadPalette(GetOverworldTextboxPalettePtr(), 0xE0, 0x20);
     LoadPalette(gBirchBagGrassPal, 0, 0x40);
-    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_PokeballSelect[0]);
-    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_StarterCircle[0]);
+    LoadCompressedSpriteSheet(&sSpriteSheet_PokeballSelect[0]);
+    LoadCompressedSpriteSheet(&sSpriteSheet_StarterCircle[0]);
     LoadSpritePalettes(sSpritePalettes_StarterChoose);
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0x10, 0, RGB_BLACK);
 

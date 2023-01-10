@@ -392,8 +392,8 @@ void SetCursorScrollWithinListBounds(u16 *scrollOffset, u16 *cursorPos, u8 shown
 
 void LoadListMenuSwapLineGfx(void)
 {
-    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SwapLine);
-    LoadCompressedSpritePaletteUsingHeap(&sSpritePalette_SwapLine);
+    LoadCompressedSpriteSheet(&sSpriteSheet_SwapLine);
+    LoadCompressedSpritePalette(&sSpritePalette_SwapLine);
 }
 
 void CreateSwapLineSprites(u8 *spriteIds, u8 count)

@@ -2060,7 +2060,7 @@ static u8 AddDecorationIconObjectFromIconTable(u16 tilesTag, u16 paletteTag, u8 
     LoadSpriteSheet(&sheet);
     palette.data = GetDecorationIconPicOrPalette(decor, 1);
     palette.tag = paletteTag;
-    LoadCompressedSpritePaletteUsingHeap(&palette);
+    LoadCompressedSpritePalette(&palette);
     template = Alloc(sizeof(struct SpriteTemplate));
     *template = gItemIconSpriteTemplate;
     template->tileTag = tilesTag;

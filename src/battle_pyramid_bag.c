@@ -582,7 +582,7 @@ static bool8 LoadPyramidBagGfx(void)
         gPyramidBagMenu->state++;
         break;
     case 3:
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_PyramidBag);
+        LoadCompressedSpriteSheet(&sSpriteSheet_PyramidBag);
         gPyramidBagMenu->state++;
         break;
     case 4:

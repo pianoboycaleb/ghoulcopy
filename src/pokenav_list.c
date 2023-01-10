@@ -839,7 +839,7 @@ static void LoadListArrowGfx(void)
     const struct CompressedSpriteSheet *ptr;
 
     for (i = 0, ptr = sListArrowSpriteSheets; i < ARRAY_COUNT(sListArrowSpriteSheets); ptr++, i++)
-        LoadCompressedSpriteSheetUsingHeap(ptr);
+        LoadCompressedSpriteSheet(ptr);
 
     Pokenav_AllocAndLoadPalettes(sListArrowPalettes);
 }

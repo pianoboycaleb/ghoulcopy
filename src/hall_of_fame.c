@@ -1282,8 +1282,8 @@ static void LoadHofGfx(void)
     ResetAllPicSprites();
     FreeAllSpritePalettes();
     gReservedSpritePaletteCount = 8;
-    LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_Confetti);
-    LoadCompressedSpritePaletteUsingHeap(sSpritePalette_Confetti);
+    LoadCompressedSpriteSheet(sSpriteSheet_Confetti);
+    LoadCompressedSpritePalette(sSpritePalette_Confetti);
 }
 
 static void InitHofBgs(void)
@@ -1493,8 +1493,8 @@ static void Task_DoDomeConfetti(u8 taskId)
             gSpecialVar_0x8004 = 0;
             gSpecialVar_0x8005 = 0xFFFF;
         }
-        LoadCompressedSpriteSheetUsingHeap(sSpriteSheet_Confetti);
-        LoadCompressedSpritePaletteUsingHeap(sSpritePalette_Confetti);
+        LoadCompressedSpriteSheet(sSpriteSheet_Confetti);
+        LoadCompressedSpritePalette(sSpritePalette_Confetti);
         tState++;
         break;
     case 1:

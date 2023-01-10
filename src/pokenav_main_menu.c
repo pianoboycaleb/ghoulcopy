@@ -586,7 +586,7 @@ static void InitPokenavMainMenuResources(void)
     struct Pokenav_MainMenu *menu = GetSubstructPtr(POKENAV_SUBSTRUCT_MAIN_MENU);
 
     for (i = 0; i < ARRAY_COUNT(sSpinningPokenavSpriteSheet); i++)
-        LoadCompressedSpriteSheetUsingHeap(&sSpinningPokenavSpriteSheet[i]);
+        LoadCompressedSpriteSheet(&sSpinningPokenavSpriteSheet[i]);
 
     Pokenav_AllocAndLoadPalettes(sSpinningNavgearPalettes);
     menu->palettes = ~1 & ~(0x10000 << IndexOfSpritePaletteTag(0));
@@ -635,7 +635,7 @@ static void CreateLeftHeaderSprites(void)
     s32 i, spriteId;
     struct Pokenav_MainMenu *menu = GetSubstructPtr(POKENAV_SUBSTRUCT_MAIN_MENU);
 
-    LoadCompressedSpriteSheetUsingHeap(&sMenuLeftHeaderSpriteSheet);
+    LoadCompressedSpriteSheet(&sMenuLeftHeaderSpriteSheet);
     AllocSpritePalette(1);
     AllocSpritePalette(2);
     for (i = 0; i < (s32)ARRAY_COUNT(menu->leftHeaderSprites); i++)

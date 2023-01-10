@@ -3152,7 +3152,7 @@ static bool32 TryAllocSprites(void)
 {
     u32 i;
     for (i = 0; i < ARRAY_COUNT(sSpriteSheets); i++)
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets[i]);
+        LoadCompressedSpriteSheet(&sSpriteSheets[i]);
 
     LoadSpritePalette(&sSpritePalette);
     sSprites = Alloc(sizeof(*sSprites));

@@ -8788,7 +8788,7 @@ static void CreateItemIconSprites(void)
         for (i = 0; i < MAX_ITEM_ICONS; i++)
         {
             spriteSheet.tag = GFXTAG_ITEM_ICON_0 + i;
-            LoadCompressedSpriteSheetUsingHeap(&spriteSheet);
+            LoadCompressedSpriteSheet(&spriteSheet);
             sStorage->itemIcons[i].tiles = GetSpriteTileStartByTag(spriteSheet.tag) * TILE_SIZE_4BPP + (void *)(OBJ_VRAM0);
             sStorage->itemIcons[i].palIndex = AllocSpritePalette(PALTAG_ITEM_ICON_0 + i);
             sStorage->itemIcons[i].palIndex *= 16;

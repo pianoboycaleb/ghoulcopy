@@ -2089,7 +2089,7 @@ static bool8 LoadPokedexListPage(u8 page)
         ResetSpriteData();
         FreeAllSpritePalettes();
         gReservedSpritePaletteCount = 8;
-        LoadCompressedSpriteSheetUsingHeap(&sInterfaceSpriteSheet[0]);
+        LoadCompressedSpriteSheet(&sInterfaceSpriteSheet[0]);
         LoadSpritePalettes(sInterfaceSpritePalette);
         CreateInterfaceSprites(page);
         gMain.state++;
@@ -4800,7 +4800,7 @@ static void Task_LoadSearchMenu(u8 taskId)
         }
         break;
     case 1:
-        LoadCompressedSpriteSheetUsingHeap(sInterfaceSpriteSheet);
+        LoadCompressedSpriteSheet(sInterfaceSpriteSheet);
         LoadSpritePalettes(sInterfaceSpritePalette);
         CreateSearchParameterScrollArrows(taskId);
         for (i = 0; i < NUM_TASK_DATA; i++)

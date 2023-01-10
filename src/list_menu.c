@@ -1080,7 +1080,7 @@ u8 AddScrollIndicatorArrowPair(const struct ScrollArrowsTemplate *arrowInfo, u16
     spriteSheet.data = sScrollIndicator_Gfx;
     spriteSheet.size = 0x100;
     spriteSheet.tag = arrowInfo->tileTag;
-    LoadCompressedSpriteSheetUsingHeap(&spriteSheet);
+    LoadCompressedSpriteSheet(&spriteSheet);
 
     if (arrowInfo->palTag == TAG_NONE)
     {
@@ -1326,7 +1326,7 @@ static u8 ListMenuAddRedOutlineCursorObject(struct CursorStruct *cursor)
     spriteSheet.data = sOutlineCursor_Gfx;
     spriteSheet.size = 0x100;
     spriteSheet.tag = cursor->tileTag;
-    LoadCompressedSpriteSheetUsingHeap(&spriteSheet);
+    LoadCompressedSpriteSheet(&spriteSheet);
 
     if (cursor->palTag == TAG_NONE)
     {
@@ -1411,7 +1411,7 @@ static u8 ListMenuAddRedArrowCursorObject(struct CursorStruct *cursor)
     spriteSheet.data = sArrowCursor_Gfx;
     spriteSheet.size = 0x80;
     spriteSheet.tag = cursor->tileTag;
-    LoadCompressedSpriteSheetUsingHeap(&spriteSheet);
+    LoadCompressedSpriteSheet(&spriteSheet);
 
     if (cursor->palTag == TAG_NONE)
     {

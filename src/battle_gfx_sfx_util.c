@@ -652,7 +652,7 @@ void DecompressTrainerFrontPic(u16 frontPicId, u8 battlerId)
     DecompressPicFromTable(&gTrainerFrontPicTable[frontPicId],
                            gMonSpritesGfxPtr->sprites.ptr[position],
                            SPECIES_NONE);
-    LoadCompressedSpritePaletteUsingHeap(&gTrainerFrontPicPaletteTable[frontPicId]);
+    LoadCompressedSpritePalette(&gTrainerFrontPicPaletteTable[frontPicId]);
 }
 
 void DecompressTrainerBackPic(u16 backPicId, u8 battlerId)
@@ -684,20 +684,20 @@ void BattleLoadAllHealthBoxesGfxAtOnce(void)
     LoadSpritePalette(&sSpritePalettes_HealthBoxHealthBar[1]);
     if (!IsDoubleBattle())
     {
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SinglesPlayerHealthbox);
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SinglesOpponentHealthbox);
+        LoadCompressedSpriteSheet(&sSpriteSheet_SinglesPlayerHealthbox);
+        LoadCompressedSpriteSheet(&sSpriteSheet_SinglesOpponentHealthbox);
         numberOfBattlers = 2;
     }
     else
     {
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesPlayerHealthbox[0]);
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesPlayerHealthbox[1]);
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesOpponentHealthbox[0]);
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesOpponentHealthbox[1]);
+        LoadCompressedSpriteSheet(&sSpriteSheets_DoublesPlayerHealthbox[0]);
+        LoadCompressedSpriteSheet(&sSpriteSheets_DoublesPlayerHealthbox[1]);
+        LoadCompressedSpriteSheet(&sSpriteSheets_DoublesOpponentHealthbox[0]);
+        LoadCompressedSpriteSheet(&sSpriteSheets_DoublesOpponentHealthbox[1]);
         numberOfBattlers = MAX_BATTLERS_COUNT;
     }
     for (i = 0; i < numberOfBattlers; i++)
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[i]]);
+        LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[i]]);
 }
 
 bool8 BattleLoadAllHealthBoxesGfx(u8 state)
@@ -716,16 +716,16 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
             if (state == 2)
             {
                 if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
-                    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SafariHealthbox);
+                    LoadCompressedSpriteSheet(&sSpriteSheet_SafariHealthbox);
                 else
-                    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SinglesPlayerHealthbox);
+                    LoadCompressedSpriteSheet(&sSpriteSheet_SinglesPlayerHealthbox);
             }
             else if (state == 3)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SinglesOpponentHealthbox);
+                LoadCompressedSpriteSheet(&sSpriteSheet_SinglesOpponentHealthbox);
             else if (state == 4)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[0]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[0]]);
             else if (state == 5)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[1]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[1]]);
             else
                 retVal = TRUE;
         }
@@ -734,24 +734,24 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
             if (state == 2)
             {
                 if (WhichBattleCoords(0))
-                    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesPlayerHealthbox[0]);
+                    LoadCompressedSpriteSheet(&sSpriteSheets_DoublesPlayerHealthbox[0]);
                 else
-                    LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SinglesPlayerHealthbox);
+                    LoadCompressedSpriteSheet(&sSpriteSheet_SinglesPlayerHealthbox);
             }
             else if (state == 3)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesPlayerHealthbox[1]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_DoublesPlayerHealthbox[1]);
             else if (state == 4)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesOpponentHealthbox[0]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_DoublesOpponentHealthbox[0]);
             else if (state == 5)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesOpponentHealthbox[1]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_DoublesOpponentHealthbox[1]);
             else if (state == 6)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[0]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[0]]);
             else if (state == 7)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[1]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[1]]);
             else if (state == 8)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[2]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[2]]);
             else if (state == 9)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[3]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[3]]);
             else
                 retVal = TRUE;
         }
@@ -761,33 +761,33 @@ bool8 BattleLoadAllHealthBoxesGfx(u8 state)
             {
                 switch(WhichBattleCoords(0))
                 {
-                case 0: LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_SinglesPlayerHealthbox); break;
-                case 1: LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_DoublesPlayerHealthbox[0]); break;
-                case 2: LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesPlayerHealthbox[0]); break;
+                case 0: LoadCompressedSpriteSheet(&sSpriteSheet_SinglesPlayerHealthbox); break;
+                case 1: LoadCompressedSpriteSheet(&sSpriteSheets_DoublesPlayerHealthbox[0]); break;
+                case 2: LoadCompressedSpriteSheet(&sSpriteSheets_TriplesPlayerHealthbox[0]); break;
                 }
             }
             else if (state == 3)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesPlayerHealthbox[1]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesPlayerHealthbox[1]);
             else if (state == 4)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesPlayerHealthbox[2]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesPlayerHealthbox[2]);
             else if (state == 5)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesOpponentHealthbox[0]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesOpponentHealthbox[0]);
             else if (state == 6)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesOpponentHealthbox[1]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesOpponentHealthbox[1]);
             else if (state == 7)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_TriplesOpponentHealthbox[2]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_TriplesOpponentHealthbox[2]);
             else if (state == 8)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[0]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[0]]);
             else if (state == 9)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[1]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[1]]);
             else if (state == 10)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[2]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[2]]);
             else if (state == 11)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[3]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[3]]);
             else if (state == 12)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[4]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[4]]);
             else if (state == 13)
-                LoadCompressedSpriteSheetUsingHeap(&sSpriteSheets_HealthBar[gBattlerPositions[5]]);
+                LoadCompressedSpriteSheet(&sSpriteSheets_HealthBar[gBattlerPositions[5]]);
             else
                 retVal = TRUE;
         }
@@ -1171,7 +1171,7 @@ void LoadAndCreateEnemyShadowSprites(void)
 {
     u8 battlerId;
 
-    LoadCompressedSpriteSheetUsingHeap(&gSpriteSheet_EnemyShadow);
+    LoadCompressedSpriteSheet(&gSpriteSheet_EnemyShadow);
 
     battlerId = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
     gBattleSpritesDataPtr->healthBoxesData[battlerId].shadowSpriteId = CreateSprite(&gSpriteTemplate_EnemyShadow,

@@ -737,25 +737,25 @@ static bool8 LoadMonAndSceneGfx(struct Pokemon *mon)
         trainerId = GetMonData(mon, MON_DATA_OT_ID);
         palette = GetMonSpritePalStructFromOtIdPersonality(species, trainerId, personality);
 
-        LoadCompressedSpritePaletteUsingHeap(palette);
+        LoadCompressedSpritePalette(palette);
         SetMultiuseSpriteTemplateToPokemon(palette->tag, B_POSITION_OPPONENT_LEFT);
         sPokeblockFeed->loadGfxState++;
         break;
     case 2:
-        LoadCompressedSpriteSheetUsingHeap(&gPokeblockCase_SpriteSheet);
+        LoadCompressedSpriteSheet(&gPokeblockCase_SpriteSheet);
         sPokeblockFeed->loadGfxState++;
         break;
     case 3:
-        LoadCompressedSpritePaletteUsingHeap(&gPokeblockCase_SpritePal);
+        LoadCompressedSpritePalette(&gPokeblockCase_SpritePal);
         sPokeblockFeed->loadGfxState++;
         break;
     case 4:
-        LoadCompressedSpriteSheetUsingHeap(&sSpriteSheet_Pokeblock);
+        LoadCompressedSpriteSheet(&sSpriteSheet_Pokeblock);
         sPokeblockFeed->loadGfxState++;
         break;
     case 5:
         SetPokeblockSpritePal(gSpecialVar_ItemId);
-        LoadCompressedSpritePaletteUsingHeap(&sPokeblockSpritePal);
+        LoadCompressedSpritePalette(&sPokeblockSpritePal);
         sPokeblockFeed->loadGfxState++;
         break;
     case 6:
