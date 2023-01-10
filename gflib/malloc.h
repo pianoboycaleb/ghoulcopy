@@ -2,7 +2,6 @@
 #define GUARD_ALLOC_H
 
 #define HEAP_SIZE 0x20000
-#define DECOMPRESSION_BUFFER_SIZE 0x4000
 
 #define FREE_AND_SET_NULL(ptr)          \
 {                                       \
