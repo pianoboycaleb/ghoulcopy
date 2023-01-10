@@ -166,7 +166,7 @@ static void SaveFailedScreenTextPrint(const u8 *text, u8 x, u8 y)
     AddTextPrinterParameterized4(sWindowIds[TEXT_WIN_ID], FONT_NORMAL, x * 8, y * 8 + 1, 0, 0, color, 0, text);
 }
 
-void DoSaveFailedScreen(u8 saveType, u8 *buffer)
+void DoSaveFailedScreenWithBuffer(u8 saveType, u8 *buffer)
 {
     SetMainCallback2(CB2_SaveFailedScreen);
     sSaveFailedType = saveType;
@@ -175,6 +175,11 @@ void DoSaveFailedScreen(u8 saveType, u8 *buffer)
     sWindowIds[TEXT_WIN_ID] = 0;
     sWindowIds[CLOCK_WIN_ID] = 0;
     sSaveFailedBuffer = buffer;
+}
+
+void DoSaveFailedScreen(u8 saveType)
+{
+    DoSaveFailedScreenWithBuffer(saveType, NULL);
 }
 
 static void VBlankCB(void)

@@ -95,20 +95,23 @@ extern struct SaveSector gSaveDataBuffer;
 void ClearSaveData(void);
 void Save_ResetSaveCounters(void);
 u8 HandleSavingData(u8 saveType, u8 *buffer);
-u8 TrySavingData(u8 saveType, u8 *buffer);
+u8 TrySavingData(u8 saveType);
+u8 TrySavingDataWithBuffer(u8 saveType, u8 *buffer);
 bool8 LinkFullSave_Init(void);
 bool8 LinkFullSave_WriteSector(void);
 bool8 LinkFullSave_ReplaceLastSector(void);
 bool8 LinkFullSave_SetLastSectorSignature(void);
 bool8 WriteSaveBlock2(void);
 bool8 WriteSaveBlock1Sector(void);
-u8 LoadGameSave(u8 saveType, u8 *buffer);
+u8 LoadGameSave(u8 saveType);
+u8 LoadGameSaveWithBuffer(u8 saveType, u8 *buffer);
 u16 GetSaveBlocksPointersBaseOffset(void);
 u32 TryReadSpecialSaveSector(u8 sector, u8 *dst);
 u32 TryWriteSpecialSaveSector(u8 sector, u8 *src);
 void Task_LinkFullSave(u8 taskId);
 
 // save_failed_screen.c
-void DoSaveFailedScreen(u8 saveType, u8 *buffer);
+void DoSaveFailedScreen(u8 saveType);
+void DoSaveFailedScreenWithBuffer(u8 saveType, u8 *buffer);
 
 #endif // GUARD_SAVE_H

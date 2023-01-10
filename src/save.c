@@ -762,7 +762,7 @@ u8 HandleSavingData(u8 saveType, u8 *buffer)
     return 0;
 }
 
-u8 TrySavingData(u8 saveType, u8 *buffer)
+u8 TrySavingDataWithBuffer(u8 saveType, u8 *buffer)
 {
     if (gFlashMemoryPresent != TRUE)
     {
@@ -778,10 +778,15 @@ u8 TrySavingData(u8 saveType, u8 *buffer)
     }
     else
     {
-        DoSaveFailedScreen(saveType, buffer);
+        DoSaveFailedScreenWithBuffer(saveType, buffer);
         gSaveAttemptStatus = SAVE_STATUS_ERROR;
         return SAVE_STATUS_ERROR;
     }
+}
+
+u8 TrySavingData(u8 saveType)
+{
+    return TrySavingDataWithBuffer(saveType, NULL);
 }
 
 bool8 LinkFullSave_Init(void)
@@ -798,7 +803,7 @@ bool8 LinkFullSave_WriteSector(void)
 {
     u8 status = HandleWriteIncrementalSector(NUM_SECTORS_PER_SLOT, gRamSaveSectorLocations);
     if (gDamagedSaveSectors)
-        DoSaveFailedScreen(SAVE_NORMAL, NULL);
+        DoSaveFailedScreen(SAVE_NORMAL);
 
     // In this case "error" either means that an actual error was encountered
     // or that the given max sector has been reached (meaning it has finished successfully).
@@ -813,7 +818,7 @@ bool8 LinkFullSave_ReplaceLastSector(void)
 {
     HandleReplaceSectorAndVerify(NUM_SECTORS_PER_SLOT, gRamSaveSectorLocations);
     if (gDamagedSaveSectors)
-        DoSaveFailedScreen(SAVE_NORMAL, NULL);
+        DoSaveFailedScreen(SAVE_NORMAL);
     return FALSE;
 }
 
@@ -821,7 +826,7 @@ bool8 LinkFullSave_SetLastSectorSignature(void)
 {
     CopySectorSignatureByte(NUM_SECTORS_PER_SLOT, gRamSaveSectorLocations);
     if (gDamagedSaveSectors)
-        DoSaveFailedScreen(SAVE_NORMAL, NULL);
+        DoSaveFailedScreen(SAVE_NORMAL);
     return FALSE;
 }
 
@@ -863,12 +868,17 @@ bool8 WriteSaveBlock1Sector(void)
     }
 
     if (gDamagedSaveSectors)
-        DoSaveFailedScreen(SAVE_LINK, NULL);
+        DoSaveFailedScreen(SAVE_LINK);
 
     return finished;
 }
 
-u8 LoadGameSave(u8 saveType, u8 *buffer)
+u8 LoadGameSave(u8 saveType)
+{
+    return LoadGameSaveWithBuffer(saveType, NULL);
+}
+
+u8 LoadGameSaveWithBuffer(u8 saveType, u8 *buffer)
 {
     u8 status;
 

@@ -258,7 +258,7 @@ static void CB2_MysteryEventMenu(void)
             u16 status = RunMysteryEventScript(gLinkBuffer);
             CpuFill32(0, gLinkBuffer, 0x7D4);
             if (!GetEventLoadMessage(gStringVar4, status))
-                TrySavingData(SAVE_NORMAL, NULL);
+                TrySavingData(SAVE_NORMAL);
             gMain.state++;
         }
         break;
