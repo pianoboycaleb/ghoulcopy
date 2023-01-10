@@ -493,7 +493,7 @@ static void Task_Hof_InitTeamSaveData(u8 taskId)
     }
     else
     {
-        if (LoadGameSave(SAVE_HALL_OF_FAME, sHofGfxPtr->hofSaveBuffer) != SAVE_STATUS_OK)
+        if (LoadGameSaveWithBuffer(SAVE_HALL_OF_FAME, sHofGfxPtr->hofSaveBuffer) != SAVE_STATUS_OK)
             memset(sHofGfxPtr->hofSaveBuffer, 0, SECTOR_SIZE * NUM_HOF_SECTORS);
     }
 
@@ -524,7 +524,7 @@ static void Task_Hof_InitTeamSaveData(u8 taskId)
 static void Task_Hof_TrySaveData(u8 taskId)
 {
     gGameContinueCallback = CB2_DoHallOfFameScreenDontSaveData;
-    if (TrySavingData(SAVE_HALL_OF_FAME, sHofGfxPtr->hofSaveBuffer) == SAVE_STATUS_ERROR && gDamagedSaveSectors != 0)
+    if (TrySavingDataWithBuffer(SAVE_HALL_OF_FAME, sHofGfxPtr->hofSaveBuffer) == SAVE_STATUS_ERROR && gDamagedSaveSectors != 0)
     {
         UnsetBgTilemapBuffer(1);
         UnsetBgTilemapBuffer(3);
@@ -861,7 +861,7 @@ void CB2_DoHallOfFamePC(void)
 static void Task_HofPC_CopySaveData(u8 taskId)
 {
     HofPCTopBar_AddWindow(0, 30, 0, 12, 0x226);
-    if (LoadGameSave(SAVE_HALL_OF_FAME, sHofGfxPtr->hofSaveBuffer) != SAVE_STATUS_OK)
+    if (LoadGameSaveWithBuffer(SAVE_HALL_OF_FAME, sHofGfxPtr->hofSaveBuffer) != SAVE_STATUS_OK)
     {
         gTasks[taskId].func = Task_HofPC_PrintDataIsCorrupted;
     }
