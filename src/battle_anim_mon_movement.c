@@ -165,26 +165,26 @@ void AnimTask_ShakeMon2(u8 taskId)
         if (spriteId == SPRITE_NONE)
             abort = TRUE;
     }
-    else if (gBattleAnimArgs[0] != 10)
+    else if (gBattleAnimArgs[0] != ANIM_ATTACKER_FORCE)
     {
         switch (gBattleAnimArgs[0])
         {
-        case 4:
+        case ANIM_PLAYER_LEFT:
             battlerId = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
             break;
-        case 5:
+        case ANIM_PLAYER_MIDDLE:
             battlerId = GetBattlerAtPosition(B_POSITION_PLAYER_MIDDLE);
             break;
-        case 6:
+        case ANIM_PLAYER_RIGHT:
             battlerId = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
             break;
-        case 7:
+        case ANIM_OPPONENT_LEFT:
             battlerId = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             break;
-        case 8:
+        case ANIM_OPPONENT_MIDDLE:
             battlerId = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
             break;
-        case 9:
+        case ANIM_OPPONENT_RIGHT:
         default:
             battlerId = GetBattlerAtPosition(B_POSITION_OPPONENT_MIDDLE);
             break;

@@ -11141,6 +11141,7 @@ extern const u32 gBattleAnimBgTilemap_GigaImpactPlayer[];
 extern const u32 gBattleAnimBgTilemap_GigaImpactOpponent[];
 extern const u32 gBattleAnimBgTilemap_GigaImpactContest[];
 extern const u32 gBattleAnimBgImage_GigaImpact[];
+extern const u32 gBattleAnimBgImage_GigaImpactContest[];
 extern const u32 gBattleAnimBgPalette_GigaImpact[];
 extern const u32 gBattleAnimBgImage_SpacialRend[];
 extern const u32 gBattleAnimBgPalette_SpacialRend[];
@@ -11475,9 +11476,9 @@ extern const u16 gContestResultsTitle_Tough_Tilemap[];
 extern const u16 gContestResultsTitle_Tilemap[];
 
 // Trainer Card.
-extern const u16 gHoennTrainerCard0Star_Pal[];
+extern const u16 gHoennTrainerCardGreen_Pal[];
 extern const u32 gHoennTrainerCard_Gfx[];
-extern const u16 gKantoTrainerCard0Star_Pal[];
+extern const u16 gKantoTrainerCardBlue_Pal[];
 extern const u32 gKantoTrainerCard_Gfx[];
 extern const u32 gKantoTrainerCardBg_Tilemap[];
 extern const u32 gHoennTrainerCardBack_Tilemap[];
