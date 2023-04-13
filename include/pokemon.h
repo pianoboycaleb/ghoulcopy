@@ -487,12 +487,7 @@ void GetSpeciesName(u8 *name, u16 species);
 u8 CalculatePPWithBonus(u16 move, u8 ppBonuses, u8 moveIndex);
 void RemoveMonPPBonus(struct Pokemon *mon, u8 moveIndex);
 void RemoveBattleMonPPBonus(struct BattlePokemon *mon, u8 moveIndex);
-<<<<<<< HEAD
-void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst);
-void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex);
-=======
 void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex, bool8 resetStats);
->>>>>>> a9afdf5f36d0a93482bcd1c01e6fd34a648cb9bf
 bool8 ExecuteTableBasedItemEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 moveIndex);
 bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 moveIndex, u8 e);
 bool8 HealStatusConditions(struct Pokemon *mon, u32 battlePartyId, u32 healMask, u8 battlerId);
@@ -575,5 +570,6 @@ bool32 ShouldShowFemaleDifferences(u16 species, u32 personality);
 void TryToSetBattleFormChangeMoves(struct Pokemon *mon);
 u32 GetMonFriendshipScore(struct Pokemon *pokemon);
 void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality);
+void PokemonToBattleMon(struct Pokemon *src, struct BattlePokemon *dst);
 
 #endif // GUARD_POKEMON_H

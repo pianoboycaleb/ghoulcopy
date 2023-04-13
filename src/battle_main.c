@@ -118,18 +118,15 @@ static void HandleEndTurn_MonFled(void);
 static void HandleEndTurn_FinishBattle(void);
 static void SpriteCB_UnusedBattleInit(struct Sprite *sprite);
 static void SpriteCB_UnusedBattleInit_Main(struct Sprite *sprite);
-<<<<<<< HEAD
-static void TrySpecialEvolution(void);
 static u32 Crc32B (const u8 *data, u32 size);
 static u32 GeneratePartyHash(const struct Trainer *trainer, u32 i);
 static void CustomTrainerPartyAssignMoves(struct Pokemon *mon, const struct TrainerMonCustomized *partyEntry);
-=======
 static void PlayerTryEvolution(void);
 static void BeginLeftEvoluionAfterFade(void);
 static void BeginRightEvoluionAfterFade(void);
 static void WaitForEvolutionThenTryAnother(void);
 static void CB2_SetUpReshowBattleScreenAfterEvolution(void);
->>>>>>> a9afdf5f36d0a93482bcd1c01e6fd34a648cb9bf
+static void TrySpecialEvolution(void);
 
 EWRAM_DATA u16 gBattle_BG0_X = 0;
 EWRAM_DATA u16 gBattle_BG0_Y = 0;
@@ -206,15 +203,9 @@ EWRAM_DATA u16 gChosenMoveByBattler[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA u16 gMoveResultFlags = 0;
 EWRAM_DATA u32 gHitMarker = 0;
 EWRAM_DATA u8 gTakenDmgByBattler[MAX_BATTLERS_COUNT] = {0};
-<<<<<<< HEAD
 EWRAM_DATA u8 gUnusedFirstBattleVar2 = 0; // Never read
 EWRAM_DATA u32 gSideStatuses[NUM_BATTLE_SIDES] = {0};
 EWRAM_DATA struct SideTimer gSideTimers[NUM_BATTLE_SIDES] = {0};
-=======
-EWRAM_DATA u8 gBattleTerrainBackup = 0;
-EWRAM_DATA u16 gSideStatuses[2] = {0};
-EWRAM_DATA struct SideTimer gSideTimers[2] = {0};
->>>>>>> a9afdf5f36d0a93482bcd1c01e6fd34a648cb9bf
 EWRAM_DATA u32 gStatuses3[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA u32 gStatuses4[MAX_BATTLERS_COUNT] = {0};
 EWRAM_DATA struct DisableStruct gDisableStructs[MAX_BATTLERS_COUNT] = {0};
@@ -260,6 +251,7 @@ EWRAM_DATA u8 gLastUsedBall = 0;
 EWRAM_DATA u16 gLastThrownBall = 0;
 EWRAM_DATA u8 gPartyCriticalHits[PARTY_SIZE] = {0};
 EWRAM_DATA static u8 sTriedEvolving = 0;
+EWRAM_DATA u8 gBattleTerrainBackup = 0;
 
 void (*gPreBattleCallback1)(void);
 void (*gBattleMainFunc)(void);
@@ -4021,12 +4013,8 @@ void BattleTurnPassed(void)
 
     *(&gBattleStruct->absentBattlerFlags) = gAbsentBattlerFlags;
     BattlePutTextOnWindow(gText_EmptyString3, B_WIN_MSG);
-<<<<<<< HEAD
     GetAiLogicData(); // get assumed abilities, hold effects, etc of all battlers
-    gBattleMainFunc = HandleTurnActionSelectionState;
-=======
     gBattleMainFunc = PlayerTryEvolution;
->>>>>>> a9afdf5f36d0a93482bcd1c01e6fd34a648cb9bf
     gRandomTurnNumber = Random();
 
     if (gBattleTypeFlags & BATTLE_TYPE_PALACE)
@@ -4166,7 +4154,7 @@ static void PlayerTryEvolution(void)
     if (gLeveledUpInBattle & gBitTable[LEFT_PKMN] && !gPlayerDoesNotWantToEvolveLeft)
     {
         gLeveledUpInBattle &= ~(gBitTable[LEFT_PKMN]); // Mask the bit
-        species = GetEvolutionTargetSpecies(&gPlayerParty[LEFT_PKMN], EVO_MODE_NORMAL, ITEM_NONE);
+        species = GetEvolutionTargetSpecies(&gPlayerParty[LEFT_PKMN], EVO_MODE_NORMAL, ITEM_NONE, NULL);
         if (species != SPECIES_NONE)
         {
             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 0x10, RGB_BLACK);
@@ -4180,7 +4168,7 @@ static void PlayerTryEvolution(void)
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE && gLeveledUpInBattle & gBitTable[RIGHT_PKMN] && !gPlayerDoesNotWantToEvolveRight)
     {
         gLeveledUpInBattle &= ~(gBitTable[RIGHT_PKMN]); // Mask the bit
-        species = GetEvolutionTargetSpecies(&gPlayerParty[RIGHT_PKMN], EVO_MODE_NORMAL, ITEM_NONE);
+        species = GetEvolutionTargetSpecies(&gPlayerParty[RIGHT_PKMN], EVO_MODE_NORMAL, ITEM_NONE, NULL);
         if (species != SPECIES_NONE)
         {
             BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 0x10, RGB_BLACK);

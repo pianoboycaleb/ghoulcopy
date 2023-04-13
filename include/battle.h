@@ -934,15 +934,10 @@ extern u16 gChosenMoveByBattler[MAX_BATTLERS_COUNT];
 extern u16 gMoveResultFlags;
 extern u32 gHitMarker;
 extern u8 gTakenDmgByBattler[MAX_BATTLERS_COUNT];
-<<<<<<< HEAD
 extern u8 gUnusedFirstBattleVar2;
+extern u8 gBattleTerrainBackup;
 extern u32 gSideStatuses[NUM_BATTLE_SIDES];
 extern struct SideTimer gSideTimers[NUM_BATTLE_SIDES];
-=======
-extern u8 gBattleTerrainBackup;
-extern u16 gSideStatuses[2];
-extern struct SideTimer gSideTimers[2];
->>>>>>> a9afdf5f36d0a93482bcd1c01e6fd34a648cb9bf
 extern u32 gStatuses3[MAX_BATTLERS_COUNT];
 extern u32 gStatuses4[MAX_BATTLERS_COUNT];
 extern struct DisableStruct gDisableStructs[MAX_BATTLERS_COUNT];

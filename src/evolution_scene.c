@@ -863,14 +863,9 @@ static void Task_EvolutionScene(u8 taskId)
                 CreateShedinja(gTasks[taskId].tPreEvoSpecies, mon);
 
             DestroyTask(taskId);
-<<<<<<< HEAD
-            FreeMonSpritesGfx();
+            if (!gMain.inBattle || gBattleOutcome != 0)
+                FreeMonSpritesGfx(); // Free resources if battle is not ongoing
             FREE_AND_SET_NULL(sEvoStructPtr);
-=======
-            if (!gMain.inBattle || gBattleOutcome != 0) FreeMonSpritesGfx(); // Free resources if battle is not ongoing
-            Free(sEvoStructPtr);
-            sEvoStructPtr = NULL;
->>>>>>> a9afdf5f36d0a93482bcd1c01e6fd34a648cb9bf
             FreeAllWindowBuffers();
             SetMainCallback2(gCB2_AfterEvolution);
         }
