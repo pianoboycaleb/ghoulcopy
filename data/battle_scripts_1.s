@@ -6390,6 +6390,11 @@ BattleScript_FaintedMonShiftSwitched:
 	copybyte gBattlerTarget, sSAVED_BATTLER
 	goto BattleScript_FaintedMonSendOutNewEnd
 
+BattleScript_RunPrompt::
+	printselectionstring STRINGID_RUNPROMPT
+	forfeityesnobox BS_ATTACKER
+	endselectionscript
+
 BattleScript_LinkHandleFaintedMonMultiple::
 	openpartyscreen BS_FAINTED_LINK_MULTIPLE_1, BattleScript_LinkHandleFaintedMonMultipleStart
 BattleScript_LinkHandleFaintedMonMultipleStart::
