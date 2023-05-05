@@ -65,7 +65,7 @@
 // Number of facilities for Ranking Hall.
 // 7 facilities for single mode + tower double mode + tower multi mode.
 // Excludes link modes. See RANKING_HALL_* in include/constants/battle_frontier.h
-#define HALL_FACILITIES_COUNT 1
+#define HALL_FACILITIES_COUNT 7
 // Received via record mixing, 1 for each player other than yourself
 #define HALL_RECORDS_COUNT 3
 
