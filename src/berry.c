@@ -1438,20 +1438,25 @@ const struct BerryTree gBlankBerryTree = {};
 // unused
 void ClearEnigmaBerries(void)
 {
+    #ifndef FREE_ENIGMA_BERRY
     CpuFill16(0, &gSaveBlock1Ptr->enigmaBerry, sizeof(gSaveBlock1Ptr->enigmaBerry));
+    #endif
 }
 
 void SetEnigmaBerry(u8 *src)
 {
+    #ifndef FREE_ENIGMA_BERRY
     u32 i;
     u8 *dest = (u8 *)&gSaveBlock1Ptr->enigmaBerry;
 
     for (i = 0; i < sizeof(gSaveBlock1Ptr->enigmaBerry); i++)
         dest[i] = src[i];
+    #endif
 }
 
 static u32 GetEnigmaBerryChecksum(struct EnigmaBerry *enigmaBerry)
 {
+    #ifndef FREE_ENIGMA_BERRY
     u32 i;
     u32 checksum;
     u8 *dest;
@@ -1462,10 +1467,14 @@ static u32 GetEnigmaBerryChecksum(struct EnigmaBerry *enigmaBerry)
         checksum += dest[i];
 
     return checksum;
+    #else
+    return 0;
+    #endif
 }
 
 bool32 IsEnigmaBerryValid(void)
 {
+    #ifndef FREE_ENIGMA_BERRY
     if (!gSaveBlock1Ptr->enigmaBerry.berry.stageDuration)
         return FALSE;
     if (!gSaveBlock1Ptr->enigmaBerry.berry.maxYield)
@@ -1473,6 +1482,9 @@ bool32 IsEnigmaBerryValid(void)
     if (GetEnigmaBerryChecksum(&gSaveBlock1Ptr->enigmaBerry) != gSaveBlock1Ptr->enigmaBerry.checksum)
         return FALSE;
     return TRUE;
+    #else
+    return FALSE;
+    #endif
 }
 
 const struct Berry *GetBerryInfo(u8 berry)
@@ -1570,7 +1582,7 @@ void BerryTreeTimeUpdate(s32 minutes)
     {
         tree = &gSaveBlock1Ptr->berryTrees[i];
 
-        if (tree->berry && tree->stage && !tree->stopGrowth) && (tree->stage != BERRY_STAGE_BERRIES))
+        if ((tree->berry && tree->stage && !tree->stopGrowth) && (tree->stage != BERRY_STAGE_BERRIES))
         {
 /*            if (minutes >= GetStageDurationByBerryType(tree->berry) * 71)
             {
