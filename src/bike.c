@@ -148,7 +148,6 @@ void MovePlayerOnBike(u8 direction, u16 newKeys, u16 heldKeys)
         PlaySE(SE_BIKE_HOP);
     }
 }
-}
 
 static void MovePlayerOnMachBike(u8 direction, u16 newKeys, u16 heldKeys)
 {
