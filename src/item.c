@@ -578,7 +578,6 @@ void SwapRegisteredBike(void)
         break;
     case ITEM_ACRO_BIKE:
         gSaveBlock1Ptr->registeredItem = ITEM_MACH_BIKE;
-        break;
     }
 }
 

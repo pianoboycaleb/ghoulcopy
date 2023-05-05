@@ -1766,7 +1766,7 @@ static bool8 IsValidContextMenuPos(s8 cursorPos)
         return FALSE;
     if (cursorPos > gBagMenu->contextMenuNumItems)
         return FALSE;
-    if (gBagMenu->contextMenuItemsPtr[cursorPos] == ACTION_DUMMY)
+    if (gBagMenu->contextMenuItemsPtr[cursorPos] == 14)
         return FALSE;
     return TRUE;
 }
