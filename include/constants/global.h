@@ -17,21 +17,10 @@
 #define VERSION_EMERALD 3
 #define VERSION_FIRE_RED 4
 #define VERSION_LEAF_GREEN 5
-#define VERSION_HEART_GOLD 7
-#define VERSION_SOUL_SILVER 8
-#define VERSION_DIAMOND 10
-#define VERSION_PEARL 11
-#define VERSION_PLATINUM 12
-#define VERSION_GAMECUBE 15
 
 #define LANGUAGE_JAPANESE 1
 #define LANGUAGE_ENGLISH  2
-#define LANGUAGE_FRENCH   3
-#define LANGUAGE_ITALIAN  4
-#define LANGUAGE_GERMAN   5
-#define LANGUAGE_KOREAN   6 // 6 goes unused but the theory is it was meant to be Korean
-#define LANGUAGE_SPANISH  7
-#define NUM_LANGUAGES     7
+#define NUM_LANGUAGES     1
 
 #define GAME_VERSION (VERSION_EMERALD)
 #define GAME_LANGUAGE (LANGUAGE_ENGLISH)
@@ -49,34 +38,34 @@
 
 // capacities of various saveblock objects
 #define DAYCARE_MON_COUNT 2
-#define POKEBLOCKS_COUNT 40
+#define POKEBLOCKS_COUNT 1
 #define OBJECT_EVENTS_COUNT 16
-#define MAIL_COUNT (10 + PARTY_SIZE)
-#define SECRET_BASES_COUNT 20
-#define TV_SHOWS_COUNT 25
-#define POKE_NEWS_COUNT 16
-#define PC_ITEMS_COUNT 50
-#define BAG_ITEMS_COUNT 30
+#define MAIL_COUNT 1
+#define SECRET_BASES_COUNT 1
+#define TV_SHOWS_COUNT 1
+#define POKE_NEWS_COUNT 4
+#define PC_ITEMS_COUNT 100
+#define BAG_ITEMS_COUNT 100
 #define BAG_KEYITEMS_COUNT 30
-#define BAG_POKEBALLS_COUNT 16
-#define BAG_TMHM_COUNT 64
-#define BAG_BERRIES_COUNT 46
+#define BAG_POKEBALLS_COUNT 30
+#define BAG_TMHM_COUNT 120
+#define BAG_BERRIES_COUNT 50
 #define OBJECT_EVENT_TEMPLATES_COUNT 64
-#define DECOR_MAX_SECRET_BASE 16
-#define DECOR_MAX_PLAYERS_HOUSE 12
-#define APPRENTICE_COUNT 4
-#define APPRENTICE_MAX_QUESTIONS 9
-#define MAX_REMATCH_ENTRIES 100 // only REMATCH_TABLE_ENTRIES (78) are used
-#define NUM_CONTEST_WINNERS 13
-#define UNION_ROOM_KB_ROW_COUNT 10
-#define GIFT_RIBBONS_COUNT 11
+#define DECOR_MAX_SECRET_BASE 11
+#define DECOR_MAX_PLAYERS_HOUSE 1
+#define APPRENTICE_COUNT 1
+#define APPRENTICE_MAX_QUESTIONS 1
+#define MAX_REMATCH_ENTRIES 80 // only REMATCH_TABLE_ENTRIES (78) are used
+#define NUM_CONTEST_WINNERS 1
+#define UNION_ROOM_KB_ROW_COUNT 1
+#define GIFT_RIBBONS_COUNT 1
 #define SAVED_TRENDS_COUNT 5
 #define PYRAMID_BAG_ITEMS_COUNT 10
 
 // Number of facilities for Ranking Hall.
 // 7 facilities for single mode + tower double mode + tower multi mode.
 // Excludes link modes. See RANKING_HALL_* in include/constants/battle_frontier.h
-#define HALL_FACILITIES_COUNT 9
+#define HALL_FACILITIES_COUNT 1
 // Received via record mixing, 1 for each player other than yourself
 #define HALL_RECORDS_COUNT 3
 
@@ -99,15 +88,11 @@
 
 // string lengths
 #define ITEM_NAME_LENGTH 14
-#define POKEMON_NAME_LENGTH 10
-#define PLAYER_NAME_LENGTH 7
+#define POKEMON_NAME_LENGTH 12
+#define PLAYER_NAME_LENGTH 12
 #define MAIL_WORDS_COUNT 9
 #define EASY_CHAT_BATTLE_WORDS_COUNT 6
-#if B_EXPANDED_MOVE_NAMES == TRUE
 #define MOVE_NAME_LENGTH 16
-#else
-#define MOVE_NAME_LENGTH 12
-#endif
 #define NUM_QUESTIONNAIRE_WORDS 4
 #define QUIZ_QUESTION_LEN 9
 #define WONDER_CARD_TEXT_LENGTH 40
@@ -115,12 +100,8 @@
 #define WONDER_CARD_BODY_TEXT_LINES 4
 #define WONDER_NEWS_BODY_TEXT_LINES 10
 #define TYPE_NAME_LENGTH 6
-#if B_EXPANDED_ABILITY_NAMES == TRUE
 #define ABILITY_NAME_LENGTH 16
-#else
-#define ABILITY_NAME_LENGTH 12
-#endif
-#define TRAINER_NAME_LENGTH 10
+#define TRAINER_NAME_LENGTH 12
 
 #define MAX_STAMP_CARD_STAMPS 7
 

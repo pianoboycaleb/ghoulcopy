@@ -19,15 +19,15 @@
 // free saveblock 1 defines
 #define FREE_EXTRA_SEEN_FLAGS           //free up extra pokedex seen flags. Frees up 104 bytes
 #define FREE_FIELD_3598                 //frees up unused saveblock data. 384 bytes
-//#define FREE_TRAINER_HILL             //frees up trainer hill data. 28 bytes.                          WARNING THIS HAS BEEN SHOWN TO BREAK MULTI BATTLES
-//#define FREE_MYSTERY_EVENT_BUFFERS    //frees up mystery event and ramScript. roughly 1880 bytes       Needed by FREE_BATTLE_TOWER_E_READER
+#define FREE_TRAINER_HILL             //frees up trainer hill data. 28 bytes.                          WARNING THIS HAS BEEN SHOWN TO BREAK MULTI BATTLES
+#define FREE_MYSTERY_EVENT_BUFFERS    //frees up mystery event and ramScript. roughly 1880 bytes       Needed by FREE_BATTLE_TOWER_E_READER
 #define FREE_MATCH_CALL                 //frees up match call data. 104 bytes
 #define FREE_UNION_ROOM_CHAT            //frees up field unk3C88. 210 bytes
 #define FREE_ENIGMA_BERRY               //frees up enigma berry. 52 bytes
 #define FREE_LINK_BATTLE_RECORDS        //frees link battle record data. 88 bytes
                                         // saveblock1 total: 1846 bytes
 //free saveblock 2 defines
-//#define FREE_BATTLE_TOWER_E_READER    //frees up battle tower e reader trainer data. 188 bytes.        WARNING THIS HAS BEEN SHOWN TO BREAK THE POKÉ MARTS' QUESTIONNAIRE
+#define FREE_BATTLE_TOWER_E_READER    //frees up battle tower e reader trainer data. 188 bytes.        WARNING THIS HAS BEEN SHOWN TO BREAK THE POKÉ MARTS' QUESTIONNAIRE
 #define FREE_POKEMON_JUMP               //frees up pokemon jump data. 16 bytes
 #define FREE_RECORD_MIXING_HALL_RECORDS //frees up hall records for record mixing. 1032 bytes
                                         // saveblock2 total: 1236 bytes
@@ -1117,15 +1117,20 @@ struct SaveBlock1
     /*0x322C*/ struct MysteryGiftSave mysteryGift;
     /*0x3???*/ u8 dexSeen[NUM_DEX_FLAG_BYTES];
     /*0x3???*/ u8 dexCaught[NUM_DEX_FLAG_BYTES];
-    /*0x3???*/ u32 trainerHillTimes[NUM_TRAINER_HILL_MODES];
-    /*0x3???*/ struct RamScript ramScript;
-    /*0x3???*/ struct RecordMixingGift recordMixingGift;
-    /*0x3???*/ LilycoveLady lilycoveLady;
-    /*0x3???*/ struct TrainerNameRecord trainerNameRecords[20];
-    /*0x3???*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21];
-    /*0x3???*/ struct TrainerHillSave trainerHill;
-    /*0x3???*/ struct WaldaPhrase waldaPhrase;
-    // sizeof: 0x3???
+    /*0x3598*/ u8 unused_3598[0x180];
+    /*0x3718*/ u32 trainerHillTimes[NUM_TRAINER_HILL_MODES];
+    /*0x3728*/ struct RamScript ramScript;
+    /*0x3B14*/ struct RecordMixingGift recordMixingGift;
+    /*0x3B24*/ u8 seen2[NUM_DEX_FLAG_BYTES];
+    /*0x3B58*/ LilycoveLady lilycoveLady;
+    /*0x3B98*/ struct TrainerNameRecord trainerNameRecords[20];
+    /*0x3C88*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21];
+    /*0x3D5A*/ u8 unused_3D5A[10];
+    /*0x3D64*/ struct TrainerHillSave trainerHill;
+    /*0x3D70*/ struct WaldaPhrase waldaPhrase;
+               u8 dexNavSearchLevels[NUM_SPECIES];
+               u8 dexNavChain;
+    // sizeof: 0x3D88
 };
 
 extern struct SaveBlock1* gSaveBlock1Ptr;

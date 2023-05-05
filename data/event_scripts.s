@@ -1062,3 +1062,5 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/text/birch_speech.inc"
 
 	.include "data/maps/LittlerootHills/scripts.inc"
+    .include "data/scripts/dexnav.inc"
+    

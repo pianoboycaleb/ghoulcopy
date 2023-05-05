@@ -165,7 +165,6 @@ static u8 DoJumpSpecialSpriteMovement(struct Sprite *);
 static void CreateLevitateMovementTask(struct ObjectEvent *);
 static void DestroyLevitateMovementTask(u8);
 static bool8 NpcTakeStep(struct Sprite *);
-static bool8 IsElevationMismatchAt(u8, s16, s16);
 static bool8 AreElevationsCompatible(u8, u8);
 
 static const struct SpriteFrameImage sPicTable_PechaBerryTree[];
@@ -1540,7 +1539,7 @@ static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEven
     return objectEventId;
 }
 
-u8 TrySpawnObjectEventTemplate(struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
+static u8 TrySpawnObjectEventTemplate(struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
 {
     u8 objectEventId;
     struct SpriteTemplate spriteTemplate;
@@ -1594,7 +1593,7 @@ u8 SpawnSpecialObjectEventParameterized(u16 graphicsId, u8 movementBehavior, u8 
 
 u8 TrySpawnObjectEvent(u8 localId, u8 mapNum, u8 mapGroup)
 {
-    const struct ObjectEventTemplate *objectEventTemplate;
+    struct ObjectEventTemplate *objectEventTemplate;
     s16 cameraX, cameraY;
 
     objectEventTemplate = GetObjectEventTemplateByLocalIdAndMap(localId, mapNum, mapGroup);
@@ -2503,9 +2502,9 @@ u8 GetObjectEventBerryTreeId(u8 objectEventId)
     return gObjectEvents[objectEventId].trainerRange_berryTreeId;
 }
 
-struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
+static struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
 {
-    const struct ObjectEventTemplate *templates;
+    struct ObjectEventTemplate *templates;
     const struct MapHeader *mapHeader;
     u8 count;
 
@@ -2523,7 +2522,7 @@ struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8
     return FindObjectEventTemplateByLocalId(localId, templates, count);
 }
 
-static const struct ObjectEventTemplate *FindObjectEventTemplateByLocalId(u8 localId, const struct ObjectEventTemplate *templates, u8 count)
+static struct ObjectEventTemplate *FindObjectEventTemplateByLocalId(u8 localId, struct ObjectEventTemplate *templates, u8 count)
 {
     u8 i;
 
@@ -4729,6 +4728,7 @@ u8 GetCollisionInDirection(struct ObjectEvent *objectEvent, u8 direction)
     s16 y = objectEvent->currentCoords.y;
     MoveCoords(direction, &x, &y);
     return GetCollisionAtCoords(objectEvent, x, y, direction);
+    u8 direction = dir;
 }
 
 u8 GetSidewaysStairsCollision(struct ObjectEvent *objectEvent, u8 dir, u8 currentBehavior, u8 nextBehavior, u8 collision)
@@ -4774,13 +4774,6 @@ u8 GetSidewaysStairsCollision(struct ObjectEvent *objectEvent, u8 dir, u8 curren
 
 static u8 GetVanillaCollision(struct ObjectEvent *objectEvent, s16 x, s16 y, u8 direction)
 {
-    u8 direction = dir;
-
-#if OW_FLAG_NO_COLLISION != 0
-    if (FlagGet(OW_FLAG_NO_COLLISION))
-        return COLLISION_NONE;
-#endif
-
     if (IsCoordOutsideObjectEventMovementRange(objectEvent, x, y))
         return COLLISION_OUTSIDE_RANGE;
     else if (MapGridGetCollisionAt(x, y) || GetMapBorderIdAt(x, y) == CONNECTION_INVALID || IsMetatileDirectionallyImpassable(objectEvent, x, y, direction))
@@ -8032,7 +8025,7 @@ static void SetObjectEventSpriteOamTableForLongGrass(struct ObjectEvent *objEven
         sprite->subspriteTableNum = 5;
 }
 
-static bool8 IsElevationMismatchAt(u8 elevation, s16 x, s16 y)
+bool8 IsElevationMismatchAt(u8 elevation, s16 x, s16 y)
 {
     u8 mapElevation;
 

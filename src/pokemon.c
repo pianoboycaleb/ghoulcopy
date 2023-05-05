@@ -11,6 +11,7 @@
 #include "battle_tower.h"
 #include "battle_z_move.h"
 #include "data.h"
+#include "dexnav.h"
 #include "event_data.h"
 #include "evolution_scene.h"
 #include "field_specials.h"
@@ -3439,7 +3440,7 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
         personality = Random32();
 
     // Determine original trainer ID
-    if (otIdType == OT_ID_RANDOM_NO_SHINY)
+    if (otIdType == OT_ID_RANDOM_NO_SHINY) // Pokemon cannot be shiny
     {
         u32 shinyValue;
         do
@@ -3455,46 +3456,37 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     }
     else // Player is the OT
     {
+        #ifdef ITEM_SHINY_CHARM
+        u32 shinyRolls = (CheckBagHasItem(ITEM_SHINY_CHARM, 1)) ? 3 : 1;
+        #else
+        u32 shinyRolls = 1;
+        #endif
+        u32 i;
+        
         value = gSaveBlock2Ptr->playerTrainerId[0]
-              | (gSaveBlock2Ptr->playerTrainerId[1] << 8)
-              | (gSaveBlock2Ptr->playerTrainerId[2] << 16)
-              | (gSaveBlock2Ptr->playerTrainerId[3] << 24);
-
-#if P_FLAG_FORCE_NO_SHINY != 0
-        if (FlagGet(P_FLAG_FORCE_NO_SHINY))
+                  | (gSaveBlock2Ptr->playerTrainerId[1] << 8)
+                  | (gSaveBlock2Ptr->playerTrainerId[2] << 16)
+                  | (gSaveBlock2Ptr->playerTrainerId[3] << 24);
+                  
+        for (i = 0; i < shinyRolls; i++)
         {
-            while (GET_SHINY_VALUE(value, personality) < SHINY_ODDS)
-                personality = Random32();
+            if (Random() < SHINY_ODDS)
+                FlagSet(FLAG_SHINY_CREATION);   // use a flag bc of CreateDexNavWildMon
         }
-#endif
-#if P_FLAG_FORCE_SHINY != 0
-    #if P_FLAG_FORCE_NO_SHINY != 0
-        else
-    #endif
-        if (FlagGet(P_FLAG_FORCE_SHINY))
-        {
-            while (GET_SHINY_VALUE(value, personality) >= SHINY_ODDS)
-                personality = Random32();
-        }
-#endif
-#if P_FLAG_FORCE_SHINY != 0 || P_FLAG_FORCE_NO_SHINY != 0
-        else
-#endif
-        {
-            u32 totalRerolls = 0;
-            if (CheckBagHasItem(ITEM_SHINY_CHARM, 1))
-                totalRerolls += I_SHINY_CHARM_REROLLS;
-            if (LURE_STEP_COUNT != 0)
-                totalRerolls += 1;
 
-            while (GET_SHINY_VALUE(value, personality) >= SHINY_ODDS && totalRerolls > 0)
-            {
+        if (FlagGet(FLAG_SHINY_CREATION))
+        {
+            u8 nature = personality % NUM_NATURES;  // keep current nature
+            do {
                 personality = Random32();
-                totalRerolls--;
-            }
+                personality = ((((Random() % SHINY_ODDS) ^ (HIHALF(value) ^ LOHALF(value))) ^ LOHALF(personality)) << 16) | LOHALF(personality);
+            } while (nature != GetNatureFromPersonality(personality));
+            
+            // clear the flag after use
+            FlagClear(FLAG_SHINY_CREATION);
         }
     }
-
+    
     SetBoxMonData(boxMon, MON_DATA_PERSONALITY, &personality);
     SetBoxMonData(boxMon, MON_DATA_OT_ID, &value);
 
@@ -6604,27 +6596,27 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 break;
             case EVO_FRIENDSHIP_DAY:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= 12 && gLocalTime.hours < 24 && friendship >= 220)
+                if (gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START && friendship >= 220)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL_DAY:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= 12 && gLocalTime.hours < 24 && gEvolutionTable[species][i].param <= level)
+                if (gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_NIGHT:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= 0 && gLocalTime.hours < 12 && friendship >= 220)
+                if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START && friendship >= 220)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL_NIGHT:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= 0 && gLocalTime.hours < 12 && gEvolutionTable[species][i].param <= level)
+                if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_ITEM_HOLD_NIGHT:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= 0 && gLocalTime.hours < 12 && heldItem == gEvolutionTable[species][i].param)
+                if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START && heldItem == gEvolutionTable[species][i].param)
                 {
                     heldItem = 0;
                     SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
@@ -6633,7 +6625,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 break;
             case EVO_ITEM_HOLD_DAY:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= 12 && gLocalTime.hours < 24 && heldItem == gEvolutionTable[species][i].param)
+                if (gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START && heldItem == gEvolutionTable[species][i].param)
                 {
                     heldItem = 0;
                     SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
@@ -6642,7 +6634,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 break;
             case EVO_LEVEL_DUSK:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= 17 && gLocalTime.hours < 18 && gEvolutionTable[species][i].param <= level)
+                if (gLocalTime.hours >= 17 && gLocalTime.hours < 19 && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL:
@@ -6835,7 +6827,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 break;
             case EVO_ITEM_NIGHT:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= 0 && gLocalTime.hours < 12 && gEvolutionTable[species][i].param == evolutionItem)
+                if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START && gEvolutionTable[species][i].param == evolutionItem)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;   
             }
@@ -7952,7 +7944,8 @@ static s32 GetWildMonTableIdInAlteringCave(u16 species)
 
 void SetWildMonHeldItem(void)
 {
-    if (!(gBattleTypeFlags & (BATTLE_TYPE_LEGENDARY | BATTLE_TYPE_TRAINER | BATTLE_TYPE_PYRAMID | BATTLE_TYPE_PIKE)))
+    if (!(gBattleTypeFlags & (BATTLE_TYPE_LEGENDARY | BATTLE_TYPE_TRAINER | BATTLE_TYPE_PYRAMID | BATTLE_TYPE_PIKE))
+      && !gDexnavBattle)
     {
         u16 rnd;
         u16 species;
@@ -8257,6 +8250,9 @@ void HandleSetPokedexFlag(u16 nationalNum, u8 caseId, u32 personality)
         if (NationalPokedexNumToSpecies(nationalNum) == SPECIES_SPINDA)
             gSaveBlock2Ptr->pokedex.spindaPersonality = personality;
     }
+    
+    if (caseId == FLAG_SET_SEEN)
+        TryIncrementSpeciesSearchLevel(nationalNum);    // encountering pokemon increments its search level
 }
 
 const u8 *GetTrainerClassNameFromId(u16 trainerId)
@@ -8536,12 +8532,12 @@ u16 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, u16 method, u32 
                         {
                         case DAY:
                             RtcCalcLocalTime();
-                            if (gLocalTime.hours >= 12 && gLocalTime.hours < 24)
+                            if (gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START)
                                 targetSpecies = formChanges[i].targetSpecies;
                             break;
                         case NIGHT:
                             RtcCalcLocalTime();
-                            if (gLocalTime.hours >= 0 && gLocalTime.hours < 12)
+                            if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START)
                                 targetSpecies = formChanges[i].targetSpecies;
                             break;
                         default:

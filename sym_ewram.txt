@@ -151,3 +151,4 @@
 	.include "src/debug.o"
 	.include "src/ev_iv_screen.o"
 
+	.include "src/dexnav.o"
