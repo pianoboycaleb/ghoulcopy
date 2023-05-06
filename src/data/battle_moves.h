@@ -5938,7 +5938,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT_Z] =
         .zMoveEffect = Z_EFFECT_RESET_STATS,
     },
 
-    [MOVE_ROCK_BLAST] =
+    [MOVE_ROCK_OF_BLAST] =
     {
         #if B_UPDATED_MOVE_DATA >= GEN_7
             .accuracy = 90,

@@ -2806,7 +2806,7 @@ const struct BardSound gBardSounds_Moves[MOVES_COUNT][6] = {
         NULL_BARD_SOUND,
         NULL_BARD_SOUND,
     },
-    [MOVE_ROCK_BLAST] = {
+    [MOVE_ROCK_OF_BLAST] = {
         { .songLengthId = 27 },
         { .songLengthId =  0 },
         { .songLengthId = 51 },

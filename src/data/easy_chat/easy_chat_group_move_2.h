@@ -141,7 +141,7 @@ const u16 gEasyChatGroup_Move2[] = {
     MOVE_REST,
     MOVE_REVENGE,
     MOVE_ROAR,
-    MOVE_ROCK_BLAST,
+    MOVE_ROCK_OF_BLAST,
     MOVE_ROLE_PLAY,
     MOVE_ROLLING_KICK,
     MOVE_SCRATCH,

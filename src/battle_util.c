@@ -10465,7 +10465,7 @@ struct Pokemon *GetBattlerPartyData(u8 battlerId)
 
 static u8 GetFlingPowerFromItemId(u16 itemId)
 {
-    if (itemId >= ITEM_TM01 && itemId <= ITEM_HM08)
+    if (itemId >= ITEM_TM01 && itemId <= ITEM_HM09)
     {
         u8 power = gBattleMoves[ItemIdToBattleMoveId(itemId)].power;
         if (power > 1)

@@ -1680,7 +1680,7 @@ static const struct TrainerHillFloor sFloors_Variety[] = {
                                         {
                                             .species = SPECIES_CORSOLA,
                                             .heldItem = ITEM_SILK_SCARF,
-                                            .moves = {MOVE_BUBBLE_BEAM, MOVE_ROCK_BLAST, MOVE_REFLECT, MOVE_LIGHT_SCREEN},
+                                            .moves = {MOVE_BUBBLE_BEAM, MOVE_ROCK_OF_BLAST, MOVE_REFLECT, MOVE_LIGHT_SCREEN},
                                             .hpEV = 255,
                                             .speedEV = 255,
                                             .otId = TRAINER_HILL_OTID,

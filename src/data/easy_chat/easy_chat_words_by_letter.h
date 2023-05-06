@@ -1344,7 +1344,7 @@ const u16 gEasyChatWordsByLetter_R[] = {
     EC_WORD_RIVAL,
     EC_MOVE2(ROAR),
     EC_WORD_ROCK,
-    EC_MOVE2(ROCK_BLAST),
+    EC_MOVE2(ROCK_OF_BLAST),
     EC_WORD_ROCK_HEAD,
     EC_MOVE(ROCK_SLIDE),
     EC_MOVE(ROCK_SMASH),
@@ -2527,7 +2527,7 @@ const u16 gEasyChatWordsByLetter_UnusedJapaneseRo[] = {
     EC_POKEMON(VULPIX),
     EC_POKEMON(ROSELIA),
     EC_MOVE2(LOCK_ON),
-    EC_MOVE2(ROCK_BLAST),
+    EC_MOVE2(ROCK_OF_BLAST),
     EC_WORD_ROMANTIC,
     EC_WORD_QUESTION,
 };
