@@ -1688,8 +1688,10 @@ static void FillTrainerParty(u16 trainerId, u8 firstMonId, u8 monCount)
     }
     else if (trainerId == TRAINER_EREADER)
     {
-        for (i = firstMonId; i < firstMonId + FRONTIER_PARTY_SIZE; i++)
+        #ifndef FREE_BATTLE_TOWER_E_READER
+        for (i = firstMonId; i < firstMonId + 3; i++)
             CreateBattleTowerMon(&gEnemyParty[i], &gSaveBlock2Ptr->frontier.ereaderTrainer.party[i - firstMonId]);
+        #endif
         return;
     }
     else if (trainerId == TRAINER_FRONTIER_BRAIN)
@@ -1885,8 +1887,10 @@ static void FillFactoryFrontierTrainerParty(u16 trainerId, u8 firstMonId)
     }
     else if (trainerId == TRAINER_EREADER)
     {
-        for (i = firstMonId; i < firstMonId + FRONTIER_PARTY_SIZE; i++)
+        #ifndef FREE_BATTLE_TOWER_E_READER
+        for (i = firstMonId; i < firstMonId + 3; i++)
             CreateBattleTowerMon(&gEnemyParty[i], &gSaveBlock2Ptr->frontier.ereaderTrainer.party[i - firstMonId]);
+        #endif
         return;
     }
     else if (trainerId == TRAINER_FRONTIER_BRAIN)

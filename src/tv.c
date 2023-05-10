@@ -1345,7 +1345,6 @@ void PutFanClubSpecialOnTheAir(void)
         show->fanClubSpecial.idolNameLanguage = LANGUAGE_JAPANESE;
     else
         show->fanClubSpecial.idolNameLanguage = gSaveBlock1Ptr->linkBattleRecords.languages[0];
-    }
     #else
     if (show->fanClubSpecial.language == LANGUAGE_JAPANESE)
     {

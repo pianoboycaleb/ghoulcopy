@@ -75,73 +75,6 @@
 #include "constants/songs.h"
 #include "naming_screen.h"
 
-enum {
-    MENU_SUMMARY,
-    MENU_NICKNAME,
-    MENU_SWITCH,
-    MENU_CANCEL1,
-    MENU_ITEM,
-    MENU_GIVE,
-    MENU_TAKE_ITEM,
-    MENU_MOVE_ITEM,
-    MENU_MAIL,
-    MENU_TAKE_MAIL,
-    MENU_READ,
-    MENU_CANCEL2,
-    MENU_SHIFT,
-    MENU_SEND_OUT,
-    MENU_ENTER,
-    MENU_NO_ENTRY,
-    MENU_STORE,
-    MENU_REGISTER,
-    MENU_TRADE1,
-    MENU_TRADE2,
-    MENU_TOSS,
-    MENU_FIELD_MOVES
-};
-
-// IDs for the action lists that appear when a party mon is selected
-enum {
-    ACTIONS_NONE,
-    ACTIONS_SWITCH,
-    ACTIONS_SHIFT,
-    ACTIONS_SEND_OUT,
-    ACTIONS_ENTER,
-    ACTIONS_NO_ENTRY,
-    ACTIONS_STORE,
-    ACTIONS_SUMMARY_ONLY,
-    ACTIONS_ITEM,
-    ACTIONS_MAIL,
-    ACTIONS_REGISTER,
-    ACTIONS_TRADE,
-    ACTIONS_SPIN_TRADE,
-    ACTIONS_TAKEITEM_TOSS,
-};
-
-// In CursorCb_FieldMove, field moves <= FIELD_MOVE_WATERFALL are assumed to line up with the badge flags.
-// Badge flag names are commented here for people searching for references to remove the badge requirement.
-enum {
-    FIELD_MOVE_CUT,         // FLAG_BADGE01_GET
-    FIELD_MOVE_FLASH,       // FLAG_BADGE02_GET
-    FIELD_MOVE_ROCK_SMASH,  // FLAG_BADGE03_GET
-    FIELD_MOVE_STRENGTH,    // FLAG_BADGE04_GET
-    FIELD_MOVE_SURF,        // FLAG_BADGE05_GET
-    FIELD_MOVE_FLY,         // FLAG_BADGE06_GET
-    FIELD_MOVE_DIVE,        // FLAG_BADGE07_GET
-    FIELD_MOVE_WATERFALL,   // FLAG_BADGE08_GET
-    FIELD_MOVE_TELEPORT,
-    FIELD_MOVE_DIG,
-    FIELD_MOVE_SECRET_POWER,
-    FIELD_MOVE_MILK_DRINK,
-    FIELD_MOVE_SOFT_BOILED,
-    FIELD_MOVE_SWEET_SCENT,
-    FIELD_MOVES_COUNT
-};
-
-enum {
-    PARTY_BOX_LEFT_COLUMN,
-    PARTY_BOX_RIGHT_COLUMN,
-};
 
 enum {
     TAG_POKEBALL = 1200,
@@ -2632,7 +2565,7 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
     // Add field moves to action list
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        for (j = 0; sFieldMoves[j] != FIELD_MOVES_COUNT; j++)
+        for (j = 0; sFieldMoves[j] != FIELD_MOVE_TERMINATOR; j++)
         {
             if (GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == sFieldMoves[j])
             {
@@ -4342,7 +4275,11 @@ static bool8 IsHPRecoveryItem(u16 item)
     const u8 *effect;
 
     if (item == ITEM_ENIGMA_BERRY_E_READER)
+        #ifndef FREE_ENIGMA_BERRY
         effect = gSaveBlock1Ptr->enigmaBerry.itemEffect;
+        #else
+        effect = 0;
+        #endif    
     else
         effect = gItemEffectTable[item];
 
@@ -4856,7 +4793,11 @@ void ItemUseCB_PPRecovery(u8 taskId, TaskFunc task)
     u16 item = gSpecialVar_ItemId;
 
     if (item == ITEM_ENIGMA_BERRY_E_READER)
+        #ifndef FREE_ENIGMA_BERRY
         effect = gSaveBlock1Ptr->enigmaBerry.itemEffect;
+        #else
+        effect = 0;
+        #endif
     else
         effect = gItemEffectTable[item];
 
@@ -5738,7 +5679,11 @@ u8 GetItemEffectType(u16 item)
 
     // Read the item's effect properties.
     if (item == ITEM_ENIGMA_BERRY_E_READER)
+        #ifndef FREE_ENIGMA_BERRY
         itemEffect = gSaveBlock1Ptr->enigmaBerry.itemEffect;
+        #else
+        itemEffect = 0;
+        #endif
     else
         itemEffect = gItemEffectTable[item];
 

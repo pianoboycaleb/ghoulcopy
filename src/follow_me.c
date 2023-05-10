@@ -37,7 +37,6 @@ Known Issues:
 */
 
 // Defines
-#define PLAYER_AVATAR_FLAG_BIKE    PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE
 
 struct FollowerSpriteGraphics
 {
@@ -130,7 +129,6 @@ void HideFollower(void)
     gObjectEvents[GetFollowerMapObjId()].invisible = TRUE;
 }
 
-/*
 void IsFollowerStoppingRockClimb(void)
 {
     gSpecialVar_Result = FALSE;
@@ -139,7 +137,7 @@ void IsFollowerStoppingRockClimb(void)
 
     gSpecialVar_Result = (gSaveBlock2Ptr->follower.flags & FOLLOWER_FLAG_CAN_ROCK_CLIMB) == 0;
 }
-*/
+
 
 void FollowMe_SetIndicatorToComeOutDoor(void)
 {
@@ -233,7 +231,7 @@ void FollowMe(struct ObjectEvent* npc, u8 state, bool8 ignoreScriptActive)
         return;
     else if (!gSaveBlock2Ptr->follower.inProgress)
         return;
-    else if (ScriptContext2_IsEnabled() && !ignoreScriptActive)
+    else if (ArePlayerFieldControlsLocked() && !ignoreScriptActive)
         return; //Don't follow during a script
                 
     
@@ -1133,7 +1131,7 @@ void SetFollowerSprite(u8 spriteIndex)
     backupFollower.graphicsId = newGraphicsId;
     //backupFollower.graphicsIdUpperByte = newGraphicsId >> 8;
     DestroySprite(&gSprites[oldSpriteId]);
-    RemoveObjectEvent(&gObjectEvents[GetFollowerMapObjId()]);
+    RemoveObjectEvent(follower);
 
     clone = *GetObjectEventTemplateByLocalIdAndMap(gSaveBlock2Ptr->follower.map.id, gSaveBlock2Ptr->follower.map.number, gSaveBlock2Ptr->follower.map.group);
     clone.graphicsId = newGraphicsId;

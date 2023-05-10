@@ -1577,6 +1577,8 @@ u8 (*const gMovementActionFuncs_RunLeftSlow[])(struct ObjectEvent *, struct Spri
 u8 (*const gMovementActionFuncs_RunRightSlow[])(struct ObjectEvent *, struct Sprite *) = {
     MovementActionFunc_RunSlowRight_Step0,
     MovementActionFunc_RunSlow_Step1,
+};
+
 // fast diagonal
 u8 (*const gMovementActionFuncs_WalkFastDiagonalUpLeft[])(struct ObjectEvent *, struct Sprite *) = {
     MovementAction_WalkFastDiagonalUpLeft_Step0,

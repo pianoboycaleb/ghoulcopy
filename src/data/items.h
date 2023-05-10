@@ -8569,10 +8569,10 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_TMHM,
     },
 
-    [ITEM_TM65_AVALANCH] =
+    [ITEM_TM65_AVALANCHE] =
     {
         .name = _("TM65"),
-        .itemId = ITEM_TM65_AVALANCH,
+        .itemId = ITEM_TM65_AVALANCHE,
         .price = 3000,
         .description = sTM65Desc,
         .pocket = POCKET_TM_HM,
@@ -8821,10 +8821,10 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_TMHM,
     },
 
-    [ITEM_TM86_SNARF] =
+    [ITEM_TM86_SNARL] =
     {
         .name = _("TM86"),
-        .itemId = ITEM_TM86_SNARF,
+        .itemId = ITEM_TM86_SNARL,
         .price = 3000,
         .description = sTM86Desc,
         .pocket = POCKET_TM_HM,

@@ -2223,77 +2223,8 @@ static void Print2PRecord(s32 position, s32 x, s32 y, struct RankingHall2P *hall
     }
 }
 
-static void Fill1PRecords(struct RankingHall1P *dst, s32 hallFacilityId, s32 lvlMode)
-{
-    #ifndef FREE_RECORD_MIXING_HALL_RECORDS
-    s32 i, j;
-    struct RankingHall1P record1P[HALL_RECORDS_COUNT + 1];
-    struct PlayerHallRecords *playerHallRecords = AllocZeroed(sizeof(struct PlayerHallRecords));
-    GetPlayerHallRecords(playerHallRecords);
 
-    for (i = 0; i < HALL_RECORDS_COUNT; i++)
-        record1P[i] = gSaveBlock2Ptr->hallRecords1P[hallFacilityId][lvlMode][i];
 
-    record1P[HALL_RECORDS_COUNT] = playerHallRecords->onePlayer[hallFacilityId][lvlMode];
-
-    for (i = 0; i < HALL_RECORDS_COUNT; i++)
-    {
-        s32 highestWinStreak = 0;
-        s32 highestId = 0;
-        for (j = 0; j < HALL_RECORDS_COUNT + 1; j++)
-        {
-            if (record1P[j].winStreak > highestWinStreak)
-            {
-                highestId = j;
-                highestWinStreak = record1P[j].winStreak;
-            }
-        }
-        if (record1P[HALL_RECORDS_COUNT].winStreak >= highestWinStreak)
-            highestId = HALL_RECORDS_COUNT;
-
-        dst[i] = record1P[highestId];
-        record1P[highestId].winStreak = 0;
-    }
-
-    free(playerHallRecords);
-    #endif
-}
-
-static void Fill2PRecords(struct RankingHall2P *dst, s32 lvlMode)
-{
-    #ifndef FREE_RECORD_MIXING_HALL_RECORDS
-    s32 i, j;
-    struct RankingHall2P record2P[HALL_RECORDS_COUNT + 1];
-    struct PlayerHallRecords *playerHallRecords = AllocZeroed(sizeof(struct PlayerHallRecords));
-    GetPlayerHallRecords(playerHallRecords);
-
-    for (i = 0; i < HALL_RECORDS_COUNT; i++)
-        record2P[i] = gSaveBlock2Ptr->hallRecords2P[lvlMode][i];
-
-    record2P[HALL_RECORDS_COUNT] = playerHallRecords->twoPlayers[lvlMode];
-
-    for (i = 0; i < HALL_RECORDS_COUNT; i++)
-    {
-        s32 highestWinStreak = 0;
-        s32 highestId = 0;
-        for (j = 0; j < HALL_RECORDS_COUNT; j++)
-        {
-            if (record2P[j].winStreak > highestWinStreak)
-            {
-                highestId = j;
-                highestWinStreak = record2P[j].winStreak;
-            }
-        }
-        if (record2P[HALL_RECORDS_COUNT].winStreak >= highestWinStreak)
-            highestId = HALL_RECORDS_COUNT;
-
-        dst[i] = record2P[highestId];
-        record2P[highestId].winStreak = 0;
-    }
-
-    free(playerHallRecords);
-    #endif
-}
 
 static void PrintHallRecords(s32 hallFacilityId, s32 lvlMode)
 {
@@ -2311,15 +2242,8 @@ static void PrintHallRecords(s32 hallFacilityId, s32 lvlMode)
     {
         gSaveBlock2Ptr->frontier.opponentNames[0][PLAYER_NAME_LENGTH] = EOS;
         gSaveBlock2Ptr->frontier.opponentNames[1][PLAYER_NAME_LENGTH] = EOS;
-        Fill2PRecords(records2P, lvlMode);
         for (i = 0; i < HALL_RECORDS_COUNT; i++)
             Print2PRecord(i, 1, 4, &records2P[i]);
-    }
-    else
-    {
-        Fill1PRecords(records1P, hallFacilityId, lvlMode);
-        for (i = 0; i < HALL_RECORDS_COUNT; i++)
-            Print1PRecord(i, 1, 4, &records1P[i], hallFacilityId);
     }
 }
 

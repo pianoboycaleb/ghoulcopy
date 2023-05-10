@@ -229,7 +229,8 @@ struct Pokedex
     /*0x04*/ u32 unownPersonality; // set when you first see Unown
     /*0x08*/ u32 spindaPersonality; // set when you first see Spinda
     /*0x0C*/ u32 unknown3;
-    /*0x10*/ u8 filler[0x68]; // Previously Dex Flags, feel free to remove.
+    /*0x10*/ u8 owned[NUM_DEX_FLAG_BYTES];
+    /*0x44*/ u8 seen[NUM_DEX_FLAG_BYTES];
 };
 
 struct PokemonJumpRecords
@@ -559,8 +560,8 @@ struct SaveBlock2
     /*0x11*/ u8 playTimeSeconds;
     /*0x12*/ u8 playTimeVBlanks;
     /*0x13*/ u8 optionsButtonMode;  // OPTIONS_BUTTON_MODE_[NORMAL/LR/L_EQUALS_A]
-    /*0x14*/ u16 optionsTextSpeed:3; // OPTIONS_TEXT_SPEED_[SLOW/MID/FAST]
-             u16 optionsWindowFrameType:5; // Specifies one of the 20 decorative borders for text boxes
+    /*0x14*/ u16 optionsTextSpeed:2; // OPTIONS_TEXT_SPEED_[SLOW/MID/FAST]
+             u16 optionsWindowFrameType:1; // Specifies one of the 20 decorative borders for text boxes
              u16 optionsSound:1; // OPTIONS_SOUND_[MONO/STEREO]
              u16 optionsBattleStyle:1; // OPTIONS_BATTLE_STYLE_[SHIFT/SET]
              u16 optionsBattleSceneOff:1; // whether battle animations are disabled
@@ -1058,12 +1059,15 @@ struct SaveBlock1
     /*0x690*/ struct ItemSlot bagPocket_TMHM[BAG_TMHM_COUNT];
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
-    /*0x988*/ u8 filler1[0x34]; // Previously Dex Flags, feel free to remove.
+    #ifndef FREE_EXTRA_SEEN_FLAGS
+    /*0x988*/ u8 seen1[NUM_DEX_FLAG_BYTES];   //52 bytes
+    #endif
     /*0x9BC*/ u16 berryBlenderRecords[3];
     /*0x9C2*/ u8 unused_9C2[6];
+    #ifndef FREE_MATCH_CALL
     /*0x9C8*/ u16 trainerRematchStepCounter;    //104 bytes
     /*0x9CA*/ u8 trainerRematches[MAX_REMATCH_ENTRIES];
-    /*0xA2E*/ //u8 padding3[2];
+    #endif
     /*0xA30*/ struct ObjectEvent objectEvents[OBJECT_EVENTS_COUNT];
     /*0xC70*/ struct ObjectEventTemplate objectEventTemplates[OBJECT_EVENT_TEMPLATES_COUNT];
     /*0x1270*/ u8 flags[NUM_FLAG_BYTES];
@@ -1113,20 +1117,31 @@ struct SaveBlock1
     /*0x31B3*/ struct ExternalEventData externalEventData;
     /*0x31C7*/ struct ExternalEventFlags externalEventFlags;
     /*0x31DC*/ struct Roamer roamer;
-    /*0x31F8*/ struct EnigmaBerry enigmaBerry;
-    /*0x322C*/ struct MysteryGiftSave mysteryGift;
-    /*0x3???*/ u8 dexSeen[NUM_DEX_FLAG_BYTES];
-    /*0x3???*/ u8 dexCaught[NUM_DEX_FLAG_BYTES];
-    /*0x3598*/ u8 unused_3598[0x180];
-    /*0x3718*/ u32 trainerHillTimes[NUM_TRAINER_HILL_MODES];
+    #ifndef FREE_ENIGMA_BERRY
+    /*0x31F8*/ struct EnigmaBerry enigmaBerry;  //52 bytes
+    #endif
+    #ifndef FREE_MYSTERY_EVENT_BUFFERS
+    /*0x322C*/ struct MysteryGiftSave mysteryGift;   //876 bytes
+    #endif
+    #ifndef FREE_FIELD_3598
+    /*0x3598*/ u8 unused_3598[0x180];    //384 bytes
+    #endif
+    #ifndef FREE_TRAINER_HILL
+    /*0x3718*/ u32 trainerHillTimes[4]; //16 bytes
+    #endif
+    #ifndef FREE_MYSTERY_EVENT_BUFFERS
     /*0x3728*/ struct RamScript ramScript;
+    #endif
     /*0x3B14*/ struct RecordMixingGift recordMixingGift;
-    /*0x3B24*/ u8 seen2[NUM_DEX_FLAG_BYTES];
+    #ifndef FREE_EXTRA_SEEN_FLAGS
+    /*0x3B24*/ u8 seen2[NUM_DEX_FLAG_BYTES];  //52 bytes
+    #endif
     /*0x3B58*/ LilycoveLady lilycoveLady;
     /*0x3B98*/ struct TrainerNameRecord trainerNameRecords[20];
-    /*0x3C88*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21];
+    #ifndef FREE_UNION_ROOM_CHAT
+    /*0x3C88*/ u8 registeredTexts[UNION_ROOM_KB_ROW_COUNT][21]; //210 bytes
+    #endif
     /*0x3D5A*/ u8 unused_3D5A[10];
-    /*0x3D64*/ struct TrainerHillSave trainerHill;
     /*0x3D70*/ struct WaldaPhrase waldaPhrase;
                u8 dexNavSearchLevels[NUM_SPECIES];
                u8 dexNavChain;

@@ -4073,7 +4073,7 @@ static void Swap_ShowSummaryMonSprite(void)
 #ifdef BUGFIX
     sFactorySwapScreen->monPic.monSpriteId = CreateMonPicSprite(species, otId, personality, TRUE, 88, 32, 15, TAG_NONE);
 #else
-    sFactorySwapScreen->monPic.monSpriteId = CreateMonPicSprite(species, personality, otId, TRUE, 88, 32, 15, TAG_NONE);
+    sFactorySwapScreen->monPic.monSpriteId = CreateMonPicSprite(species, otId, personality, TRUE, 88, 32, 15, TAG_NONE);
 #endif
     gSprites[sFactorySwapScreen->monPic.monSpriteId].centerToCornerVecX = 0;
     gSprites[sFactorySwapScreen->monPic.monSpriteId].centerToCornerVecY = 0;

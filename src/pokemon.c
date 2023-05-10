@@ -6555,7 +6555,11 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
         partnerHeldItem = GetMonData(tradePartner, MON_DATA_HELD_ITEM, 0);
 
         if (partnerHeldItem == ITEM_ENIGMA_BERRY_E_READER)
-            partnerHoldEffect = gSaveBlock1Ptr->enigmaBerry.holdEffect;
+            #ifndef FREE_ENIGMA_BERRY
+            holdEffect = gSaveBlock1Ptr->enigmaBerry.holdEffect;
+            #else
+            holdEffect = 0;
+            #endif
         else
             partnerHoldEffect = ItemId_GetHoldEffect(partnerHeldItem);
     }
@@ -6567,7 +6571,11 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
     }
 
     if (heldItem == ITEM_ENIGMA_BERRY_E_READER)
+        #ifndef FREE_ENIGMA_BERRY
         holdEffect = gSaveBlock1Ptr->enigmaBerry.holdEffect;
+        #else
+        holdEffect = 0;
+        #endif
     else
         holdEffect = ItemId_GetHoldEffect(heldItem);
 
@@ -6596,27 +6604,27 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 break;
             case EVO_FRIENDSHIP_DAY:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START && friendship >= 220)
+                if ((gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START) && friendship >= 220)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL_DAY:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START && gEvolutionTable[species][i].param <= level)
+                if ((gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START) && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_NIGHT:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START && friendship >= 220)
+                if ((gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START) && friendship >= 220)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_LEVEL_NIGHT:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START && gEvolutionTable[species][i].param <= level)
+                if ((gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START) && gEvolutionTable[species][i].param <= level)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;
             case EVO_ITEM_HOLD_NIGHT:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START && heldItem == gEvolutionTable[species][i].param)
+                if ((gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START) && heldItem == gEvolutionTable[species][i].param)
                 {
                     heldItem = 0;
                     SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
@@ -6625,7 +6633,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 break;
             case EVO_ITEM_HOLD_DAY:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START && heldItem == gEvolutionTable[species][i].param)
+                if ((gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START) && heldItem == gEvolutionTable[species][i].param)
                 {
                     heldItem = 0;
                     SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);
@@ -6827,7 +6835,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                 break;
             case EVO_ITEM_NIGHT:
                 RtcCalcLocalTime();
-                if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START && gEvolutionTable[species][i].param == evolutionItem)
+                if ((gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START) && gEvolutionTable[species][i].param == evolutionItem)
                     targetSpecies = gEvolutionTable[species][i].targetSpecies;
                 break;   
             }
@@ -7238,7 +7246,11 @@ void MonGainEVs(struct Pokemon *mon, u16 defeatedSpecies)
         if (gMain.inBattle)
             holdEffect = gEnigmaBerries[0].holdEffect;
         else
+            #ifndef FREE_ENIGMA_BERRY
             holdEffect = gSaveBlock1Ptr->enigmaBerry.holdEffect;
+            #else
+            holdEffect = 0;
+            #endif
     }
     else
     {
@@ -8532,12 +8544,12 @@ u16 GetFormChangeTargetSpeciesBoxMon(struct BoxPokemon *boxMon, u16 method, u32 
                         {
                         case DAY:
                             RtcCalcLocalTime();
-                            if (gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START)
+                            if ((gLocalTime.hours >= DAY_START && gLocalTime.hours < NIGHT_START))
                                 targetSpecies = formChanges[i].targetSpecies;
                             break;
                         case NIGHT:
                             RtcCalcLocalTime();
-                            if (gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START)
+                            if ((gLocalTime.hours >= NIGHT_START || gLocalTime.hours < DAY_START))
                                 targetSpecies = formChanges[i].targetSpecies;
                             break;
                         default:

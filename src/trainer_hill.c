@@ -1019,8 +1019,10 @@ static void GetChallengeWon(void)
 
 static void TrainerHillSetMode(void)
 {
-    gSaveBlock1Ptr->trainerHill.mode = gSpecialVar_0x8005;
+    #ifndef FREE_TRAINER_HILL
+    gSaveBlock1Ptr->trainerHill.tag = gSpecialVar_0x8005;
     gSaveBlock1Ptr->trainerHill.bestTime = gSaveBlock1Ptr->trainerHillTimes[gSpecialVar_0x8005];
+    #endif
 }
 
 // Determines which prize list to use from the set of prize lists.
@@ -1079,6 +1081,7 @@ static u16 GetPrizeItemId(void)
         i = GetPrizeListId(FALSE);
 
     // 1 is added to Expert mode's prize list selection because otherwise it has the same prizes as Variety
+    #ifndef FREE_TRAINER_HILL
     if (gSaveBlock1Ptr->trainerHill.mode == HILL_MODE_EXPERT)
         i = (i + 1) % NUM_TRAINER_HILL_PRIZE_LISTS;
 
@@ -1112,6 +1115,7 @@ static u16 GetPrizeItemId(void)
         id = 4; // ITEM_FLUFFY_TAIL
     else
         id = 5; // ITEM_GREAT_BALL
+    #endif
 
     return prizeList[id];
 }

@@ -2,7 +2,6 @@
 #include "malloc.h"
 #include "battle_pyramid.h"
 #include "berry.h"
-#include "debug.h"
 #include "decoration.h"
 #include "event_data.h"
 #include "event_object_movement.h"
@@ -20,10 +19,10 @@
 #include "random.h"
 #include "sprite.h"
 #include "task.h"
+#include "follow_me.h"
 #include "trainer_see.h"
 #include "trainer_hill.h"
 #include "util.h"
-#include "follow_me.h"
 #include "constants/event_object_movement.h"
 #include "constants/event_objects.h"
 #include "constants/field_effects.h"
@@ -32,7 +31,6 @@
 #include "constants/metatile_behaviors.h"
 #include "constants/trainer_types.h"
 #include "constants/union_room.h"
-#include "constants/metatile_behaviors.h"
 
 // this file was known as evobjmv.c in Game Freak's original source
 
@@ -501,7 +499,7 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_RubySapphireBrendan,   OBJ_EVENT_PAL_TAG_RS_BRENDAN},
     {gObjectEventPal_RubySapphireMay,       OBJ_EVENT_PAL_TAG_RS_MAY},
 #ifdef BUGFIX
-    {NULL,                                  OBJ_EVENT_PAL_TAG_NONE},
+    {NULL,                                  OBJ_EVENT_PAL_TAG_NONE}, 
 #else
     {}, // BUG: FindObjectEventPaletteIndexByTag looks for OBJ_EVENT_PAL_TAG_NONE and not 0x0.
         // If it's looking for a tag that isn't in this table, the game locks in an infinite loop.
@@ -1299,7 +1297,7 @@ u8 GetFirstInactiveObjectEventId(void)
 
 u8 GetObjectEventIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroupId)
 {
-    if (localId == OBJ_EVENT_ID_FOLLOWER)
+   if (localId == OBJ_EVENT_ID_FOLLOWER)
         return GetFollowerObjectId();
     else if (localId < OBJ_EVENT_ID_PLAYER)
         return GetObjectEventIdByLocalIdAndMapInternal(localId, mapNum, mapGroupId);
@@ -1543,7 +1541,7 @@ static u8 TrySetupObjectEventSprite(const struct ObjectEventTemplate *objectEven
     return objectEventId;
 }
 
-static u8 TrySpawnObjectEventTemplate(struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
+u8 TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemplate, u8 mapNum, u8 mapGroup, s16 cameraX, s16 cameraY)
 {
     u8 objectEventId;
     struct SpriteTemplate spriteTemplate;
@@ -1575,7 +1573,7 @@ u8 SpawnSpecialObjectEvent(struct ObjectEventTemplate *objectEventTemplate)
     return TrySpawnObjectEventTemplate(objectEventTemplate, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, cameraX, cameraY);
 }
 
-u8 SpawnSpecialObjectEventParameterized(u16 graphicsId, u8 movementBehavior, u8 localId, s16 x, s16 y, u8 elevation)
+u8 SpawnSpecialObjectEventParameterized(u8 graphicsId, u8 movementBehavior, u8 localId, s16 x, s16 y, u8 elevation)
 {
     struct ObjectEventTemplate objectEventTemplate;
 
@@ -1583,7 +1581,6 @@ u8 SpawnSpecialObjectEventParameterized(u16 graphicsId, u8 movementBehavior, u8 
     y -= MAP_OFFSET;
     objectEventTemplate.localId = localId;
     objectEventTemplate.graphicsId = graphicsId;
-    //objectEventTemplate.inConnection = 0;
     objectEventTemplate.x = x;
     objectEventTemplate.y = y;
     objectEventTemplate.elevation = elevation;
@@ -1597,7 +1594,7 @@ u8 SpawnSpecialObjectEventParameterized(u16 graphicsId, u8 movementBehavior, u8 
 
 u8 TrySpawnObjectEvent(u8 localId, u8 mapNum, u8 mapGroup)
 {
-    struct ObjectEventTemplate *objectEventTemplate;
+    const struct ObjectEventTemplate *objectEventTemplate;
     s16 cameraX, cameraY;
 
     objectEventTemplate = GetObjectEventTemplateByLocalIdAndMap(localId, mapNum, mapGroup);
@@ -1665,7 +1662,7 @@ u8 CreateObjectGraphicsSprite(u16 graphicsId, void (*callback)(struct Sprite *),
 // A unique id is given as an argument and stored in the sprite data to allow referring back to the same virtual object.
 // They can be turned (and, in the case of the Union Room, animated teleporting in and out) but do not have movement types
 // or any of the other data normally associated with object events.
-u8 CreateVirtualObject(u16 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevation, u8 direction)
+u8 CreateVirtualObject(u8 graphicsId, u8 virtualObjId, s16 x, s16 y, u8 elevation, u8 direction)
 {
     u8 spriteId;
     struct Sprite *sprite;
@@ -1731,7 +1728,7 @@ void TrySpawnObjectEvents(s16 cameraX, s16 cameraY)
 
         for (i = 0; i < objectCount; i++)
         {
-            struct ObjectEventTemplate *template = &gSaveBlock1Ptr->objectEventTemplates[i];
+            const struct ObjectEventTemplate *template = &gSaveBlock1Ptr->objectEventTemplates[i];
             s16 npcX = template->x + MAP_OFFSET;
             s16 npcY = template->y + MAP_OFFSET;
 
@@ -1885,7 +1882,7 @@ static void SetPlayerAvatarObjectEventIdAndObjectId(u8 objectEventId, u8 spriteI
     SetPlayerAvatarExtraStateTransition(gObjectEvents[objectEventId].graphicsId, PLAYER_AVATAR_FLAG_CONTROLLABLE);
 }
 
-void ObjectEventSetGraphicsId(struct ObjectEvent *objectEvent, u16 graphicsId)
+void ObjectEventSetGraphicsId(struct ObjectEvent *objectEvent, u8 graphicsId)
 {
     const struct ObjectEventGraphicsInfo *graphicsInfo;
     struct Sprite *sprite;
@@ -1924,7 +1921,7 @@ void ObjectEventSetGraphicsId(struct ObjectEvent *objectEvent, u16 graphicsId)
         CameraObjectReset1();
 }
 
-void ObjectEventSetGraphicsIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup, u16 graphicsId)
+void ObjectEventSetGraphicsIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup, u8 graphicsId)
 {
     u8 objectEventId;
 
@@ -1979,7 +1976,7 @@ static void SetBerryTreeGraphics(struct ObjectEvent *objectEvent, struct Sprite 
     }
 }
 
-const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u16 graphicsId)
+const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u8 graphicsId)
 {
     u8 bard;
 
@@ -2506,9 +2503,9 @@ u8 GetObjectEventBerryTreeId(u8 objectEventId)
     return gObjectEvents[objectEventId].trainerRange_berryTreeId;
 }
 
-static struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
+const struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
 {
-    struct ObjectEventTemplate *templates;
+    const struct ObjectEventTemplate *templates;
     const struct MapHeader *mapHeader;
     u8 count;
 
@@ -2526,7 +2523,7 @@ static struct ObjectEventTemplate *GetObjectEventTemplateByLocalIdAndMap(u8 loca
     return FindObjectEventTemplateByLocalId(localId, templates, count);
 }
 
-static struct ObjectEventTemplate *FindObjectEventTemplateByLocalId(u8 localId, struct ObjectEventTemplate *templates, u8 count)
+static const struct ObjectEventTemplate *FindObjectEventTemplateByLocalId(u8 localId, const struct ObjectEventTemplate *templates, u8 count)
 {
     u8 i;
 
@@ -4732,7 +4729,6 @@ u8 GetCollisionInDirection(struct ObjectEvent *objectEvent, u8 direction)
     s16 y = objectEvent->currentCoords.y;
     MoveCoords(direction, &x, &y);
     return GetCollisionAtCoords(objectEvent, x, y, direction);
-    u8 direction = dir;
 }
 
 u8 GetSidewaysStairsCollision(struct ObjectEvent *objectEvent, u8 dir, u8 currentBehavior, u8 nextBehavior, u8 collision)
@@ -8945,7 +8941,7 @@ void TurnVirtualObject(u8 virtualObjId, u8 direction)
         StartSpriteAnim(&gSprites[spriteId], GetFaceDirectionAnimNum(direction));
 }
 
-void SetVirtualObjectGraphics(u8 virtualObjId, u16 graphicsId)
+void SetVirtualObjectGraphics(u8 virtualObjId, u8 graphicsId)
 {
     int spriteId = GetVirtualObjectSpriteId(virtualObjId);
 
@@ -9340,6 +9336,11 @@ bool8 MovementActionFunc_RunSlow_Step1(struct ObjectEvent *objectEvent, struct S
     if (UpdateMovementNormal(objectEvent, sprite))
     {
         sprite->sActionFuncId = 2;
+        return TRUE;
+    }
+    return FALSE;
+}
+
 // fast diagonal
 bool8 MovementAction_WalkFastDiagonalUpLeft_Step0(struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
@@ -9374,6 +9375,7 @@ bool8 MovementAction_WalkFastDiagonal_Step1(struct ObjectEvent *objectEvent, str
     }
     return FALSE;
 }
+
 // NEW
 u16 GetMiniStepCount(u8 speed)
 {
@@ -9395,7 +9397,6 @@ bool8 PlayerIsUnderWaterfall(struct ObjectEvent *objectEvent)
     MoveCoordsInDirection(DIR_NORTH, &x, &y, 0, 1);
     if (MetatileBehavior_IsWaterfall(MapGridGetMetatileBehaviorAt(x, y)))
         return TRUE;
-    
+
     return FALSE;
 }
-
