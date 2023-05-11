@@ -898,7 +898,7 @@ static const u8 *const sUnionRoomTradeMessages[] =
 };
 
 static const u32 sHeldItemGfx[] = INCBIN_U32("graphics/party_menu/hold_icons.4bpp");
-static const u16 sHeldItemPalette[] = INCBIN_U16("graphics/party_menu/hold_icons.gbapal");
+const u16 gHeldItemPalette[] = INCBIN_U16("graphics/party_menu/hold_icons.gbapal");
 
 static const struct OamData sOamData_HeldItem =
 {
@@ -935,14 +935,14 @@ static const union AnimCmd *const sSpriteAnimTable_HeldItem[] =
     sSpriteAnim_HeldMail,
 };
 
-static const struct SpriteSheet sSpriteSheet_HeldItem =
+const struct SpriteSheet gSpriteSheet_HeldItem =
 {
     sHeldItemGfx, sizeof(sHeldItemGfx), 0xd750
 };
 
 static const struct SpritePalette sSpritePalette_HeldItem =
 {
-    sHeldItemPalette, 0xd750
+    gHeldItemPalette, 0xd750
 };
 
 static const struct SpriteTemplate sSpriteTemplate_HeldItem =
@@ -1181,7 +1181,7 @@ static const struct CompressedSpritePalette sSpritePalette_StatusIcons =
     gStatusPal_Icons, 1202
 };
 
-static const struct SpriteTemplate sSpriteTemplate_StatusIcons =
+const struct SpriteTemplate gSpriteTemplate_StatusIcons =
 {
     .tileTag = 1202,
     .paletteTag = 1202,
